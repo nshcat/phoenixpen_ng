@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.phoenixpen.android"
+    android:versionCode="17"
+    android:versionName="1.0.8.1" >
+
+    <!-- We require OpenGL ES 3.0 -->
+    <uses-feature
+        android:glEsVersion="0x00030000"
+        android:required="true" />
+
+
+    <application
+        android:icon="@drawable/phoenix"
+        android:label="PhoenixPenNG Livewallpaper" >
+
+
+        <service
+            android:name="com.phoenixpen.android.livewallpaper.VoxelWallpaperService"
+            android:label="PhoenixPenNG Livewallpaper"
+            android:permission="android.permission.BIND_WALLPAPER" >
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/wallpaper" />
+        </service>
+
+        <activity
+            android:name="com.phoenixpen.android.livewallpaper.WallpaperSettings"
+            android:exported="true"
+            android:label="PhoenixPenNG Livewallpaper Settings"
+            android:permission="android.permission.BIND_WALLPAPER"
+            android:theme="@style/WallpaperSettingsLight">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService"/>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

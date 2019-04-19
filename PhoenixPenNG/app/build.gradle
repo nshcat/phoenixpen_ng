@@ -1,0 +1,45 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 26
+    //buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        applicationId "com.nshcat.phoenixpen"
+        minSdkVersion 25
+        targetSdkVersion 26
+    }
+
+    signingConfigs {
+        release {
+            def STUB = "stub"
+            //these variables should be defined in ~/.gradle/gradle.properties file
+            storeFile file(project.hasProperty("RELEASE_STORE_FILE") ? RELEASE_STORE_FILE : STUB);
+            storePassword project.hasProperty("RELEASE_STORE_PASSWORD") ? RELEASE_STORE_PASSWORD : STUB;
+            keyAlias project.hasProperty("RELEASE_KEY_ALIAS") ? RELEASE_KEY_ALIAS : STUB;
+            keyPassword project.hasProperty("RELEASE_KEY_PASSWORD") ? RELEASE_KEY_PASSWORD : STUB;
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            signingConfig signingConfigs.release
+        }
+    }
+}
+repositories {
+    mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+}
+
+project.ext.jomlVersion = "1.9.3-SNAPSHOT"
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.joml:joml-android:${jomlVersion}"
+}

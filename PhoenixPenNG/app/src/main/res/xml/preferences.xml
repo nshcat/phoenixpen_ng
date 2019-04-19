@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+        android:title="Appearance"
+        android:key="category_appearance">
+        <CheckBoxPreference
+            android:key="fancy_graphics"
+            android:title="Use Fancy Graphics"
+            android:defaultValue="true"/>
+        <CheckBoxPreference
+            android:key="enable_seasons"
+            android:title="Enable changing seasons"
+            android:defaultValue="true"/>
+        <CheckBoxPreference
+            android:key="enable_eternal_season"
+            android:title="Enable eternal season"
+            android:dependency="enable_seasons"
+            android:defaultValue="false"/>
+         <ListPreference
+             android:key="eternal_season"
+             android:title="Eternal season"
+             android:dialogTitle="Select eternal season"
+             android:entries="@array/seasons"
+             android:defaultValue="AUTUMN"
+             android:dependency="enable_eternal_season"
+             android:entryValues="@array/seasonsAlias"/>
+        <PreferenceScreen
+            android:key="subscreen_decorators"
+            android:title="Decorators"
+            android:persistent="false">
+
+            <CheckBoxPreference
+                android:key="shrub_decorator"
+                android:title="Shrub Decorator"
+                android:defaultValue="true"/>
+
+            <CheckBoxPreference
+                android:key="tree_decorator"
+                android:title="Tree Decorator"
+                android:defaultValue="true"/>
+        </PreferenceScreen>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Behaviour"
+        android:key="category_behaviour">
+        <CheckBoxPreference
+            android:key="fire_aoe"
+            android:title="Ignite multiple tiles"
+            android:defaultValue="false"/>
+        <PreferenceScreen
+            android:key="subscreen_timings"
+            android:title="Timings"
+            android:persistent="false">
+
+            <PreferenceCategory
+                android:title="Animations"
+                android:key="category_animations">
+                <EditTextPreference
+                    android:key="flame_color_period"
+                    android:title="Flame color period"
+                    android:defaultValue="2"
+                    android:numeric="integer"
+                />
+                <EditTextPreference
+                    android:key="flame_glyph_period"
+                    android:title="Flame glyph period"
+                    android:defaultValue="1"
+                    android:numeric="integer"
+                />
+                <EditTextPreference
+                    android:key="actor_move_period"
+                    android:title="Actor move period"
+                    android:defaultValue="15"
+                    android:numeric="integer"
+                />
+            </PreferenceCategory>
+
+            <PreferenceCategory
+                android:title="Burning Tiles"
+                android:key="category_burning_tiles">
+                <EditTextPreference
+                    android:key="ablaze_duration"
+                    android:title="Ablaze duration"
+                    android:defaultValue="80"
+                    android:numeric="integer"
+                />
+                <EditTextPreference
+                    android:key="ash_duration"
+                    android:title="Ash duration"
+                    android:defaultValue="250"
+                    android:numeric="integer"
+                />
+            </PreferenceCategory>
+
+
+        </PreferenceScreen>
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="seasons">
+        <item>Spring</item>
+        <item>Summer</item>
+        <item>Autumn</item>
+        <item>Winter</item>
+    </string-array>
+
+    <string-array name="seasonsAlias">
+        <item>"SPRING"</item>
+        <item>"SUMMER"</item>
+        <item>"AUTUMN"</item>
+        <item>"WINTER"</item>
+    </string-array>
+</resources>
