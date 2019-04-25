@@ -1,6 +1,6 @@
 package com.phoenixpen.android.rendering
 
-import android.opengl.GLES30
+import android.opengl.GLES31
 import com.phoenixpen.android.rendering.materials.FullscreenQuadMaterial
 import com.phoenixpen.android.rendering.materials.TexturedQuadMaterial
 
@@ -16,6 +16,6 @@ class FullscreenQuad(material: Material = TexturedQuadMaterial()): Shadeable(mat
 
         // Render the quad using instancing. The material shader will generate the vertices
         // for use based on the instance vertex id.
-        GLES30.glDrawArraysInstanced(GLES30.GL_TRIANGLES, 0, 6, 1)
+        GLES31.glDrawArraysInstanced(GLES31.GL_TRIANGLES, 0, 6, 1)
     }
 }

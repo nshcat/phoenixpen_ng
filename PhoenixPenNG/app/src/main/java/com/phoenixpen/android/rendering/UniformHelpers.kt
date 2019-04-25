@@ -1,6 +1,6 @@
 package com.phoenixpen.android.rendering
 
-import android.opengl.GLES30
+import android.opengl.GLES31
 import android.util.Log
 import org.joml.Matrix3f
 import org.joml.Matrix4f
@@ -30,7 +30,7 @@ fun uniformMat4f(program: ShaderProgram, name: String, mat: Matrix4f)
     buffer.position(0)
 
     // Upload contents
-    GLES30.glUniformMatrix4fv(location, 1, false, buffer)
+    GLES31.glUniformMatrix4fv(location, 1, false, buffer)
 }
 
 /**
@@ -54,7 +54,7 @@ fun uniformMat3f(program: ShaderProgram, name: String, mat: Matrix3f)
     buffer.position(0)
 
     // Upload contents
-    GLES30.glUniformMatrix3fv(location, 1, false, buffer)
+    GLES31.glUniformMatrix3fv(location, 1, false, buffer)
 }
 
 /**
@@ -76,7 +76,7 @@ fun uniformVec3f(program: ShaderProgram, name: String, vec: Vector3f)
     vec.get(buffer)
 
     // Upload contents
-    GLES30.glUniform3fv(location, 1, buffer)
+    GLES31.glUniform3fv(location, 1, buffer)
 }
 
 /**
@@ -98,7 +98,7 @@ fun uniformVec4f(program: ShaderProgram, name: String, vec: Vector4f)
     vec.get(buffer)
 
     // Upload contents
-    GLES30.glUniform4fv(location, 1, buffer)
+    GLES31.glUniform4fv(location, 1, buffer)
 }
 
 /**
@@ -114,7 +114,7 @@ fun uniformInt(program: ShaderProgram, name: String, value: Int)
     val location = checkedUniformLocation(program, name)
 
     // Upload contents
-    GLES30.glUniform1i(location, value)
+    GLES31.glUniform1i(location, value)
 }
 
 /**
@@ -140,7 +140,7 @@ private fun allocateFloatBuffer(size: Int): FloatBuffer
 private fun checkedUniformLocation(program: ShaderProgram, name: String): Int
 {
     // Retrieve uniform location
-    val location = GLES30.glGetUniformLocation(program.handle, name)
+    val location = GLES31.glGetUniformLocation(program.handle, name)
 
     // Check if location is known
     if(location == -1)

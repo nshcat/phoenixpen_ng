@@ -5,7 +5,7 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.preference.PreferenceManager;
 
 
-public class VoxelWallpaperService extends OpenGLES30WallpaperService {
+public class VoxelWallpaperService extends OpenGLES31WallpaperService {
 	@Override
 	Renderer getNewRenderer()
 	{

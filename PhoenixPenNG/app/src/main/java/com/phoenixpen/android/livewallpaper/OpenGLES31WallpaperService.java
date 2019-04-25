@@ -7,7 +7,7 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-public abstract class OpenGLES30WallpaperService extends GLWallpaperService {
+public abstract class OpenGLES31WallpaperService extends GLWallpaperService {
 	@Override
 	public Engine onCreateEngine() {
 		return new OpenGLES2Engine();
@@ -23,11 +23,11 @@ public abstract class OpenGLES30WallpaperService extends GLWallpaperService {
 			final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 			final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
 
-			final boolean supportsEs31 = configurationInfo.reqGlEsVersion >= 0x30000;
+			final boolean supportsEs31 = configurationInfo.reqGlEsVersion >= 0x30001;
 			
-			if (supportsEs31)
-			{
-				// Request an OpenGL ES 3.0 compatible context.
+			//if (supportsEs31)
+			//{
+				// Request an OpenGL ES 3.1 compatible context.
 				setEGLContextClientVersion(3);
 				
 				// On Honeycomb+ devices, this improves the performance when
@@ -36,11 +36,11 @@ public abstract class OpenGLES30WallpaperService extends GLWallpaperService {
 
 				// Set the renderer to our user-defined renderer.
 				setRenderer(getNewRenderer());
-			} 
-			else 
-			{
-				Log.wtf("GLESWallpaperService", "Could not create OpenGL ES 3.0 context!");
-			}			
+			//}
+			//else
+			//{
+			//	Log.wtf("GLESWallpaperService", "Could not create OpenGL ES 3.1 context!");
+			//}
 		}
 	}	
 	

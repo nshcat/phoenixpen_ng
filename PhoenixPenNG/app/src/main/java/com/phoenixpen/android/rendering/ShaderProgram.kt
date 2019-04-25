@@ -1,6 +1,6 @@
 package com.phoenixpen.android.rendering
 
-import android.opengl.GLES30
+import android.opengl.GLES31
 import android.util.Log
 
 /**
@@ -11,7 +11,7 @@ class ShaderProgram (vararg shaders: Shader)
     /**
      * The native OpenGL handle to this shader program object
      */
-    var handle: Int = GLES30.GL_NONE
+    var handle: Int = GLES31.GL_NONE
         protected set
 
     /**
@@ -32,10 +32,10 @@ class ShaderProgram (vararg shaders: Shader)
             throw IllegalArgumentException("At least one shader object is required")
 
         // Create new program object
-        this.handle = GLES30.glCreateProgram()
+        this.handle = GLES31.glCreateProgram()
 
         // Check for any failure
-        if(this.handle == GLES30.GL_NONE)
+        if(this.handle == GLES31.GL_NONE)
         {
             // We cant recover from this
             Log.e("ShaderProgram", "Could not create program object");
@@ -57,22 +57,7 @@ class ShaderProgram (vararg shaders: Shader)
      */
     fun use()
     {
-        GLES30.glUseProgram(this.handle)
-    }
-
-    /**
-     * Apply given render parameters (mode, view and projection matrices) to this shader program.
-     * Note that it needs to be in use, otherwise this operation has no effect.
-     *
-     * @param rp Render parameters to apply to this shader program
-     */
-    fun applyParameters(rp: RenderParams)
-    {
-        this.use()
-        uniformMat4f(this, "projection", rp.projection)
-        uniformMat4f(this, "view", rp.view)
-        uniformMat4f(this, "model", rp.model)
-        uniformMat3f(this, "normalTransform", rp.normalTransform)
+        GLES31.glUseProgram(this.handle)
     }
 
     /**
@@ -80,7 +65,7 @@ class ShaderProgram (vararg shaders: Shader)
      */
     protected fun attachShader(shader: Shader)
     {
-        GLES30.glAttachShader(this.handle, shader.handle)
+        GLES31.glAttachShader(this.handle, shader.handle)
     }
 
     /**
@@ -89,17 +74,17 @@ class ShaderProgram (vararg shaders: Shader)
     protected fun link()
     {
         // Attempt to link program
-        GLES30.glLinkProgram(this.handle)
+        GLES31.glLinkProgram(this.handle)
 
         // Retrieve linkage log
-        this.log = GLES30.glGetProgramInfoLog(this.handle)
+        this.log = GLES31.glGetProgramInfoLog(this.handle)
 
         // Retrieve link status
         val status = IntArray(1)
-        GLES30.glGetProgramiv(this.handle, GLES30.GL_LINK_STATUS, status, 0)
+        GLES31.glGetProgramiv(this.handle, GLES31.GL_LINK_STATUS, status, 0)
 
         // Check for failure
-        if(status[0] == GLES30.GL_FALSE)
+        if(status[0] == GLES31.GL_FALSE)
         {
             Log.e("ShaderProgram", "Error compiling program: " + this.log)
             throw IllegalStateException("failed to link shader program")

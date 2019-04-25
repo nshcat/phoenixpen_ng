@@ -1,6 +1,6 @@
 package com.phoenixpen.android.rendering
 
-import android.opengl.GLES30
+import android.opengl.GLES31
 import com.phoenixpen.android.application.ScreenDimensions
 
 /**
@@ -32,7 +32,7 @@ abstract class RenderTarget
     {
         // Since there might be any number of render targets in use, we need to always
         // set the OpenGL viewport before rendering
-        GLES30.glViewport(0, 0, this.renderDimensions.width, this.renderDimensions.height)
+        GLES31.glViewport(0, 0, this.renderDimensions.width, this.renderDimensions.height)
     }
 
     /**

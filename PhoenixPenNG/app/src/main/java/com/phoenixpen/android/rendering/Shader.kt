@@ -1,7 +1,7 @@
 package com.phoenixpen.android.rendering
 
 import android.content.Context
-import android.opengl.GLES30
+import android.opengl.GLES31
 import android.util.Log
 import java.io.BufferedReader
 import java.io.IOException
@@ -18,7 +18,7 @@ class Shader (val type: ShaderType)
     /**
      * The native OpenGL handle of this shader.
      */
-    var handle: Int = GLES30.GL_NONE
+    var handle: Int = GLES31.GL_NONE
         protected set
 
     /**
@@ -35,10 +35,10 @@ class Shader (val type: ShaderType)
     init
     {
         // Create new OpenGL shader object
-        this.handle = GLES30.glCreateShader(this.type.nativeValue)
+        this.handle = GLES31.glCreateShader(this.type.nativeValue)
 
         // Check for error
-        if(this.handle == GLES30.GL_NONE)
+        if(this.handle == GLES31.GL_NONE)
         {
             // We cant recover from this
             Log.e("Shader", "Could not create shader object");
@@ -132,7 +132,7 @@ class Shader (val type: ShaderType)
             throw IllegalArgumentException("Shader source cannot be empty")
 
         // Attach it to the shader object
-        GLES30.glShaderSource(this.handle, source)
+        GLES31.glShaderSource(this.handle, source)
     }
 
     /**
@@ -141,21 +141,21 @@ class Shader (val type: ShaderType)
     protected fun compile()
     {
         // Try to compile the shader
-        GLES30.glCompileShader(this.handle)
+        GLES31.glCompileShader(this.handle)
 
         // Retrieve the shader compilation log. This might contain messages no matter
         // the compilation status
-        this.log = GLES30.glGetShaderInfoLog(this.handle)
+        this.log = GLES31.glGetShaderInfoLog(this.handle)
 
         // Check the compilation status to determine if compilation was successful
         val status = IntArray(1)
-        GLES30.glGetShaderiv(this.handle, GLES30.GL_COMPILE_STATUS, status, 0)
+        GLES31.glGetShaderiv(this.handle, GLES31.GL_COMPILE_STATUS, status, 0)
 
-        if(status[0] == GLES30.GL_FALSE)
+        if(status[0] == GLES31.GL_FALSE)
         {
             // Something went wrong
             Log.e("Shader", "Failed to compiler shader: " + this.log)
-            GLES30.glDeleteShader(this.handle)
+            GLES31.glDeleteShader(this.handle)
             throw IllegalStateException("Shader compilation failed")
         }
     }

@@ -1,6 +1,6 @@
 package com.phoenixpen.android.rendering
 
-import android.opengl.GLES30
+import android.opengl.GLES31
 
 /**
  * Allowed values for setting GL_TEXTURE_MIN_FILTER
@@ -9,12 +9,12 @@ import android.opengl.GLES30
  */
 enum class TextureMinFilter(val nativeValue: Int)
 {
-    Nearest(GLES30.GL_NEAREST),
-    Linear(GLES30.GL_LINEAR),
-    NearestMipmapNearest(GLES30.GL_NEAREST_MIPMAP_NEAREST),
-    LinearMipmapNearest(GLES30.GL_LINEAR_MIPMAP_NEAREST),
-    NearestMipmapLinear(GLES30.GL_NEAREST_MIPMAP_LINEAR),
-    LinearMipmapLinear(GLES30.GL_LINEAR_MIPMAP_LINEAR);
+    Nearest(GLES31.GL_NEAREST),
+    Linear(GLES31.GL_LINEAR),
+    NearestMipmapNearest(GLES31.GL_NEAREST_MIPMAP_NEAREST),
+    LinearMipmapNearest(GLES31.GL_LINEAR_MIPMAP_NEAREST),
+    NearestMipmapLinear(GLES31.GL_NEAREST_MIPMAP_LINEAR),
+    LinearMipmapLinear(GLES31.GL_LINEAR_MIPMAP_LINEAR);
 }
 
 /**
@@ -24,8 +24,8 @@ enum class TextureMinFilter(val nativeValue: Int)
  */
 enum class TextureMagFilter(val nativeValue: Int)
 {
-    Nearest(GLES30.GL_NEAREST),
-    Linear(GLES30.GL_LINEAR);
+    Nearest(GLES31.GL_NEAREST),
+    Linear(GLES31.GL_LINEAR);
 }
 
 /**
@@ -37,11 +37,11 @@ enum class TextureUnit(val nativeValue: Int)
 {
     // TODO: More units might be needed in larger applications
 
-    Unit0(GLES30.GL_TEXTURE0),
-    Unit1(GLES30.GL_TEXTURE1),
-    Unit2(GLES30.GL_TEXTURE2),
-    Unit3(GLES30.GL_TEXTURE3),
-    Unit4(GLES30.GL_TEXTURE4),
-    Unit5(GLES30.GL_TEXTURE5),
-    Unit6(GLES30.GL_TEXTURE6);
+    Unit0(GLES31.GL_TEXTURE0),
+    Unit1(GLES31.GL_TEXTURE1),
+    Unit2(GLES31.GL_TEXTURE2),
+    Unit3(GLES31.GL_TEXTURE3),
+    Unit4(GLES31.GL_TEXTURE4),
+    Unit5(GLES31.GL_TEXTURE5),
+    Unit6(GLES31.GL_TEXTURE6);
 }

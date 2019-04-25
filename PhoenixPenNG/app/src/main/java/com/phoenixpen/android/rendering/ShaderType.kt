@@ -1,6 +1,6 @@
 package com.phoenixpen.android.rendering
 
-import android.opengl.GLES30
+import android.opengl.GLES31
 
 /**
  * An enumeration describing all supported types of OpenGL shader
@@ -9,6 +9,6 @@ import android.opengl.GLES30
  */
 enum class ShaderType (val nativeValue: Int)
 {
-    VertexShader(GLES30.GL_VERTEX_SHADER),
-    FragmentShader(GLES30.GL_FRAGMENT_SHADER)
+    VertexShader(GLES31.GL_VERTEX_SHADER),
+    FragmentShader(GLES31.GL_FRAGMENT_SHADER)
 }
