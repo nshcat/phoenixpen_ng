@@ -1,6 +1,7 @@
 package com.phoenixpen.android.livewallpaper
 
 import android.content.Context
+import com.phoenixpen.android.R
 import com.phoenixpen.android.application.Application
 import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.rendering.*
@@ -17,6 +18,11 @@ class TestApplication (context: Context): Application(context)
      * The screen as our second render pass
      */
     private lateinit var secondPass: ScreenTarget
+
+    /**
+     * A texture object used to test the Texture2D class.
+     */
+    private lateinit var testTexture2D: Texture2D
 
     /**
      * A full screen quad we use to render the scene to screen in the second pass
@@ -51,6 +57,9 @@ class TestApplication (context: Context): Application(context)
         // The render target might also have OpenGL state that needs to be lazily created
         this.firstPass = TextureTarget()
         this.secondPass = ScreenTarget()
+
+        // Create the test texture
+        this.testTexture2D = Texture2D.FromImageResource(this.context, R.drawable.graphics)
 
         // Create the fullscreen quad
         this.fullscreenQuad = FullscreenQuad()

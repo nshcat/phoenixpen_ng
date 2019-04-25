@@ -1,8 +1,11 @@
 package com.phoenixpen.android.rendering
 
+import android.content.Context
 import android.opengl.GLES31
+import android.opengl.GLUtils
 import com.phoenixpen.android.application.ScreenDimensions
 import java.nio.ByteBuffer
+import android.graphics.*
 
 /**
  * A semantic alias for texture dimensions.
@@ -37,11 +40,56 @@ class Texture2D(parameters: Texture2DParameters): Texture()
     }
 
     /**
+     * "Static" utility functions that allow texture creation from image resources
+     */
+    companion object
+    {
+        /**
+         * Create texture from given image resource.
+         *
+         * @param ctx The Android app context to retrieve resources from
+         * @param rid The resource identifier
+         *
+         * @return Texture created from specified image resource
+         */
+        fun FromImageResource(ctx: Context, rid: Int): Texture2D
+        {
+            // Retrieve image as bitmap, without scaling
+            val factoryOptions = BitmapFactory.Options().apply { inScaled = false }
+            val bitmap = BitmapFactory.decodeResource(ctx.resources, rid, factoryOptions)
+
+            // Create parameters
+            val parameters = Texture2DParameters(
+                    Texture2DDimensions(bitmap.width, bitmap.height),
+                    TextureMagFilter.Nearest,
+                    TextureMinFilter.Nearest
+            )
+
+            // Create texture
+            val tex = Texture2D(parameters)
+
+            // Activate texture and load image data
+            // TODO does this really work?
+            tex.use(TextureUnit.Unit0)
+            GLUtils.texImage2D(GLES31.GL_TEXTURE_2D, 0, bitmap, 0)
+
+            // Generate all needed mipmap levels for this texture
+            GLES31.glGenerateMipmap(GLES31.GL_TEXTURE_2D)
+
+            // The bitmap is not needed anymore. Free it
+            bitmap.recycle()
+
+            // The texture is fully loaded and ready to use
+            return tex
+        }
+    }
+
+    /**
      * Recreate the texture object with given texture parameters.
      *
      * @param parameters Texture parameters to use
      */
-    open fun recreate(parameters: Texture2DParameters)
+    fun recreate(parameters: Texture2DParameters)
     {
         // Overwrite the current texture parameters
         this.parameters = parameters
