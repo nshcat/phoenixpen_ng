@@ -4,8 +4,10 @@ import android.content.Context
 import com.phoenixpen.android.R
 import com.phoenixpen.android.application.Application
 import com.phoenixpen.android.application.ScreenDimensions
+import com.phoenixpen.android.ascii.Screen
 import com.phoenixpen.android.rendering.*
 import com.phoenixpen.android.rendering.materials.FullscreenQuadMaterial
+import org.joml.Matrix4f
 
 class TestApplication (context: Context): Application(context)
 {
@@ -13,11 +15,13 @@ class TestApplication (context: Context): Application(context)
      * A texture render target as our first render pass
      */
     private lateinit var firstPass: TextureTarget
-    
+
     /**
      * The screen as our second render pass
      */
     private lateinit var secondPass: ScreenTarget
+
+    private lateinit var screen: Screen
 
     /**
      * A texture object used to test the Texture2D class.
@@ -49,6 +53,7 @@ class TestApplication (context: Context): Application(context)
             // Force the screen to resize
             this.firstPass.updateDimensions(screenDimensions.scaleDown(1.0f))
             this.secondPass.updateDimensions(screenDimensions)
+            this.screen.resize(screenDimensions)
         }
     }
 
@@ -57,6 +62,8 @@ class TestApplication (context: Context): Application(context)
         // The render target might also have OpenGL state that needs to be lazily created
         this.firstPass = TextureTarget()
         this.secondPass = ScreenTarget()
+
+        this.screen = Screen(this.context, ScreenDimensions.empty())
 
         // Create the test texture
         this.testTexture2D = Texture2D.FromImageResource(this.context, R.drawable.graphics)
@@ -78,7 +85,11 @@ class TestApplication (context: Context): Application(context)
         this.firstPass.beginRender()
 
         // Render the white quad. We do not need any matrices for this.
-        this.whiteQuad.render(RenderParams.empty())
+        //this.whiteQuad.render(RenderParams.empty())
+        val proj = Matrix4f().setOrtho(0f, this.screenDimensions.width.toFloat(), this.screenDimensions.height.toFloat(), 0f, 0f, 1f)
+
+        this.screen.clear()
+        this.screen.render(RenderParams(Matrix4f(), proj))
 
         // Begin rendering to main screen
         this.firstPass.endRender()

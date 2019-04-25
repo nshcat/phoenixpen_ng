@@ -118,6 +118,22 @@ fun uniformInt(program: ShaderProgram, name: String, value: Int)
 }
 
 /**
+ * Upload a single float as uniform value
+ *
+ * @param program Shader program the uniform is contained in
+ * @param name Uniform name
+ * @param value Value to upload
+ */
+fun uniformFloat(program: ShaderProgram, name: String, value: Float)
+{
+    // Try to find the uniform location
+    val location = checkedUniformLocation(program, name)
+
+    // Upload contents
+    GLES31.glUniform1f(location, value)
+}
+
+/**
  * Allocate a float buffer for use with uniform upload
  *
  * @param size Size of the buffer in number of floats
