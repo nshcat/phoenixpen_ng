@@ -139,6 +139,13 @@ class Texture2D(parameters: Texture2DParameters): Texture()
     }
 
     /**
+     * Convenience function that retrieves the current texture dimensions
+     *
+     * @return Current texture dimensions
+     */
+    fun dimensions(): Texture2DDimensions = this.parameters.dimensions
+
+    /**
      * Activate the texture object managed by this instance.
      *
      * @param textureUnit Texture unit to bind texture to

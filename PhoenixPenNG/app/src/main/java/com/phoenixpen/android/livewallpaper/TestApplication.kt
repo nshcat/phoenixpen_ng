@@ -13,7 +13,7 @@ class TestApplication (context: Context): Application(context)
      * A texture render target as our first render pass
      */
     private lateinit var firstPass: TextureTarget
-
+    
     /**
      * The screen as our second render pass
      */
