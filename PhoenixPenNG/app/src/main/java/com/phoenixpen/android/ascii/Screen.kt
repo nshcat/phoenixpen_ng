@@ -138,11 +138,11 @@ class Screen(val context: Context, var size: ScreenDimensions): Shadeable(AsciiS
 
         for(ix in 0 until this.sizeInGlyphs.width * this.sizeInGlyphs.height)
         {
-            data[(ix*8)] = 255
-            data[(ix*8)+1] = 0
-            data[(ix*8)+2] = 0
+            data[(ix*8)] = 73
+            data[(ix*8)+1] = 246
+            data[(ix*8)+2] = 194
 
-            data[(ix*8)+3] = 33
+            data[(ix*8)+3] = 140
 
             data[(ix*8)+4] = 0
             data[(ix*8)+5] = 0

@@ -12,12 +12,12 @@ class AsciiScreenMaterial: Material(asciiShaderProgram)
     /**
      * The fog density value. Affects how fast the fog thickens with increasing depth values.
      */
-    var fogDensity: Float = 1f
+    var fogDensity: Float = .15f
 
     /**
      * The color of the maximum fog value.
      */
-    var fogColor: Vector4f = Vector4f()
+    var fogColor: Vector4f = Vector4f(0.1f, 0.1f, 0.3f, 1f)
 
     /**
      * The dimensions of the screen, in glyphs (not pixels)
