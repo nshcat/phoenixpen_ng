@@ -5,8 +5,10 @@ import com.phoenixpen.android.R
 import com.phoenixpen.android.application.Application
 import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.ascii.Screen
+import com.phoenixpen.android.ascii.TestScene
 import com.phoenixpen.android.rendering.*
 import com.phoenixpen.android.rendering.materials.FullscreenQuadMaterial
+import junit.framework.Test
 import org.joml.Matrix4f
 
 class TestApplication (context: Context): Application(context)
@@ -37,6 +39,11 @@ class TestApplication (context: Context): Application(context)
      * A white full screen quad, for testing purposes
      */
     private lateinit var whiteQuad: FullscreenQuad
+
+    /**
+     * A test scene
+     */
+    private var scene: TestScene = TestScene()
 
     /**
      * Our orthographic projection
@@ -89,6 +96,10 @@ class TestApplication (context: Context): Application(context)
         val proj = Matrix4f().setOrtho(0f, this.screenDimensions.width.toFloat(), this.screenDimensions.height.toFloat(), 0f, 0f, 1f)
 
         this.screen.clear()
+
+        // Draw current scene to screen
+        this.scene.render(this.screen)
+
         this.screen.render(RenderParams(Matrix4f(), proj))
 
         // Begin rendering to main screen

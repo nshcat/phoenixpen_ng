@@ -43,3 +43,11 @@ infix fun ShadowDirections.and(other: ShadowDirection) = ShadowDirections.of(oth
  * Check if shadow direction flag field contains given shadow direction
  */
 infix fun ShadowDirections.has(other: ShadowDirection) = this.contains(other)
+
+/**
+ * Create empty shadow directions instance
+ */
+fun emptyShadowDirections(): ShadowDirections
+{
+    return ShadowDirections.noneOf(ShadowDirection::class.java)
+}
