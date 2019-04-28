@@ -10,13 +10,25 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.IntBuffer
 
+
+
 /**
  * A screen made up from a matrix of coloured ASCII glyphs.
  *
  * @property size Screen dimensions, in PIXELS
  */
-class Screen(val context: Context, var size: ScreenDimensions): Shadeable(AsciiScreenMaterial())
+class Screen(val context: Context, size: ScreenDimensions): Shadeable(AsciiScreenMaterial())
 {
+    // Data offsets for screen elements
+    private val OFFSET_FR       = 0
+    private val OFFSET_FG       = 1
+    private val OFFSET_FB       = 2
+    private val OFFSET_GLYPH    = 3
+    private val OFFSET_BR       = 4
+    private val OFFSET_BG       = 5
+    private val OFFSET_BB       = 6
+    private val OFFSET_DATA     = 7
+
     /**
      * The glyph sheet texture
      */
@@ -30,18 +42,18 @@ class Screen(val context: Context, var size: ScreenDimensions): Shadeable(AsciiS
     /**
      * The buffer texture used to hold the screen data. We use a
      */
-    private var bufferTexture = BufferTexture(this.bufferSize())
+    private var bufferTexture = BufferTexture(this.bufferSize(size))
 
     /**
      * The data array that is used as backing storage for all screen operations. On render, its contents
      * are copied to the buffer texture.
      */
-    private var data = IntArray(this.bufferSize())
+    private var data = IntArray(this.bufferSize(size))
 
     /**
      * The size of the screen, in glyphs
      */
-    var sizeInGlyphs: ScreenDimensions = dimensionsInGlyphs()
+    var size: ScreenDimensions = dimensionsInGlyphs(size)
 
     /**
      * Whether the screen contents have been changed and need to be reuploaded
@@ -53,7 +65,7 @@ class Screen(val context: Context, var size: ScreenDimensions): Shadeable(AsciiS
      */
     init
     {
-        this.resize(this.size)
+        this.resize(size)
     }
 
     /**
@@ -61,23 +73,20 @@ class Screen(val context: Context, var size: ScreenDimensions): Shadeable(AsciiS
      */
     fun resize(size: ScreenDimensions)
     {
-        // Set the current size
-        this.size = size
-
         // Recalculate screen size in glyphs
-        this.sizeInGlyphs = this.dimensionsInGlyphs()
+        this.size = this.dimensionsInGlyphs(size)
 
         // Resize data array
-        this.data = IntArray(this.bufferSize())
+        this.data = IntArray(this.bufferSize(size))
 
         // Resize buffer texture
-        this.bufferTexture.recreate(this.bufferSize())
+        this.bufferTexture.recreate(this.bufferSize(size))
 
         // Update the properties in the AsciiMaterial
         val mat = this.material as AsciiScreenMaterial
         mat.apply {
             glyphDimensions = this@Screen.glyphDimensions()
-            screenDimensions = this@Screen.sizeInGlyphs
+            screenDimensions = this@Screen.size
         }
 
         // A refresh is definitely needed
@@ -89,14 +98,14 @@ class Screen(val context: Context, var size: ScreenDimensions): Shadeable(AsciiS
      *
      * @return Dimensions of the screen in glyphs
      */
-    fun dimensionsInGlyphs(): ScreenDimensions
+    fun dimensionsInGlyphs(screenSize: ScreenDimensions): ScreenDimensions
     {
         // Retrieve dimensions of a single glyph
         val glyphDimensions = this.glyphDimensions()
 
         return ScreenDimensions(
-                this.size.width / glyphDimensions.width,
-                this.size.height / glyphDimensions.height
+                screenSize.width / glyphDimensions.width,
+                screenSize.height / glyphDimensions.height
         )
     }
 
@@ -121,9 +130,9 @@ class Screen(val context: Context, var size: ScreenDimensions): Shadeable(AsciiS
      *
      * @return Size of the screen data, in integers
      */
-    fun bufferSize(): Int
+    fun bufferSize(screenSize: ScreenDimensions): Int
     {
-        val screenDims = this.dimensionsInGlyphs()
+        val screenDims = this.dimensionsInGlyphs(screenSize)
 
         // For each glyph, two four dimensional integer vectors are stored
         return screenDims.height * screenDims.width * 2 * 4
@@ -134,24 +143,7 @@ class Screen(val context: Context, var size: ScreenDimensions): Shadeable(AsciiS
      */
     fun clear()
     {
-        val first: Int = 0xFFFFFF13U.toInt()
-
-        for(ix in 0 until this.sizeInGlyphs.width * this.sizeInGlyphs.height)
-        {
-            data[(ix*8)] = 73
-            data[(ix*8)+1] = 246
-            data[(ix*8)+2] = 194
-
-            data[(ix*8)+3] = 140
-
-            data[(ix*8)+4] = 0
-            data[(ix*8)+5] = 0
-            data[(ix*8)+6] = 0
-            data[(ix*8)+7] = 0
-
-        }
-
-
+        this.data.fill(0)
         this.dirty = true
     }
 
@@ -172,7 +164,7 @@ class Screen(val context: Context, var size: ScreenDimensions): Shadeable(AsciiS
 
             // Copy local data to temporary integer buffer
             // We need to apply endianess swapping here, since the JVM is BigEndian
-            val byteBuffer = ByteBuffer.allocateDirect(this.bufferSize() * 4)
+            val byteBuffer = ByteBuffer.allocateDirect(this.data.size * 4)
                     .apply { order(ByteOrder.LITTLE_ENDIAN)}
 
             // Interpret byte buffer as int buffer
@@ -190,6 +182,120 @@ class Screen(val context: Context, var size: ScreenDimensions): Shadeable(AsciiS
         this.bufferTexture.use(TextureUnit.Unit2)
 
         // Render instanced quad for each glyph on the scree
-        GLES31.glDrawArraysInstanced(GLES31.GL_TRIANGLES, 0, 6, sizeInGlyphs.width * sizeInGlyphs.height)
+        GLES31.glDrawArraysInstanced(GLES31.GL_TRIANGLES, 0, 6, size.width * size.height)
+    }
+
+    /**
+     * Set the glyph of a screen cell
+     *
+     * @param pos Screen position of glyph to set, in glyphs
+     * @param glyph New glyph code. Has to be in range [0, 255]
+     */
+    fun setGlyph(pos: Position, glyph: Int)
+    {
+        // Check glyph range
+        if(glyph < 0 || glyph > 255)
+            throw IllegalArgumentException("Glyph code out of range: $glyph")
+
+        this.data[this.offsetOf(pos) + OFFSET_GLYPH] = glyph
+
+        this.dirty = true
+    }
+
+    /**
+     * Set the depth value of a screen cell
+     *
+     * @param pos Screen position of depth to set, in glyphs
+     * @param depth New depth value. Has to be in range [0, 255]
+     */
+    fun setDepth(pos: Position, depth: Int)
+    {
+        // Check depth range
+        if(depth < 0 || depth > 255)
+            throw IllegalArgumentException("Depth value out of range: $depth")
+
+        this.data[this.offsetOf(pos) + OFFSET_DATA] =
+                (this.data[this.offsetOf(pos) + OFFSET_DATA] and 0xFF00.inv()) or depth
+
+        this.dirty = true
+    }
+
+
+    /**
+     * Set the front color of a screen cell
+     *
+     * @param pos Screen position of front color to set, in glyphs
+     * @param color New front color. Each component has to be in range [0, 255]
+     */
+    fun setFrontColor(pos: Position, color: Color)
+    {
+        // TODO color range checks?
+        this.data[this.offsetOf(pos) + OFFSET_FR] = color.x
+        this.data[this.offsetOf(pos) + OFFSET_FG] = color.y
+        this.data[this.offsetOf(pos) + OFFSET_FB] = color.z
+
+        this.dirty = true
+    }
+
+    /**
+     * Set the back color of a screen cell
+     *
+     * @param pos Screen position of back color to set, in glyphs
+     * @param color New back color. Each component has to be in range [0, 255]
+     */
+    fun setBackColor(pos: Position, color: Color)
+    {
+        // TODO color range checks?
+        this.data[this.offsetOf(pos) + OFFSET_BR] = color.x
+        this.data[this.offsetOf(pos) + OFFSET_BG] = color.y
+        this.data[this.offsetOf(pos) + OFFSET_BB] = color.z
+
+        this.dirty = true
+    }
+
+    /**
+     * Set the shadow direction of a screen cell
+     *
+     * @param pos Screen position of shadow to set, in glyphs
+     * @param shadow New shadow direction. Will overwrite old one
+     */
+    fun setShadow(pos: Position, shadow: ShadowDirection)
+    {
+        this.data[this.offsetOf(pos) + OFFSET_DATA] =
+                (this.data[this.offsetOf(pos) + OFFSET_DATA] and 0xFF00.inv()) or shadow.nativeValue
+
+        this.dirty = true
+    }
+
+    /**
+     * Set the shadow directions of a screen cell
+     *
+     * @param pos Screen position of shadows to set, in glyphs
+     * @param shadows Set of shadow directions. Will overwrite old one
+     */
+    fun setShadows(pos: Position, shadows: ShadowDirections)
+    {
+        // Accumulate all shadow directions
+        var shadowValue = 0
+        for(direction in shadows)
+        {
+            shadowValue = shadowValue or direction.nativeValue
+        }
+
+        this.data[this.offsetOf(pos) + OFFSET_DATA] =
+                (this.data[this.offsetOf(pos) + OFFSET_DATA] and 0xFF00.inv()) or shadowValue
+
+        this.dirty = true
+    }
+
+    /**
+     * Calculate the buffer offset for given screen position, in glyphs
+     *
+     * @param pos Screen position to convert to linear address, in glyphs
+     * @return Linear buffer offset for given position
+     */
+    private fun offsetOf(pos: Position): Int
+    {
+        return (2 * 4) * ((this.size.width * pos.y) + pos.x)
     }
 }
