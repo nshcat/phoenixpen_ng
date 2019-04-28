@@ -19,7 +19,6 @@ class OrthographicProjection
      */
     val projection = Matrix4f()
 
-
     /**
      * Refresh the projection state by recalculating the stored matrices
      *
@@ -27,14 +26,13 @@ class OrthographicProjection
      */
     fun refresh(dimensions: ScreenDimensions)
     {
-        // We use a simple orthographic projection.
+        // We flip the y-axis, in order to have (0,0) at the top left of the screen
         this.projection.setOrtho(
-                0.0f, dimensions.aspectRatio,
-                0.0f, 1.0f,
-                0.0f, 100.0f
+                0.0f, dimensions.width.toFloat(),
+                dimensions.height.toFloat(), 0.0f,
+                0.0f, 1.0f
         )
     }
-
 
     /**
      * Retrieve rendering parameters based on current projection state.

@@ -11,7 +11,7 @@ public class VoxelWallpaperService extends OpenGLES31WallpaperService {
 	{
 		registerSettingsListener();
 
-		return new TestApplication(this);
+		return new AsciiApplication(this);
 	}
 
 	private void registerSettingsListener()
