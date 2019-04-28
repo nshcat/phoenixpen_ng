@@ -36,13 +36,12 @@ uniform usamplerBuffer input_buffer;
 
 uniform mat4 proj_mat;
 uniform int screen_width;  // In glyphs
-uniform int screen_height;
 uniform int glyph_width;  // In glyphs
 uniform int glyph_height;
 uniform int sheet_width;  // In glyphs
 uniform int sheet_height;
 uniform float fog_density;
-
+uniform int screen_height;
 
 const vec2 vertex_offset[] = vec2[6](
 	vec2(1, 1),	// BR
@@ -112,6 +111,9 @@ void emit_shadow_coords()
 // Calculate vertex for this shader call
 void emit_vertex()
 {
+	// Force usage of screen height so it doesnt get optimized away
+	int unsused = screen_height;
+
     // Calculate screen coords in glyphs
     vec2 screen_coords = vec2(
         gl_InstanceID % screen_width,
