@@ -1,94 +1,116 @@
 package com.phoenixpen.android.application
 
 import android.content.Context
-import android.util.Log
+import com.phoenixpen.android.R
 import com.phoenixpen.android.ascii.Scene
 import com.phoenixpen.android.ascii.Screen
 import com.phoenixpen.android.ascii.TestScene
 import com.phoenixpen.android.rendering.*
+import com.phoenixpen.android.rendering.materials.FullscreenQuadMaterial
+import org.joml.Matrix4f
 
-
+/**
+ * A class implementing all the logic needed to execute a ASCII based application.
+ * This class uses scenes to separate game logic and drawing from the technical realization
+ * of the game rendering.
+ *
+ * @property context The Android app context, used to extract resources
+ */
 class AsciiApplication (context: Context): Application(context)
 {
     /**
-     * The currently active scene. This will receive updates and get rendered
-     * to the screen.
+     * A texture render target as our first render pass
      */
-    private var scene: Scene = TestScene()
+    private lateinit var firstPass: TextureTarget
 
     /**
-     * The screen our scenes are going to draw to.
+     * The screen as our second and final render pass
+     */
+    private lateinit var secondPass: ScreenTarget
+
+    /**
+     * The glyph matrix used to render the game scene to
      */
     private lateinit var screen: Screen
 
     /**
-     * The device screen as our only render pass
+     * A full screen quad we use to render the scene to screen in the second pass
      */
-    private lateinit var renderPass: ScreenTarget
+    private lateinit var fullscreenQuad: FullscreenQuad
 
     /**
-     * The projection we are using to render the ASCII screen
+     * The currently active ASCII game scene
      */
-    private lateinit var projection: OrthographicProjection
+    private var scene: Scene = TestScene()
+
+    /**
+     * Our orthographic projection. It causes the y-axis to be flipped, making (0,0) the top left
+     * corner and origin of our coordinate system.
+     */
+    private var orthoProjection = OrthographicProjection()
 
     override fun onScreenChanged(screenDimensions: ScreenDimensions)
     {
-        if(::renderPass.isInitialized)
+        // Update projection state to fit new screen size
+        this.orthoProjection.refresh(screenDimensions)
+
+        if(::firstPass.isInitialized)
         {
             // Force the screen to resize
-            this.renderPass.updateDimensions(screenDimensions.scaleDown(1.0f))
+            this.firstPass.updateDimensions(screenDimensions.scaleDown(1.0f))
+            this.secondPass.updateDimensions(screenDimensions)
             this.screen.resize(screenDimensions)
-
-            // Update projection state to fit new screen size
-            this.projection.refresh(screenDimensions)
-
-            printDebugInfo("screen changed")
+            this.orthoProjection.refresh(screenDimensions)
         }
     }
 
     override fun onScreenCreated()
     {
         // The render target might also have OpenGL state that needs to be lazily created
-        this.renderPass = ScreenTarget()
+        this.firstPass = TextureTarget()
+        this.secondPass = ScreenTarget()
 
+        // Create an empty screen
         this.screen = Screen(this.context, ScreenDimensions.empty())
 
-        this.projection = OrthographicProjection()
+        // Create the fullscreen quad
+        this.fullscreenQuad = FullscreenQuad(this.context)
 
-
-        printDebugInfo("screen created")
     }
 
     override fun onFrame(elapsedSeconds: Double)
     {
         // It might happen that we are requested to draw a frame while we havent been initialized.
         // Prohibit that.
-        if(!::renderPass.isInitialized)
+        if(!::firstPass.isInitialized)
             return
 
-        // TODO: update scene, calculate ticks
+        // Begin rendering to texture
+        this.firstPass.beginRender()
 
-        // Begin rendering
-        this.renderPass.beginRender()
-
-            // Make sure the screen is clear
             this.screen.clear()
 
             // Draw current scene to screen
             this.scene.render(this.screen)
 
-            // Display screen to device screen
-            this.screen.render(this.projection.toRenderParams())
+            // Render the ASCII matrix to device screen
+            this.screen.render(this.orthoProjection.toRenderParams())
 
-        // Begin rendering to main screen
-        this.renderPass.endRender()
-    }
+        // We are done with the first pass
+        this.firstPass.endRender()
 
-    /**
-     * Print some useful debug information about the current renderer state
-     */
-    fun printDebugInfo(message: String)
-    {
-        Log.d("AsciiApplication", "$message\n\nScreen info:\n${screen.debugInfo()}")
+        // Now do the second rendering pass where we render to a full screen quad
+        this.secondPass.beginRender()
+
+            // Use the texture the first pass rendered to. The full screen quad material
+            // expects it to be bound to the first texture unit.
+            this.firstPass.texture.use(TextureUnit.Unit0)
+
+            // Render the fullscreen quad. The material doesnt use any of the rendering parameters,
+            // so we just pass an empty instance here.
+            this.fullscreenQuad.render(RenderParams.empty())
+
+        // Finish rendering
+        this.secondPass.endRender()
     }
 }

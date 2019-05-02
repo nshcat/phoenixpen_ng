@@ -1,5 +1,6 @@
 package com.phoenixpen.android.rendering
 
+import android.content.Context
 import android.opengl.GLES31
 import com.phoenixpen.android.rendering.materials.FullscreenQuadMaterial
 import com.phoenixpen.android.rendering.materials.TexturedQuadMaterial
@@ -7,7 +8,7 @@ import com.phoenixpen.android.rendering.materials.TexturedQuadMaterial
 /**
  * A class representing a white quad spanning the whole screen. This is meant for testing purposes.
  */
-class FullscreenQuad(material: Material = TexturedQuadMaterial()): Shadeable(material)
+class FullscreenQuad(ctx: Context, material: Material = TexturedQuadMaterial(ctx)): Shadeable(material)
 {
     override fun render(params: RenderParams)
     {
