@@ -1,5 +1,7 @@
 package com.phoenixpen.android.rendering.materials
 
+import android.content.Context
+import com.phoenixpen.android.R
 import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.rendering.*
 import org.joml.Vector4f
@@ -7,7 +9,11 @@ import org.joml.Vector4f
 /**
  * A material used to render the ASCII glyph screen.
  */
-class AsciiScreenMaterial: Material(asciiShaderProgram)
+class AsciiScreenMaterial(ctx: Context):
+        Material(ShaderProgram(
+                Shader.FromResource(ShaderType.FragmentShader, ctx, R.raw.ascii_fs),
+                Shader.FromResource(ShaderType.VertexShader, ctx, R.raw.ascii_vs)
+        ))
 {
     /**
      * The fog density value. Affects how fast the fog thickens with increasing depth values.
@@ -70,9 +76,9 @@ class AsciiScreenMaterial: Material(asciiShaderProgram)
         /**
          * The shader program this will be used for this material
          */
-        private val asciiShaderProgram = ShaderProgram(
+        /*private val asciiShaderProgram = ShaderProgram(
                 Shader.FromResource(ShaderType.FragmentShader, "res/raw/ascii_fs.glsl"),
                 Shader.FromResource(ShaderType.VertexShader, "res/raw/ascii_vs.glsl")
-        )
+        )*/
     }
 }

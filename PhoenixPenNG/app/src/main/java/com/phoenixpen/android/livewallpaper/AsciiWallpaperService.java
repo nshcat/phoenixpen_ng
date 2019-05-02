@@ -4,6 +4,8 @@ import android.content.SharedPreferences;
 import android.opengl.GLSurfaceView.Renderer;
 import android.preference.PreferenceManager;
 
+import com.phoenixpen.android.application.AsciiApplication;
+
 
 public class AsciiWallpaperService extends OpenGLES31WallpaperService {
 	@Override

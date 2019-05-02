@@ -1,8 +1,7 @@
-package com.phoenixpen.android.livewallpaper
+package com.phoenixpen.android.application
 
 import android.content.Context
-import com.phoenixpen.android.application.Application
-import com.phoenixpen.android.application.ScreenDimensions
+import android.util.Log
 import com.phoenixpen.android.ascii.Scene
 import com.phoenixpen.android.ascii.Screen
 import com.phoenixpen.android.ascii.TestScene
@@ -42,6 +41,8 @@ class AsciiApplication (context: Context): Application(context)
 
             // Update projection state to fit new screen size
             this.projection.refresh(screenDimensions)
+
+            printDebugInfo("screen changed")
         }
     }
 
@@ -54,6 +55,8 @@ class AsciiApplication (context: Context): Application(context)
 
         this.projection = OrthographicProjection()
 
+
+        printDebugInfo("screen created")
     }
 
     override fun onFrame(elapsedSeconds: Double)
@@ -79,5 +82,13 @@ class AsciiApplication (context: Context): Application(context)
 
         // Begin rendering to main screen
         this.renderPass.endRender()
+    }
+
+    /**
+     * Print some useful debug information about the current renderer state
+     */
+    fun printDebugInfo(message: String)
+    {
+        Log.d("AsciiApplication", "$message\n\nScreen info:\n${screen.debugInfo()}")
     }
 }

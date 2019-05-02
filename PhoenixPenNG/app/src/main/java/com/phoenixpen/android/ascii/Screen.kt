@@ -17,7 +17,7 @@ import java.nio.IntBuffer
  *
  * @property size Screen dimensions, in PIXELS
  */
-class Screen(val context: Context, size: ScreenDimensions): Shadeable(AsciiScreenMaterial())
+class Screen(val context: Context, size: ScreenDimensions): Shadeable(AsciiScreenMaterial(context))
 {
     // Data offsets for screen elements
     private val OFFSET_FR       = 0
@@ -56,6 +56,11 @@ class Screen(val context: Context, size: ScreenDimensions): Shadeable(AsciiScree
     var size: ScreenDimensions = dimensionsInGlyphs(size)
 
     /**
+     * The size of the screen, in pixels
+     */
+    var pixelSize: ScreenDimensions = size
+
+    /**
      * Whether the screen contents have been changed and need to be reuploaded
      */
     private var dirty: Boolean = true
@@ -73,6 +78,8 @@ class Screen(val context: Context, size: ScreenDimensions): Shadeable(AsciiScree
      */
     fun resize(size: ScreenDimensions)
     {
+        this.pixelSize = size
+
         // Recalculate screen size in glyphs
         this.size = this.dimensionsInGlyphs(size)
 
@@ -297,5 +304,19 @@ class Screen(val context: Context, size: ScreenDimensions): Shadeable(AsciiScree
     private fun offsetOf(pos: Position): Int
     {
         return (2 * 4) * ((this.size.width * pos.y) + pos.x)
+    }
+
+    /**
+     * Retrieve useful debug information about the screen state
+     *
+     * @return Debug information, as a string
+     */
+    fun debugInfo(): String
+    {
+        return "\tScreen dimensions (in pixels): ${pixelSize.width}x${pixelSize.height}\n\tScreen dimensions (in glyphs):${size.width}x${size.height}\n" +
+                "\tLocal buffer size (in ints): ${data.size}\n" +
+                "\tGPU buffer texture handle: ${bufferTexture.handle}\n" +
+                "\tGPU buffer handle: ${bufferTexture.bufferHandle}\n" +
+                "\tGPU buffer size (in ints): ${bufferTexture.size}\n"
     }
 }

@@ -1,14 +1,11 @@
-package com.phoenixpen.android.livewallpaper
+package com.phoenixpen.android.application
 
 import android.content.Context
 import com.phoenixpen.android.R
-import com.phoenixpen.android.application.Application
-import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.ascii.Screen
 import com.phoenixpen.android.ascii.TestScene
 import com.phoenixpen.android.rendering.*
 import com.phoenixpen.android.rendering.materials.FullscreenQuadMaterial
-import junit.framework.Test
 import org.joml.Matrix4f
 
 class TestApplication (context: Context): Application(context)
