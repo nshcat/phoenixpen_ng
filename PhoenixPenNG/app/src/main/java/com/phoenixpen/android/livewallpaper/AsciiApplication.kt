@@ -1,15 +1,13 @@
 package com.phoenixpen.android.livewallpaper
 
 import android.content.Context
-import com.phoenixpen.android.R
 import com.phoenixpen.android.application.Application
 import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.ascii.Scene
 import com.phoenixpen.android.ascii.Screen
 import com.phoenixpen.android.ascii.TestScene
 import com.phoenixpen.android.rendering.*
-import com.phoenixpen.android.rendering.materials.FullscreenQuadMaterial
-import org.joml.Matrix4f
+
 
 class AsciiApplication (context: Context): Application(context)
 {
