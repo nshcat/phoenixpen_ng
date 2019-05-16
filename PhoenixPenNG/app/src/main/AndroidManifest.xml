@@ -2,28 +2,35 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.phoenixpen.android"
     android:versionCode="17"
-    android:versionName="1.0.8.1" >
-
+    android:versionName="1.0.8.1">
     <!-- We require OpenGL ES 3.1 -->
     <uses-feature
         android:glEsVersion="0x00030001"
-        android:required="true" />
-
-    <!-- We require the Android GL extension pack. This includes buffer textures -->
+        android:required="true" /> <!-- We require the Android GL extension pack. This includes buffer textures -->
     <uses-feature
         android:name="android.hardware.opengles.aep"
         android:required="true" />
 
-
     <application
         android:icon="@drawable/phoenix"
-        android:label="PhoenixPenNG Livewallpaper" >
+        android:label="PhoenixPenNG Livewallpaper">
+        <activity
+            android:name=".appmode.MainActivity"
+            android:label="PhoenixPenNG - App Mode"
+            android:resizeableActivity="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
 
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <service
-            android:name="com.phoenixpen.android.livewallpaper.VoxelWallpaperService"
-            android:label="PhoenixPenNG Livewallpaper"
-            android:permission="android.permission.BIND_WALLPAPER" >
+            android:name=".livewallpaper.AsciiWallpaperService"
+            android:label="PhoenixPenNG - Livewallpaper"
+            android:permission="android.permission.BIND_WALLPAPER">
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
             </intent-filter>
@@ -34,13 +41,14 @@
         </service>
 
         <activity
-            android:name="com.phoenixpen.android.livewallpaper.WallpaperSettings"
+            android:name=".livewallpaper.WallpaperSettings"
             android:exported="true"
-            android:label="PhoenixPenNG Livewallpaper Settings"
+            android:label="PhoenixPenNG - Settings"
             android:permission="android.permission.BIND_WALLPAPER"
             android:theme="@style/WallpaperSettingsLight">
             <intent-filter>
-                <action android:name="android.service.wallpaper.WallpaperService"/>
+                <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

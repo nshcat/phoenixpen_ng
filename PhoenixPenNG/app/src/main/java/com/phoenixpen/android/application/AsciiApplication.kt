@@ -1,17 +1,22 @@
-package com.phoenixpen.android.livewallpaper
+package com.phoenixpen.android.application
 
 import android.content.Context
 import com.phoenixpen.android.R
-import com.phoenixpen.android.application.Application
-import com.phoenixpen.android.application.ScreenDimensions
+import com.phoenixpen.android.ascii.Scene
 import com.phoenixpen.android.ascii.Screen
 import com.phoenixpen.android.ascii.TestScene
 import com.phoenixpen.android.rendering.*
 import com.phoenixpen.android.rendering.materials.FullscreenQuadMaterial
-import junit.framework.Test
 import org.joml.Matrix4f
 
-class TestApplication (context: Context): Application(context)
+/**
+ * A class implementing all the logic needed to execute a ASCII based application.
+ * This class uses scenes to separate game logic and drawing from the technical realization
+ * of the game rendering.
+ *
+ * @property context The Android app context, used to extract resources
+ */
+class AsciiApplication (context: Context): Application(context)
 {
     /**
      * A texture render target as our first render pass
@@ -19,16 +24,14 @@ class TestApplication (context: Context): Application(context)
     private lateinit var firstPass: TextureTarget
 
     /**
-     * The screen as our second render pass
+     * The screen as our second and final render pass
      */
     private lateinit var secondPass: ScreenTarget
 
-    private lateinit var screen: Screen
-
     /**
-     * A texture object used to test the Texture2D class.
+     * The glyph matrix used to render the game scene to
      */
-    private lateinit var testTexture2D: Texture2D
+    private lateinit var screen: Screen
 
     /**
      * A full screen quad we use to render the scene to screen in the second pass
@@ -36,17 +39,13 @@ class TestApplication (context: Context): Application(context)
     private lateinit var fullscreenQuad: FullscreenQuad
 
     /**
-     * A white full screen quad, for testing purposes
+     * The currently active ASCII game scene
      */
-    private lateinit var whiteQuad: FullscreenQuad
+    private var scene: Scene = TestScene()
 
     /**
-     * A test scene
-     */
-    private var scene: TestScene = TestScene()
-
-    /**
-     * Our orthographic projection
+     * Our orthographic projection. It causes the y-axis to be flipped, making (0,0) the top left
+     * corner and origin of our coordinate system.
      */
     private var orthoProjection = OrthographicProjection()
 
@@ -61,6 +60,7 @@ class TestApplication (context: Context): Application(context)
             this.firstPass.updateDimensions(screenDimensions.scaleDown(1.0f))
             this.secondPass.updateDimensions(screenDimensions)
             this.screen.resize(screenDimensions)
+            this.orthoProjection.refresh(screenDimensions)
         }
     }
 
@@ -70,14 +70,11 @@ class TestApplication (context: Context): Application(context)
         this.firstPass = TextureTarget()
         this.secondPass = ScreenTarget()
 
+        // Create an empty screen
         this.screen = Screen(this.context, ScreenDimensions.empty())
 
-        // Create the test texture
-        this.testTexture2D = Texture2D.FromImageResource(this.context, R.drawable.graphics)
-
         // Create the fullscreen quad
-        this.fullscreenQuad = FullscreenQuad()
-        this.whiteQuad = FullscreenQuad(FullscreenQuadMaterial())
+        this.fullscreenQuad = FullscreenQuad(this.context)
 
     }
 
@@ -91,30 +88,27 @@ class TestApplication (context: Context): Application(context)
         // Begin rendering to texture
         this.firstPass.beginRender()
 
-        // Render the white quad. We do not need any matrices for this.
-        //this.whiteQuad.render(RenderParams.empty())
-        val proj = Matrix4f().setOrtho(0f, this.screenDimensions.width.toFloat(), this.screenDimensions.height.toFloat(), 0f, 0f, 1f)
+            this.screen.clear()
 
-        this.screen.clear()
+            // Draw current scene to screen
+            this.scene.render(this.screen)
 
-        // Draw current scene to screen
-        this.scene.render(this.screen)
+            // Render the ASCII matrix to device screen
+            this.screen.render(this.orthoProjection.toRenderParams())
 
-        this.screen.render(RenderParams(Matrix4f(), proj))
-
-        // Begin rendering to main screen
+        // We are done with the first pass
         this.firstPass.endRender()
 
         // Now do the second rendering pass where we render to a full screen quad
         this.secondPass.beginRender()
 
-        // Use the texture the first pass rendered to. The full screen quad material
-        // expects it to be bound to the first texture unit.
-        this.firstPass.texture.use(TextureUnit.Unit0)
+            // Use the texture the first pass rendered to. The full screen quad material
+            // expects it to be bound to the first texture unit.
+            this.firstPass.texture.use(TextureUnit.Unit0)
 
-        // Render the fullscreen quad. The material doesnt use any of the rendering parameters,
-        // so we just pass an empty instance here.
-        this.fullscreenQuad.render(RenderParams.empty())
+            // Render the fullscreen quad. The material doesnt use any of the rendering parameters,
+            // so we just pass an empty instance here.
+            this.fullscreenQuad.render(RenderParams.empty())
 
         // Finish rendering
         this.secondPass.endRender()

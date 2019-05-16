@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>    
+<resources>
     <string name="app_name">Voxel Livewallpaper</string>
     <string name="toc">Table of Contents</string>
     <string name="tocHeader">Welcome to the Learn OpenGL ES tutorials! Please visit the website at: http://www.learnopengles.com/</string>
@@ -24,27 +24,32 @@
     <string name="lesson_six_set_min_filter_message">Set GL_TEXTURE_MIN_FILTER</string>
     <string name="lesson_six_set_mag_filter_message">Set GL_TEXTURE_MAG_FILTER</string>
     <string-array name="lesson_six_min_filter_types">
-    	<item>GL_NEAREST</item>
-    	<item>GL_LINEAR</item>
-    	<item>GL_NEAREST_MIPMAP_NEAREST</item>
-    	<item>GL_NEAREST_MIPMAP_LINEAR</item>
-    	<item>GL_LINEAR_MIPMAP_NEAREST</item>
-    	<item>GL_LINEAR_MIPMAP_LINEAR</item>
+        <item>GL_NEAREST</item>
+        <item>GL_LINEAR</item>
+        <item>GL_NEAREST_MIPMAP_NEAREST</item>
+        <item>GL_NEAREST_MIPMAP_LINEAR</item>
+        <item>GL_LINEAR_MIPMAP_NEAREST</item>
+        <item>GL_LINEAR_MIPMAP_LINEAR</item>
     </string-array>
     <string-array name="lesson_six_mag_filter_types">
-    	<item>GL_NEAREST</item>
-    	<item>GL_LINEAR</item>
+        <item>GL_NEAREST</item>
+        <item>GL_LINEAR</item>
     </string-array>
     <string name="lesson_seven">Lesson Seven: An Intro to VBOs</string>
     <string name="lesson_seven_subtitle">This lesson looks at vertex buffer objects (VBOs).</string>
-   	<string name="lesson_seven_increase_cube_count">Increase cube count</string>
-   	<string name="lesson_seven_decrease_cube_count">Decrease cube count</string>
-   	<string name="lesson_seven_using_VBOs">Using VBOs</string>
-   	<string name="lesson_seven_not_using_VBOs">Not using VBOs</string>
-   	<string name="lesson_seven_using_stride">Using stride</string>
-   	<string name="lesson_seven_not_using_stride">Not using stride</string>
-   	<string name="lesson_eight">Lesson Eight: An Intro to IBOs</string>
+    <string name="lesson_seven_increase_cube_count">Increase cube count</string>
+    <string name="lesson_seven_decrease_cube_count">Decrease cube count</string>
+    <string name="lesson_seven_using_VBOs">Using VBOs</string>
+    <string name="lesson_seven_not_using_VBOs">Not using VBOs</string>
+    <string name="lesson_seven_using_stride">Using stride</string>
+    <string name="lesson_seven_not_using_stride">Not using stride</string>
+    <string name="lesson_eight">Lesson Eight: An Intro to IBOs</string>
     <string name="lesson_eight_subtitle">This lesson looks at index buffer objects (IBOs).</string>
-   	<string name="lesson_eight_error_could_not_create_vbo">Could not create vertex buffer object: %s</string>
+    <string name="lesson_eight_error_could_not_create_vbo">Could not create vertex buffer object: %s</string>
     <string name="lesson_eight_error_unknown">Unknown error: %s</string>
+
+    <string name="title_activity_main">MainActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="action_settings">Settings</string>
 </resources>

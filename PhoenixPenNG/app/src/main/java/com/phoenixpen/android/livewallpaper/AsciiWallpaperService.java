@@ -4,8 +4,10 @@ import android.content.SharedPreferences;
 import android.opengl.GLSurfaceView.Renderer;
 import android.preference.PreferenceManager;
 
+import com.phoenixpen.android.application.AsciiApplication;
 
-public class VoxelWallpaperService extends OpenGLES31WallpaperService {
+
+public class AsciiWallpaperService extends OpenGLES31WallpaperService {
 	@Override
 	Renderer getNewRenderer()
 	{
