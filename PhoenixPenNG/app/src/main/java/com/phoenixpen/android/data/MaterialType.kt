@@ -1,9 +1,25 @@
 package com.phoenixpen.android.data
 
+import com.phoenixpen.android.ascii.DrawInfo
 import com.phoenixpen.android.map.MapCellState
+import com.phoenixpen.android.utility.WeightedList
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
- * MaterialInfo type enumeration, i.e. in which cell state a material can be used.
- * We used the enumeration defined in the map namespace for this.
+ * A class defining several properties of a material that can be used as primary content of a
+ * map cell. This represents the type class pattern.
+ *
+ * @property type MaterialType type. This defines in cells of which state this material can be used.
+ * @property identifier The unique identifier of this material type.
+ * @property description A human readable description of the material
+ * @property glyphs A weighted list containing all possible glyphs this material can be rendered as
+ * @property glyphsFancy Same as [glyphs], but for fancy graphics mode
  */
-typealias MaterialType = MapCellState
+@Serializable
+data class MaterialType(
+        val type: MapCellState,
+        val identifier: String,
+        val description: String,
+        val glyphs: WeightedList<DrawInfo>,
+        @SerialName("glyphs_fancy") val glyphsFancy: WeightedList<DrawInfo>)
