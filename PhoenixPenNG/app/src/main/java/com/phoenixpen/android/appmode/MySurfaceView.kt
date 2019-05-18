@@ -9,6 +9,7 @@ import com.phoenixpen.android.ascii.DrawInfo
 import com.phoenixpen.android.data.MaterialInfo
 import com.phoenixpen.android.data.MaterialType
 import com.phoenixpen.android.map.MapCellState
+import com.phoenixpen.android.rendering.Material
 import com.phoenixpen.android.utility.WeightedList
 import com.phoenixpen.android.utility.WeightedPair
 import kotlinx.serialization.*
@@ -25,12 +26,20 @@ class MySurfaceView(ctx: Context): GLSurfaceView(ctx)
         preserveEGLContextOnPause = true
         //setRenderer(AsciiApplication(ctx))
 
-        val info = DrawInfo(139, Color.red, Color.green)
-        val json = Json.indented.stringify(DrawInfo.serializer(), info)
+        val info = WeightedPair(DrawInfo(139, Color.red, Color.green), 0.5)
+        val info2 = WeightedPair(DrawInfo(1, Color.white, Color.black), 0.5)
 
-        val info2 = Json.indented.parse(DrawInfo.serializer(), json)
+        val material = MaterialInfo(
+                MaterialType.Ground,
+                "test_material",
+                "Test material for debugging",
+                WeightedList(listOf(info, info2)),
+                WeightedList(listOf(info, info2))
+        )
+
+        val json = Json.indented.stringify(MaterialInfo.serializer(), material)
+
 
         Log.d("nya", "\n$json")
-        Log.d("nya", "\n$info2")
     }
 }
