@@ -1,10 +1,76 @@
 package com.phoenixpen.android.ascii
 
-import org.joml.Vector3i
+import kotlinx.serialization.*
+import kotlinx.serialization.internal.StringDescriptor
 
 /**
  * An integral RGB color value. Each component has to be in range [0, 255].
  */
-typealias Color = Vector3i
+@Serializable(with=ColorSerializer::class)
+data class Color(var r: Int, var g: Int, var b: Int)
+{
+    //@Serializer(forClass = Color::class)
+    companion object //: KSerializer<Color>
+    {
+        /*override val descriptor: SerialDescriptor =
+            StringDescriptor.withName("Color")
 
-// TODO: HSV conversion, etc..
+        override fun serialize(output: Encoder, obj: Color)
+        {
+            val toHex = { x: Int -> x.toString(16) }
+
+            output.encodeString("#${toHex(obj.r)}${toHex(obj.g)}${toHex(obj.b)}")
+        }
+
+        override fun deserialize(input: Decoder): Color
+        {
+            val string = input.decodeString()
+
+            val fromHex = { x: String -> x.toInt(16)}
+
+            return Color(
+                fromHex(string.substring(1, 3)),
+                fromHex(string.substring(3, 5)),
+                fromHex(string.substring(5, 7))
+            )
+        }*/
+
+        val red = Color(255, 0, 0)
+        val green = Color(0, 255, 0)
+        val blue = Color(0, 0, 255)
+        val black = Color(0, 0, 0)
+        val white = Color(255, 255, 255)
+    }
+}
+
+
+@Serializer(forClass = Color::class)
+object ColorSerializer: KSerializer<Color>
+{
+    override val descriptor: SerialDescriptor =
+            StringDescriptor.withName("Color")
+
+    override fun serialize(output: Encoder, obj: Color)
+    {
+        val toHex = { x: Int ->
+            val result = x.toString(16)
+            if(result.length == 1) "0$result".toUpperCase()
+            else result.toUpperCase()
+        }
+
+        output.encodeString("#${toHex(obj.r)}${toHex(obj.g)}${toHex(obj.b)}")
+    }
+
+    override fun deserialize(input: Decoder): Color
+    {
+        val string = input.decodeString()
+
+        val fromHex = { x: String -> x.toInt(16)}
+
+        return Color(
+                fromHex(string.substring(1, 3)),
+                fromHex(string.substring(3, 5)),
+                fromHex(string.substring(5, 7))
+        )
+    }
+}

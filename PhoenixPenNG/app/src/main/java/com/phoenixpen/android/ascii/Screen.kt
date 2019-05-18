@@ -237,9 +237,9 @@ class Screen(val context: Context, size: ScreenDimensions): Shadeable(AsciiScree
     fun setFrontColor(pos: Position, color: Color)
     {
         // TODO color range checks?
-        this.data[this.offsetOf(pos) + OFFSET_FR] = color.x
-        this.data[this.offsetOf(pos) + OFFSET_FG] = color.y
-        this.data[this.offsetOf(pos) + OFFSET_FB] = color.z
+        this.data[this.offsetOf(pos) + OFFSET_FR] = color.r
+        this.data[this.offsetOf(pos) + OFFSET_FG] = color.g
+        this.data[this.offsetOf(pos) + OFFSET_FB] = color.b
 
         this.dirty = true
     }
@@ -253,9 +253,9 @@ class Screen(val context: Context, size: ScreenDimensions): Shadeable(AsciiScree
     fun setBackColor(pos: Position, color: Color)
     {
         // TODO color range checks?
-        this.data[this.offsetOf(pos) + OFFSET_BR] = color.x
-        this.data[this.offsetOf(pos) + OFFSET_BG] = color.y
-        this.data[this.offsetOf(pos) + OFFSET_BB] = color.z
+        this.data[this.offsetOf(pos) + OFFSET_BR] = color.r
+        this.data[this.offsetOf(pos) + OFFSET_BG] = color.g
+        this.data[this.offsetOf(pos) + OFFSET_BB] = color.b
 
         this.dirty = true
     }
