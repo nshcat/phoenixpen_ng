@@ -23,11 +23,16 @@
     },
     "glyphs_fancy": {
       "values": [
-        { "value": { "glyph": 0, "foreground": "#000000", "background": "#149438" }, "probability": 0.2 },
-        { "value": { "glyph": 0, "foreground": "#000000", "background": "#11B63F" }, "probability": 0.2 },
-        { "value": { "glyph": 0, "foreground": "#000000", "background": "#11752C" }, "probability": 0.2 },
-        { "value": { "glyph": 0, "foreground": "#000000", "background": "#2DB151" }, "probability": 0.2 },
-        { "value": { "glyph": 0, "foreground": "#000000", "background": "#75947D" }, "probability": 0.2 }
+        { "value": { "glyph": 0, "foreground": "#000000", "background": "#00662B" }, "probability": 0.2 },
+        { "value": { "glyph": 0, "foreground": "#000000", "background": "#446629" }, "probability": 0.2 },
+        { "value": { "glyph": 0, "foreground": "#000000", "background": "#003E17" }, "probability": 0.2 },
+        { "value": { "glyph": 0, "foreground": "#000000", "background": "#6B6B36" }, "probability": 0.15 },
+
+        { "value": { "glyph": 0, "foreground": "#000000", "background": "#334D1F" }, "probability": 0.1 },
+
+        { "value": { "glyph": 0, "foreground": "#000000", "background": "#558033" }, "probability": 0.06 },
+        { "value": { "glyph": 0, "foreground": "#000000", "background": "#005C26" }, "probability": 0.06 },
+        { "value": { "glyph": 0, "foreground": "#000000", "background": "#5E5E5E" }, "probability": 0.03 }
       ]
     }
   }
