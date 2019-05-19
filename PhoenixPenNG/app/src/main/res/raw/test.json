@@ -1,0 +1,36 @@
+[
+  {
+    "type": "Ground",
+    "identifier": "test_material",
+    "description": "Test material for debugging",
+    "glyphs": {
+      "values": [
+        { "value": { "glyph": 139, "foreground": "#FF0000", "background": "#00FF00" }, "probability": 0.5 },
+        { "value": { "glyph": 1, "foreground": "#FFFFFF", "background": "#000000" }, "probability": 0.5 }
+      ]
+    },
+    "glyphs_fancy": {
+      "values": [
+        { "value": { "glyph": 139, "foreground": "#FF0000", "background": "#00FF00" }, "probability": 0.5 },
+        { "value": { "glyph": 1, "foreground": "#FFFFFF", "background": "#000000" }, "probability": 0.5 }
+      ]
+    }
+  },
+  {
+    "type": "Ground",
+    "identifier": "test_material2",
+    "description": "Test material for debugging, the second one",
+    "glyphs": {
+      "values": [
+        { "value": { "glyph": 139, "foreground": "#FF0000", "background": "#00FF00" }, "probability": 0.5 },
+        { "value": { "glyph": 1, "foreground": "#FFFFFF", "background": "#000000" }, "probability": 0.5 }
+      ]
+    },
+    "glyphs_fancy": {
+      "values": [
+        { "value": { "glyph": 139, "foreground": "#FF0000", "background": "#00FF00" }, "probability": 0.5 },
+        { "value": { "glyph": 1, "foreground": "#FFFFFF", "background": "#000000" }, "probability": 0.5 }
+      ]
+    }
+  }
+]

@@ -8,6 +8,16 @@ import com.phoenixpen.android.data.MaterialType
  * @property state Current cell state.
  * @property material Current cell material. It's type has to fit the current state.
  */
-class MapCell(var state: MapCellState, var material: MaterialType)
+data class MapCell(
+        var state: MapCellState,
+        var material: MaterialType
+)
 {
+    companion object
+    {
+        /**
+         * Empty map cell. Contains air.
+         */
+        val empty = MapCell(MapCellState.Air, MaterialType.air)
+    }
 }

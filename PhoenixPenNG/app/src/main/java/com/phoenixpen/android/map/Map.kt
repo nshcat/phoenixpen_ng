@@ -9,6 +9,12 @@ package com.phoenixpen.android.map
 class Map(val dimensions: MapDimensions)
 {
     /**
+     * Three dimensional array containing all map cells. This is stored in a linear fashion. Use
+     * [calculateIndex] to convert x,y,z coordinates to a corresponding index into this array.
+     */
+    val cells = ArrayList<MapCell>()
+
+    /**
      * Load map data using given map loader implementation
      *
      * @param loader The map loader implementation to use

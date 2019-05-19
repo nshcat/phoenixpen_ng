@@ -3,8 +3,10 @@ package com.phoenixpen.android.appmode
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.Log
+import com.phoenixpen.android.R
 import com.phoenixpen.android.ascii.Color
 import com.phoenixpen.android.ascii.DrawInfo
+import com.phoenixpen.android.data.MaterialManager
 import com.phoenixpen.android.data.MaterialType
 import com.phoenixpen.android.map.MapCellState
 import com.phoenixpen.android.utility.WeightedList
@@ -23,7 +25,7 @@ class MySurfaceView(ctx: Context): GLSurfaceView(ctx)
         preserveEGLContextOnPause = true
         //setRenderer(AsciiApplication(ctx))
 
-        val info = WeightedPair(DrawInfo(139, Color.red, Color.green), 0.5)
+       /* val info = WeightedPair(DrawInfo(139, Color.red, Color.green), 0.5)
         val info2 = WeightedPair(DrawInfo(1, Color.white, Color.black), 0.5)
 
         val material = MaterialType(
@@ -34,9 +36,15 @@ class MySurfaceView(ctx: Context): GLSurfaceView(ctx)
                 WeightedList(listOf(info, info2))
         )
 
-        val json = Json.indented.stringify(MaterialType.serializer(), material)
+        val json = Json.indented.stringify(MaterialType.serializer(), material)*/
 
+        val mgr = MaterialManager()
+        mgr.loadMaterials(this.context, R.raw.test)
 
-        Log.d("nya", "\n$json")
+        val mat = mgr.lookupMaterial("test_material")
+        val mat2 = mgr.lookupMaterial("test_material2")
+
+        Log.d("nya", "\n${mat.description}")
+        Log.d("nya", "\n${mat2.description}")
     }
 }

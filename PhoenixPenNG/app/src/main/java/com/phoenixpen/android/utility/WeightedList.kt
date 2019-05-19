@@ -41,8 +41,8 @@ class WeightedList<T>(val values: List<WeightedPair<T>>)
     init
     {
         // We need at least one value
-        if(this.values.isEmpty())
-            throw IllegalArgumentException("WeightedList: Value collection must not be empty")
+        //if(this.values.isEmpty())
+        //    throw IllegalArgumentException("WeightedList: Value collection must not be empty")
 
         // Negative or zero probabilities are not allowed
         if(this.values.stream().anyMatch{ x -> x.probability <= 0.0 })
@@ -68,6 +68,9 @@ class WeightedList<T>(val values: List<WeightedPair<T>>)
      */
     fun drawElement(): T
     {
+        if(this.values.isEmpty())
+            throw IllegalStateException("Can't draw element from empty weighted list")
+
         // Draw number
         val number = this.drawNumber()
 
