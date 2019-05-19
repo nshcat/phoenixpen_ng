@@ -45,8 +45,6 @@ class MapView(val map: Map, val dimensions: ScreenDimensions, val topLeft: Posit
                 // Calculate map position
                 val mapPos = Position3D(ix + this.topLeft.x, this.height, iz + this.topLeft.y)
 
-
-
                 // Only continue of its inside of the map bounds. If its not, us not drawing anything here
                 // causes the screen to be black. TODO maybe different effect?
                 if(this.map.isInBounds(mapPos))
@@ -80,7 +78,7 @@ class MapView(val map: Map, val dimensions: ScreenDimensions, val topLeft: Posit
                             continue
                     }
 
-                    // Only draw if not transparent TODO this is not how depth should work.
+                    // Only draw if not transparent
                     if(!cell.isTransparent())
                     {
                         // Retrieve graphical representation of map cell
@@ -103,14 +101,13 @@ class MapView(val map: Map, val dimensions: ScreenDimensions, val topLeft: Posit
                                 screen.setTile(Position(ix, iz), cell.tile())
                                 screen.setDepth(Position(ix, iz), depth)
 
-                                // TODO only drop shadows if depth is 1?
-
                                 val directions = emptyShadowDirections()
-
 
                                 val currentPos = Position3D(ix, dy+1, iz)
 
-                                val testDirection = { dPos: Position3D, direction: ShadowDirection ->
+                                // Test all main directions (W, S, E, N). They apply full-width drop
+                                // shadows
+                                val testMainDirection = { dPos: Position3D, direction: ShadowDirection ->
                                     val newPos = currentPos + dPos
 
                                     if(this.map.isInBounds(newPos))
@@ -118,12 +115,38 @@ class MapView(val map: Map, val dimensions: ScreenDimensions, val topLeft: Posit
                                             directions.add(direction)
                                 }
 
-                                testDirection(Position3D(-1, 0, 0), ShadowDirection.West)
-                                testDirection(Position3D(1, 0, 0), ShadowDirection.East)
-                                testDirection(Position3D(0, 0, -1), ShadowDirection.North)
-                                testDirection(Position3D(0, 0, 1), ShadowDirection.South)
+                                testMainDirection(Position3D(-1, 0, 0), ShadowDirection.West)
+                                testMainDirection(Position3D(1, 0, 0), ShadowDirection.East)
+                                testMainDirection(Position3D(0, 0, -1), ShadowDirection.North)
+                                testMainDirection(Position3D(0, 0, 1), ShadowDirection.South)
 
+                                // Test all diagonal directions (SW, SE, NW, NE). They apply a little corner
+                                // drop shadow, but only if it wouldnt be overlayed with a full drop shadow
+                                val testDiagonalDirection = { dPos: Position3D, direction: ShadowDirection, blockingDirections: ShadowDirections ->
+                                    val newPos = currentPos + dPos
+
+                                    if(this.map.isInBounds(newPos))
+                                    {
+                                        if (!this.map.cellAt(newPos).isTransparent())
+                                        {
+                                            // The cell is candidate for applying the corner shadow.
+                                            // Check that none of the blocking shadows are already
+                                            // applied.
+                                            if(!directions.any({ x -> blockingDirections.has(x) }))
+                                                directions.add(direction)
+                                        }
+                                    }
+                                }
+
+                                testDiagonalDirection(Position3D(-1, 0, -1), ShadowDirection.TopLeft, ShadowDirections.of(ShadowDirection.North, ShadowDirection.West))
+                                testDiagonalDirection(Position3D(1, 0, -1), ShadowDirection.TopRight, ShadowDirections.of(ShadowDirection.North, ShadowDirection.East))
+                                testDiagonalDirection(Position3D(1, 0, 1), ShadowDirection.BottomRight, ShadowDirections.of(ShadowDirection.South, ShadowDirection.East))
+                                testDiagonalDirection(Position3D(-1, 0, 1), ShadowDirection.BottomLeft, ShadowDirections.of(ShadowDirection.South, ShadowDirection.West))
+
+                                // Apply all accumulated shadows
                                 screen.setShadows(Position(ix, iz), directions)
+
+
 
                                 break
                             }

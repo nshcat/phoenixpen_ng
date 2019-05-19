@@ -58,6 +58,11 @@ class TestMapGenerator(val materialManager: MaterialManager): MapLoader
             }
         }
 
+
+        val cell = map.cellAt(Position3D(8, 2, 8))
+        cell.material.setMaterial(grass)
+        cell.state = MapCellState.Ground
+
         return map
     }
 }
