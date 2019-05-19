@@ -1,17 +1,19 @@
 package com.phoenixpen.android.ascii.testscenes
 
-import android.content.Context
+import android.util.Log
 import com.phoenixpen.android.R
+import com.phoenixpen.android.application.Application
 import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.ascii.*
 import com.phoenixpen.android.data.MaterialManager
 import com.phoenixpen.android.map.MapView
 import com.phoenixpen.android.map.TestMapGenerator
+import com.phoenixpen.android.utility.TickCounter
 
 /**
  * A simple test scene
  */
-class MapTestScene(ctx: Context, dimensions: ScreenDimensions): Scene(ctx, dimensions)
+class MapTestScene(application: Application, dimensions: ScreenDimensions): Scene(application, dimensions)
 {
     val map: com.phoenixpen.android.map.Map
 
@@ -19,10 +21,12 @@ class MapTestScene(ctx: Context, dimensions: ScreenDimensions): Scene(ctx, dimen
 
     val materialManager = MaterialManager()
 
+    val fpsTickCounter = TickCounter(20)
+
     init
     {
         // Load materials
-        this.materialManager.loadMaterials(this.context, R.raw.test)
+        this.materialManager.loadMaterials(this.application.context, R.raw.test)
 
         // Create map generator
         val generator = TestMapGenerator(this.materialManager)
@@ -39,8 +43,11 @@ class MapTestScene(ctx: Context, dimensions: ScreenDimensions): Scene(ctx, dimen
         this.mapView.render(screen)
     }
 
-    override fun update(elapsedTicks: Long)
+    override fun update(elapsedTicks: Int)
     {
-        // Do nothing
+        this.mapView.update(elapsedTicks)
+
+        if(this.fpsTickCounter.update(elapsedTicks) > 0)
+            Log.d("MapTestScene", "Current FPS: ${this.application.fpsCounter.fps}")
     }
 }

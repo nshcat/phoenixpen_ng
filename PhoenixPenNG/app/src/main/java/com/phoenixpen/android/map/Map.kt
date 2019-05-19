@@ -27,7 +27,7 @@ class Map(val dimensions: MapDimensions)
         // Initialize all cells
         for(i in 0 until cellCount)
         {
-            cells.add(MapCell.empty.copy())
+            cells.add(MapCell.empty())
         }
     }
 

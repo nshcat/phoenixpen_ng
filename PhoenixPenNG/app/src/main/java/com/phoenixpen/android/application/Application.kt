@@ -3,6 +3,7 @@ package com.phoenixpen.android.application
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.os.SystemClock
+import com.phoenixpen.android.utility.FpsCounter
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -12,7 +13,7 @@ import javax.microedition.khronos.opengles.GL10
  *
  * @property context The current android app context
  */
-abstract class Application (protected val context: Context): GLSurfaceView.Renderer
+abstract class Application (val context: Context): GLSurfaceView.Renderer
 {
     // TODO: Implement touch input via this class.
 
@@ -27,6 +28,11 @@ abstract class Application (protected val context: Context): GLSurfaceView.Rende
      * has to be avoided when calculating the delta time for the call to [onFrame].
      */
     private var isFirstFrame: Boolean = true
+
+    /**
+     * FPS counter
+     */
+    var fpsCounter = FpsCounter()
 
     /**
      * The current dimensions of the screen
@@ -85,11 +91,15 @@ abstract class Application (protected val context: Context): GLSurfaceView.Rende
             // save it for following frames
             this.lastFrameTime = SystemClock.uptimeMillis()
 
-            // Calculate delta in seconds. The integral time values are in milliseconds
-            val deltaTime: Double = (this.lastFrameTime - lastTime).toDouble() / 1000.0
+            // Calculate delta in milliseconds. The integral time values are in milliseconds
+            val deltaTime = this.lastFrameTime - lastTime
+            val deltaTimeDouble: Double = (deltaTime).toDouble()
+
+            // Update FPS counter
+            this.fpsCounter.addSample(deltaTime.toInt())
 
             // Delegate to application implementation
-            this.onFrame(deltaTime)
+            this.onFrame(deltaTimeDouble)
         }
     }
 

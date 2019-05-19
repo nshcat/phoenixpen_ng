@@ -44,6 +44,10 @@ data class MapCell(
         /**
          * Empty map cell. Contains air.
          */
-        val empty = MapCell(MapCellState.Air, Material.empty.copy())
+        //val empty = MapCell(MapCellState.Air, Material.empty.copy())
+        fun empty(): MapCell
+        {
+            return MapCell(MapCellState.Air, Material.empty.copy())
+        }
     }
 }

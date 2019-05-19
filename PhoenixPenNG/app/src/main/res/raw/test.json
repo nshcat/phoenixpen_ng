@@ -23,7 +23,11 @@
     },
     "glyphs_fancy": {
       "values": [
-        { "value": { "glyph": 0, "foreground": "#000000", "background": "#00FF00" }, "probability": 1.0 }
+        { "value": { "glyph": 0, "foreground": "#000000", "background": "#149438" }, "probability": 0.2 },
+        { "value": { "glyph": 0, "foreground": "#000000", "background": "#11B63F" }, "probability": 0.2 },
+        { "value": { "glyph": 0, "foreground": "#000000", "background": "#11752C" }, "probability": 0.2 },
+        { "value": { "glyph": 0, "foreground": "#000000", "background": "#2DB151" }, "probability": 0.2 },
+        { "value": { "glyph": 0, "foreground": "#000000", "background": "#75947D" }, "probability": 0.2 }
       ]
     }
   }

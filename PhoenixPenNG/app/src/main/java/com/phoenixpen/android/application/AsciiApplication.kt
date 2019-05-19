@@ -47,6 +47,17 @@ class AsciiApplication (context: Context): Application(context)
      */
     private var orthoProjection = OrthographicProjection()
 
+    /**
+     * Left over milliseconds that did not make up a whole simulation tick. Will be used
+     * in next frame.
+     */
+    private var leftoverTime: Int = 0
+
+    /**
+     * How long a single tick is.
+     */
+    private val msPerTick: Int = 50
+
     override fun onScreenChanged(screenDimensions: ScreenDimensions)
     {
         // Update projection state to fit new screen size
@@ -60,7 +71,7 @@ class AsciiApplication (context: Context): Application(context)
             this.screen.resize(screenDimensions)
             this.orthoProjection.refresh(screenDimensions)
 
-            this.scene = MapTestScene(this.context, this.screen.size)
+            this.scene = MapTestScene(this, this.screen.size)
         }
     }
 
@@ -78,12 +89,31 @@ class AsciiApplication (context: Context): Application(context)
 
     }
 
-    override fun onFrame(elapsedSeconds: Double)
+    /**
+     * Calculate elapsed ticks since last update based on given elapsed milliseconds
+     */
+    private fun calculateTicks(elapsedMillis: Double): Int
+    {
+        // Convert to integral millisecond count and add left over time from last frame
+        val milliseconds = elapsedMillis.toInt() + this.leftoverTime
+
+        // Calculate number of elapsed ticks
+        val elapsedTicks = milliseconds / this.msPerTick
+
+        // Save new left over time
+        this.leftoverTime = milliseconds % this.msPerTick
+
+        return elapsedTicks
+    }
+
+    override fun onFrame(elapsedMillis: Double)
     {
         // It might happen that we are requested to draw a frame while we havent been initialized.
         // Prohibit that.
         if(!::firstPass.isInitialized)
             return
+
+        this.scene.update(this.calculateTicks(elapsedMillis))
 
         // Begin rendering to texture
         this.firstPass.beginRender()

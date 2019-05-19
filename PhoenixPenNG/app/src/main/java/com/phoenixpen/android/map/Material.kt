@@ -1,5 +1,6 @@
 package com.phoenixpen.android.map
 
+import android.util.Log
 import com.phoenixpen.android.ascii.DrawInfo
 import com.phoenixpen.android.data.MaterialType
 
@@ -29,6 +30,16 @@ data class Material(var type: MaterialType, var glyphIndex: Int, var fancyGlyphI
     }
 
     /**
+     * Clear this material. This resets it back to air.
+     */
+    fun clear()
+    {
+        this.type = MaterialType.air
+        this.fancyGlyphIndex = -1
+        this.glyphIndex = -1
+    }
+
+    /**
      * Retrieve current graphical representation of this material instance.
      *
      * @param fancyMode Flag indicating whether game is in normal or fancy mode
@@ -36,10 +47,10 @@ data class Material(var type: MaterialType, var glyphIndex: Int, var fancyGlyphI
      */
     fun tile(fancyMode: Boolean = true): DrawInfo
     {
-        when(fancyMode)
+        return when(fancyMode)
         {
-            true -> return this.type.glyphsFancy.elementAt(this.fancyGlyphIndex)
-            false -> return this.type.glyphs.elementAt(this.glyphIndex)
+            true -> this.type.glyphsFancy.elementAt(this.fancyGlyphIndex)
+            false -> this.type.glyphs.elementAt(this.glyphIndex)
         }
     }
 
