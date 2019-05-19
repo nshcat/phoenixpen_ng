@@ -68,6 +68,52 @@ class WeightedList<T>(val values: List<WeightedPair<T>>)
      */
     fun drawElement(): T
     {
+        return this.drawEntry().second.value
+    }
+
+    /**
+     * Selects a random element from the weighted list, based on the stored
+     * probabilities, and returns its index.
+     *
+     * @return Index of randomly selected value of type T
+     */
+    fun drawIndex(): Int
+    {
+        return this.drawEntry().first
+    }
+
+    /**
+     * Retrieve element based on its index. This index might be the result of an earlier [drawIndex]
+     * call.
+     *
+     * @param idx Index of element to retrieve
+     * @return Element at given index, if it exists.
+     */
+    fun elementAt(idx: Int): T
+    {
+        if(this.values.size >= idx)
+            throw IllegalArgumentException("WeightedList::elementAt: Index out of bounds")
+
+        return this.values[idx].value
+    }
+
+    /**
+     * Check if the weighted list is empty.
+     *
+     * @return Flag indicating whether the list is empty.
+     */
+    fun isEmpty(): Boolean
+    {
+        return this.values.isEmpty()
+    }
+
+    /**
+     * Internal helper methods. Picks one of the weighted pair entries at random.
+     *
+     * @return Pair of the selected entry as well as its index.
+     */
+    private fun drawEntry(): Pair<Int, WeightedPair<T>>
+    {
         if(this.values.isEmpty())
             throw IllegalStateException("Can't draw element from empty weighted list")
 
@@ -78,15 +124,15 @@ class WeightedList<T>(val values: List<WeightedPair<T>>)
         var sum = 0.0
 
         // Iterate through all values until total probability of [number] is reached
-        for(p in this.values)
+        for((idx, p) in this.values.withIndex())
         {
             sum += p.probability
 
             if(number <= sum)
-                return p.value
+                return Pair(idx, p)
         }
 
-        throw RuntimeException("WeightedList: Reached end of drawElement. This should never happen")
+        throw RuntimeException("WeightedList: Reached end of drawEntry. This should never happen")
     }
 }
 

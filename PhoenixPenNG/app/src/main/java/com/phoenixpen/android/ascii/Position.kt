@@ -2,11 +2,17 @@ package com.phoenixpen.android.ascii
 
 import com.phoenixpen.android.application.ScreenDimensions
 import org.joml.Vector2i
+import org.joml.Vector3i
 
 /**
  * A simple, two dimensional integral position
  */
 typealias Position = Vector2i
+
+/**
+ * A simple, three dimensional integral position
+ */
+typealias Position3D = Vector3i
 
 operator fun Position.unaryMinus(): Position
 {

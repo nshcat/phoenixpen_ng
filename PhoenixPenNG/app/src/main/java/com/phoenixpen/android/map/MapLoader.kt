@@ -10,7 +10,7 @@ interface MapLoader
     /**
      * Load map with given map as destination
      *
-     * @param map Map to populate with data
+     * @return Loaded map
      */
-    fun load(map: Map)
+    fun load(): Map
 }

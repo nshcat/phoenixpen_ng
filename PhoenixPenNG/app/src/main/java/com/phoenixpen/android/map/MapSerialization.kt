@@ -12,7 +12,7 @@ class MapSerialization(var filePath: Path): MapLoader, MapUnloader
     /**
      * Load map from file
      */
-    override fun load(map: Map)
+    override fun load(): Map
     {
         throw NotImplementedError()
     }

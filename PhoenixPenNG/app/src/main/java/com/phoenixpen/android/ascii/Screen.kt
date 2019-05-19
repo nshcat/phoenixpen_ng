@@ -227,6 +227,20 @@ class Screen(val context: Context, size: ScreenDimensions): Shadeable(AsciiScree
         this.dirty = true
     }
 
+    /**
+     * Set tile drawing info of a screen cell, which means both glyph and front- and back colour
+     * are set at the same time
+     *
+     * @param pos Screen position of tile to set, in glyphs
+     * @param tile Tile drawing information
+     */
+    fun setTile(pos: Position, tile: DrawInfo)
+    {
+        this.setGlyph(pos, tile.glyph)
+        this.setFrontColor(pos, tile.foreground)
+        this.setBackColor(pos, tile.background)
+    }
+
 
     /**
      * Set the front color of a screen cell
