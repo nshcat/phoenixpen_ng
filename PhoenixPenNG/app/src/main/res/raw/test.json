@@ -1,35 +1,29 @@
 [
   {
-    "type": "Ground",
-    "identifier": "test_material",
-    "description": "Test material for debugging",
+    "identifier": "stone",
+    "description": "Test stone",
     "glyphs": {
       "values": [
-        { "value": { "glyph": 139, "foreground": "#FF0000", "background": "#00FF00" }, "probability": 0.5 },
-        { "value": { "glyph": 1, "foreground": "#FFFFFF", "background": "#000000" }, "probability": 0.5 }
+        { "value": { "glyph": 0, "foreground": "#000000", "background": "#ADADAD" }, "probability": 1.0 }
       ]
     },
     "glyphs_fancy": {
       "values": [
-        { "value": { "glyph": 139, "foreground": "#FF0000", "background": "#00FF00" }, "probability": 0.5 },
-        { "value": { "glyph": 1, "foreground": "#FFFFFF", "background": "#000000" }, "probability": 0.5 }
+        { "value": { "glyph": 0, "foreground": "#000000", "background": "#ADADAD" }, "probability": 1.0 }
       ]
     }
   },
   {
-    "type": "Ground",
-    "identifier": "test_material2",
-    "description": "Test material for debugging, the second one",
+    "identifier": "grass",
+    "description": "Test grass",
     "glyphs": {
       "values": [
-        { "value": { "glyph": 139, "foreground": "#FF0000", "background": "#00FF00" }, "probability": 0.5 },
-        { "value": { "glyph": 1, "foreground": "#FFFFFF", "background": "#000000" }, "probability": 0.5 }
+        { "value": { "glyph": 44, "foreground": "#00FF00", "background": "#000000" }, "probability": 1.0 }
       ]
     },
     "glyphs_fancy": {
       "values": [
-        { "value": { "glyph": 139, "foreground": "#FF0000", "background": "#00FF00" }, "probability": 0.5 },
-        { "value": { "glyph": 1, "foreground": "#FFFFFF", "background": "#000000" }, "probability": 0.5 }
+        { "value": { "glyph": 0, "foreground": "#000000", "background": "#00FF00" }, "probability": 1.0 }
       ]
     }
   }

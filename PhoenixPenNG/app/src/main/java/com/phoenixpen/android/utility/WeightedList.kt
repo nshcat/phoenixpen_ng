@@ -91,7 +91,7 @@ class WeightedList<T>(val values: List<WeightedPair<T>>)
      */
     fun elementAt(idx: Int): T
     {
-        if(this.values.size >= idx)
+        if(idx >= this.values.size)
             throw IllegalArgumentException("WeightedList::elementAt: Index out of bounds")
 
         return this.values[idx].value

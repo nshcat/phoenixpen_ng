@@ -4,6 +4,7 @@ import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.Log
 import com.phoenixpen.android.R
+import com.phoenixpen.android.application.AsciiApplication
 import com.phoenixpen.android.ascii.Color
 import com.phoenixpen.android.ascii.DrawInfo
 import com.phoenixpen.android.data.MaterialManager
@@ -23,7 +24,7 @@ class MySurfaceView(ctx: Context): GLSurfaceView(ctx)
     {
         setEGLContextClientVersion(3)
         preserveEGLContextOnPause = true
-        //setRenderer(AsciiApplication(ctx))
+        setRenderer(AsciiApplication(ctx))
 
        /* val info = WeightedPair(DrawInfo(139, Color.red, Color.green), 0.5)
         val info2 = WeightedPair(DrawInfo(1, Color.white, Color.black), 0.5)
@@ -38,13 +39,13 @@ class MySurfaceView(ctx: Context): GLSurfaceView(ctx)
 
         val json = Json.indented.stringify(MaterialType.serializer(), material)*/
 
-        val mgr = MaterialManager()
+       /* val mgr = MaterialManager()
         mgr.loadMaterials(this.context, R.raw.test)
 
         val mat = mgr.lookupMaterial("test_material")
         val mat2 = mgr.lookupMaterial("test_material2")
 
         Log.d("nya", "\n${mat.description}")
-        Log.d("nya", "\n${mat2.description}")
+        Log.d("nya", "\n${mat2.description}")*/
     }
 }

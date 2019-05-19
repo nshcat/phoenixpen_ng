@@ -1,13 +1,11 @@
 package com.phoenixpen.android.application
 
 import android.content.Context
-import com.phoenixpen.android.R
 import com.phoenixpen.android.ascii.Scene
 import com.phoenixpen.android.ascii.Screen
-import com.phoenixpen.android.ascii.TestScene
+import com.phoenixpen.android.ascii.testscenes.MapTestScene
+import com.phoenixpen.android.ascii.testscenes.TestScene
 import com.phoenixpen.android.rendering.*
-import com.phoenixpen.android.rendering.materials.FullscreenQuadMaterial
-import org.joml.Matrix4f
 
 /**
  * A class implementing all the logic needed to execute a ASCII based application.
@@ -41,7 +39,7 @@ class AsciiApplication (context: Context): Application(context)
     /**
      * The currently active ASCII game scene
      */
-    private var scene: Scene = TestScene()
+    private lateinit var scene: Scene
 
     /**
      * Our orthographic projection. It causes the y-axis to be flipped, making (0,0) the top left
@@ -61,6 +59,8 @@ class AsciiApplication (context: Context): Application(context)
             this.secondPass.updateDimensions(screenDimensions)
             this.screen.resize(screenDimensions)
             this.orthoProjection.refresh(screenDimensions)
+
+            this.scene = MapTestScene(this.context, this.screen.size)
         }
     }
 

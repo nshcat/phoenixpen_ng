@@ -1,5 +1,6 @@
 package com.phoenixpen.android.map
 
+import android.util.Log
 import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.ascii.Position
 import com.phoenixpen.android.ascii.Position3D
@@ -34,6 +35,8 @@ class MapView(val map: Map, val dimensions: ScreenDimensions, val topLeft: Posit
      */
     override fun render(screen: Screen)
     {
+        Log.d("MapView", "Drawing map view with dimensions ${this.dimensions.width}, ${this.dimensions.height}")
+
         for(ix in 0 until this.dimensions.width)
         {
             for(iz in 0 until this.dimensions.height)

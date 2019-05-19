@@ -1,9 +1,13 @@
-package com.phoenixpen.android.ascii
+package com.phoenixpen.android.ascii.testscenes
+
+import android.content.Context
+import com.phoenixpen.android.application.ScreenDimensions
+import com.phoenixpen.android.ascii.*
 
 /**
  * A simple test scene
  */
-class TestScene: Scene
+class TestScene(ctx: Context, dimensions: ScreenDimensions): Scene(ctx, dimensions)
 {
     override fun render(screen: Screen)
     {
