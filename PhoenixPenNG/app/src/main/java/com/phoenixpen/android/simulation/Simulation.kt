@@ -4,6 +4,7 @@ import android.content.Context
 import com.phoenixpen.android.R
 import com.phoenixpen.android.data.ItemManager
 import com.phoenixpen.android.data.MaterialManager
+import com.phoenixpen.android.data.StructureManager
 import com.phoenixpen.android.map.Map
 import com.phoenixpen.android.map.TestMapGenerator
 
@@ -30,6 +31,11 @@ class Simulation(val context: Context)
     val itemManager: ItemManager = ItemManager()
 
     /**
+     * The structure manager containing all known structure types
+     */
+    val structureManager: StructureManager = StructureManager()
+
+    /**
      * Simulation state initialization procedure
      */
     init
@@ -40,6 +46,9 @@ class Simulation(val context: Context)
 
         // Load item types from JSON resource
         this.itemManager.loadItems(this.context, R.raw.items)
+
+        // Load structure types
+        this.structureManager.loadStructures(this.context, R.raw.structures)
 
         // Load map. In this case, a test map is regenerated on each app launch.
         this.map = Map.load(TestMapGenerator(materialManager))
