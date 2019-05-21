@@ -40,7 +40,7 @@ class MySurfaceView(ctx: Context): GLSurfaceView(ctx)
         val json = Json.indented.stringify(MaterialType.serializer(), material)*/
 
        /* val mgr = MaterialManager()
-        mgr.loadMaterials(this.context, R.raw.test)
+        mgr.loadMaterials(this.context, R.raw.materials)
 
         val mat = mgr.lookupMaterial("test_material")
         val mat2 = mgr.lookupMaterial("test_material2")

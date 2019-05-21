@@ -5,7 +5,7 @@ import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.ascii.*
 
 /**
- * A simple test scene
+ * A simple materials scene
  */
 class TestScene(application: Application, dimensions: ScreenDimensions): Scene(application, dimensions)
 {

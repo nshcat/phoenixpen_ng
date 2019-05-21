@@ -22,7 +22,7 @@ class TextureTarget: RenderTarget()
     protected var fboHandle: Int = GLES31.GL_NONE
 
     /**
-     * The handle of our depth test buffer
+     * The handle of our depth materials buffer
      */
     protected var depthBufferHandle: Int = GLES31.GL_NONE
 

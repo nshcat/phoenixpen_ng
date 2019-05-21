@@ -11,7 +11,7 @@ import com.phoenixpen.android.data.MaterialManager
 class TestMapGenerator(val materialManager: MaterialManager): MapLoader
 {
     /**
-     * Generate simple 5x5x5 test map
+     * Generate simple 5x5x5 materials map
      */
     override fun load(): Map
     {

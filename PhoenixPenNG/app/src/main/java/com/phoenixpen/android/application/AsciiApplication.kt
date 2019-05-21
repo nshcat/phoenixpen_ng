@@ -1,10 +1,9 @@
 package com.phoenixpen.android.application
 
 import android.content.Context
+import com.phoenixpen.android.ascii.MainScene
 import com.phoenixpen.android.ascii.Scene
 import com.phoenixpen.android.ascii.Screen
-import com.phoenixpen.android.ascii.testscenes.MapTestScene
-import com.phoenixpen.android.ascii.testscenes.TestScene
 import com.phoenixpen.android.rendering.*
 
 /**
@@ -71,7 +70,7 @@ class AsciiApplication (context: Context): Application(context)
             this.screen.resize(screenDimensions)
             this.orthoProjection.refresh(screenDimensions)
 
-            this.scene = MapTestScene(this, this.screen.size)
+            this.scene = MainScene(this, this.screen.size)
         }
     }
 

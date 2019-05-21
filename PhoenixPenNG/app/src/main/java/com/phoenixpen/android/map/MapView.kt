@@ -1,19 +1,19 @@
 package com.phoenixpen.android.map
 
-import android.util.Log
 import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.ascii.*
+import com.phoenixpen.android.simulation.Simulation
 import com.phoenixpen.android.utility.TickCounter
 
 /**
  * Class that actually does the rendering of a portion of the map.
  *
- * @property map Reference to game map
+ * @property simulation Current simulation state
  * @property dimensions Dimensions of the map view, in glyphs
  * @property topLeft Position in the game map that corresponds to the top left point of the view
  * @property height Current height that is displayed
  */
-class MapView(val map: Map, val dimensions: ScreenDimensions, val topLeft: Position, var height: Int)
+class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val topLeft: Position, var height: Int)
     : SceneComponent
 {
     /**
@@ -28,7 +28,7 @@ class MapView(val map: Map, val dimensions: ScreenDimensions, val topLeft: Posit
      */
     override fun update(elapsedTicks: Int)
     {
-        this.height = (this.height + this.counter.update(elapsedTicks)) % this.map.dimensions.height
+        this.height = (this.height + this.counter.update(elapsedTicks)) % this.simulation.map.dimensions.height
     }
 
     /**
@@ -47,10 +47,10 @@ class MapView(val map: Map, val dimensions: ScreenDimensions, val topLeft: Posit
 
                 // Only continue of its inside of the map bounds. If its not, us not drawing anything here
                 // causes the screen to be black. TODO maybe different effect?
-                if(this.map.isInBounds(mapPos))
+                if(this.simulation.map.isInBounds(mapPos))
                 {
                     // Retrieve cell
-                    val cell = this.map.cellAt(mapPos)
+                    val cell = this.simulation.map.cellAt(mapPos)
 
                     // If cell is solid, it might not be able to be drawn
                     if(cell.state == MapCellState.Solid)
@@ -63,7 +63,7 @@ class MapView(val map: Map, val dimensions: ScreenDimensions, val topLeft: Posit
                             {
                                 val newPos = mapPos + Position3D(dx, 0, dz)
 
-                                if(this.map.isInBounds(newPos) && this.map.cellAt(newPos).state == MapCellState.Ground)
+                                if(this.simulation.map.isInBounds(newPos) && this.simulation.map.cellAt(newPos).state == MapCellState.Ground)
                                 {
                                     found = true
                                     break
@@ -93,7 +93,7 @@ class MapView(val map: Map, val dimensions: ScreenDimensions, val topLeft: Posit
                         for(dy in this.height-1 downTo 0)
                         {
                             // Retrieve cell
-                            val cell = this.map.cellAt(Position3D(ix, dy ,iz))
+                            val cell = this.simulation.map.cellAt(Position3D(ix, dy ,iz))
 
                             if(!cell.isTransparent())
                             {
@@ -110,8 +110,8 @@ class MapView(val map: Map, val dimensions: ScreenDimensions, val topLeft: Posit
                                 val testMainDirection = { dPos: Position3D, direction: ShadowDirection ->
                                     val newPos = currentPos + dPos
 
-                                    if(this.map.isInBounds(newPos))
-                                        if(!this.map.cellAt(newPos).isTransparent())
+                                    if(this.simulation.map.isInBounds(newPos))
+                                        if(!this.simulation.map.cellAt(newPos).isTransparent())
                                             directions.add(direction)
                                 }
 
@@ -125,9 +125,9 @@ class MapView(val map: Map, val dimensions: ScreenDimensions, val topLeft: Posit
                                 val testDiagonalDirection = { dPos: Position3D, direction: ShadowDirection, blockingDirections: ShadowDirections ->
                                     val newPos = currentPos + dPos
 
-                                    if(this.map.isInBounds(newPos))
+                                    if(this.simulation.map.isInBounds(newPos))
                                     {
-                                        if (!this.map.cellAt(newPos).isTransparent())
+                                        if (!this.simulation.map.cellAt(newPos).isTransparent())
                                         {
                                             // The cell is candidate for applying the corner shadow.
                                             // Check that none of the blocking shadows are already
