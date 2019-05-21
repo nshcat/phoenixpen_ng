@@ -1,8 +1,6 @@
-package com.phoenixpen.android.map
+package com.phoenixpen.android.data
 
-import android.util.Log
 import com.phoenixpen.android.ascii.DrawInfo
-import com.phoenixpen.android.data.MaterialType
 
 /**
  * A specific material instance, based on a [MaterialType]. It stores information unique to the

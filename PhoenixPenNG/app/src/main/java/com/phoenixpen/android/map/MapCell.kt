@@ -1,7 +1,7 @@
 package com.phoenixpen.android.map
 
 import com.phoenixpen.android.ascii.DrawInfo
-import com.phoenixpen.android.data.MaterialType
+import com.phoenixpen.android.data.Material
 
 /**
  * A single cell in the three dimensional map.
