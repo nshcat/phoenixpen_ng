@@ -1,6 +1,5 @@
 package com.phoenixpen.android.data
 
-import com.phoenixpen.android.ascii.Color
 import com.phoenixpen.android.ascii.DrawInfo
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

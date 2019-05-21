@@ -2,6 +2,7 @@ package com.phoenixpen.android.simulation
 
 import android.content.Context
 import com.phoenixpen.android.R
+import com.phoenixpen.android.data.ItemManager
 import com.phoenixpen.android.data.MaterialManager
 import com.phoenixpen.android.map.Map
 import com.phoenixpen.android.map.TestMapGenerator
@@ -24,6 +25,11 @@ class Simulation(val context: Context)
     val materialManager: MaterialManager = MaterialManager()
 
     /**
+     * The item manager containing all known item types
+     */
+    val itemManager: ItemManager = ItemManager()
+
+    /**
      * Simulation state initialization procedure
      */
     init
@@ -31,6 +37,9 @@ class Simulation(val context: Context)
         // The material manager needs to be initialized and materials loaded before
         // the map can be loaded
         this.materialManager.loadMaterials(this.context, R.raw.materials)
+
+        // Load item types from JSON resource
+        this.itemManager.loadItems(this.context, R.raw.items)
 
         // Load map. In this case, a test map is regenerated on each app launch.
         this.map = Map.load(TestMapGenerator(materialManager))

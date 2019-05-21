@@ -61,7 +61,7 @@ class ItemManager
      *
      * @param stream Stream containing a JSON document.
      */
-    fun loaditems(stream: InputStream)
+    fun loadItems(stream: InputStream)
     {
         // Read all item types contained in the JSON document
         val itemList = Json.parse(ItemType.serializer().list, BufferedReader(InputStreamReader(stream)).readText())
@@ -83,8 +83,8 @@ class ItemManager
      * @param ctx Android application context
      * @param id Resource id
      */
-    fun loaditems(ctx: Context, id: Int)
+    fun loadItems(ctx: Context, id: Int)
     {
-        this.loaditems(ctx.resources.openRawResource(id))
+        this.loadItems(ctx.resources.openRawResource(id))
     }
 }
