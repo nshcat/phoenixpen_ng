@@ -30,6 +30,15 @@ class MainScene(application: Application, dimensions: ScreenDimensions): Scene(a
      */
     val fpsTickCounter = TickCounter(20)
 
+    /**
+     * Do additional initialization
+     */
+    init
+    {
+        // Register holders in simulation with map view
+        this.mapView.registerHolder(this.simulationState.simpleStructureHolder)
+    }
+
 
     /**
      * Render main scene

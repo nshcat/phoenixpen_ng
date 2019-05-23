@@ -2,8 +2,10 @@ package com.phoenixpen.android.game.simulation
 
 import android.content.Context
 import com.phoenixpen.android.R
+import com.phoenixpen.android.game.ascii.Position3D
 import com.phoenixpen.android.game.data.ItemManager
 import com.phoenixpen.android.game.data.MaterialManager
+import com.phoenixpen.android.game.data.SimpleStructure
 import com.phoenixpen.android.game.data.SimpleStructureManager
 import com.phoenixpen.android.game.map.Map
 import com.phoenixpen.android.game.map.TestMapGenerator
@@ -57,6 +59,13 @@ class Simulation(val context: Context)
 
         // Load map. In this case, a test map is regenerated on each app launch.
         this.map = Map.load(TestMapGenerator(materialManager))
+
+
+        // Add a test structure
+        this.simpleStructureHolder.structureCollection.add(
+                SimpleStructure(this.simpleStructureManager.lookupSimpleStructureSafe("boulder"),
+                        Position3D(6, 1, 6))
+        )
     }
 
     /**
