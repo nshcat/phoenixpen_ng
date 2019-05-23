@@ -1,9 +1,7 @@
-package com.phoenixpen.android.utility
+package com.phoenixpen.android.game.core
 
 import kotlinx.serialization.*
-import kotlinx.serialization.internal.StringDescriptor
 import java.util.concurrent.ThreadLocalRandom
-import kotlin.random.Random
 
 /**
  * A pair of a value and its associated probability.

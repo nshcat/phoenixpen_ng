@@ -1,4 +1,4 @@
-package com.phoenixpen.android.utility
+package com.phoenixpen.android.game.core
 
 /**
  * A class used to count ticks and fire an event every fixed number of ticks (called the period)

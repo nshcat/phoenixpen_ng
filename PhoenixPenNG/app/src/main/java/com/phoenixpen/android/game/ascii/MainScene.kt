@@ -5,7 +5,7 @@ import com.phoenixpen.android.application.Application
 import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.game.map.MapView
 import com.phoenixpen.android.game.simulation.Simulation
-import com.phoenixpen.android.utility.TickCounter
+import com.phoenixpen.android.game.core.TickCounter
 
 /**
  * The game main scene, displaying the map and allowing interaction with the game.

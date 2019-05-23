@@ -2,8 +2,8 @@ package com.phoenixpen.android.game.data
 
 import com.phoenixpen.android.game.ascii.Color
 import com.phoenixpen.android.game.ascii.DrawInfo
-import com.phoenixpen.android.utility.WeightedList
-import com.phoenixpen.android.utility.WeightedPair
+import com.phoenixpen.android.game.core.WeightedList
+import com.phoenixpen.android.game.core.WeightedPair
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

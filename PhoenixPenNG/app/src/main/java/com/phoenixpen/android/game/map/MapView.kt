@@ -3,7 +3,7 @@ package com.phoenixpen.android.game.map
 import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.game.ascii.*
 import com.phoenixpen.android.game.simulation.Simulation
-import com.phoenixpen.android.utility.TickCounter
+import com.phoenixpen.android.game.core.TickCounter
 
 /**
  * Class that actually does the rendering of a portion of the map.
