@@ -1,7 +1,5 @@
 package com.phoenixpen.android.data
 
-import com.phoenixpen.android.ascii.Color
-import com.phoenixpen.android.ascii.DrawInfo
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -12,29 +10,12 @@ import kotlinx.serialization.Serializable
  * @property identifier Unique identifier of this structure type
  * @property displayName Human-readable name for this structure type
  * @property description Short description text for this structure type
- * @property tile Draw info for this structure
- * @property tileFancy Draw info for this structure, fancy graphics mode
+ * @property pathingType How this structure interacts with path finding
  */
 @Serializable
 data class StructureType(
         val identifier: String,
         @SerialName("display_name") val displayName: String,
         val description: String = "",
-        val tile: DrawInfo = DrawInfo(),
-        @SerialName("tile_fancy") val tileFancy: DrawInfo = DrawInfo()
+        @SerialName("pathing_type") val pathingType: PathingType
 )
-{
-    companion object
-    {
-        /**
-         * Placeholder structure type used in place of missing types
-         */
-        val placeholder: StructureType = StructureType(
-            "placeholder",
-                "MISSING STRUCTURE",
-                "MISSING STRUCTURE TYPE",
-                DrawInfo(0, Color.red, Color.red),
-                DrawInfo(0, Color.red, Color.red)
-        )
-    }
-}

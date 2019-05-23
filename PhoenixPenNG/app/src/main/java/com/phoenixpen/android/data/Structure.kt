@@ -1,22 +1,23 @@
 package com.phoenixpen.android.data
 
 import com.phoenixpen.android.ascii.DrawInfo
+import com.phoenixpen.android.ascii.Position3D
 
 /**
- * A class representing a singular structure instance based on a structure type.
+ * A class representing a base class for all structure types.
  * A structure is basically a static entity that is unable to move.
+ *
+ * @property baseType Basic structure type information, like interaction with the pathing system.
+ * @property position The position of this structure in the game world. This is fixed.
  */
-class Structure(val type: StructureType)
+abstract class Structure(val baseType: StructureType, val position: Position3D)
 {
     /**
-     * Retrieve current tile draw info for this structure
+     * Retrieve information on how to draw this structure. This is implemented in structure
+     * sub classes, for example a plant will change its appearance over the seasons.
+     *
+     * @param fancyMode Whether we currently are in fancy graphics mode.
+     * @return [DrawInfo] describing how to draw this structure.
      */
-    fun tile(fancyMode: Boolean = true): DrawInfo
-    {
-        return when(fancyMode)
-        {
-            true -> this.type.tileFancy
-            false -> this.type.tile
-        }
-    }
+    abstract fun tile(fancyMode: Boolean = true): DrawInfo
 }
