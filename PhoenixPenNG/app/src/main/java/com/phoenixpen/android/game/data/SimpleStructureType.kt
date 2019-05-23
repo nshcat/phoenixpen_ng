@@ -1,5 +1,6 @@
 package com.phoenixpen.android.game.data
 
+import com.phoenixpen.android.game.ascii.Color
 import com.phoenixpen.android.game.ascii.DrawInfo
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -16,3 +17,24 @@ data class SimpleStructureType(
         @SerialName("basic_data") val basicData: StructureType,
         val tile: DrawInfo
 )
+{
+    companion object
+    {
+        /**
+         * Placeholder simple structure type, used if a type is missing
+         */
+        val placeholder = SimpleStructureType(
+                StructureType(
+                        "placeholder",
+                        "MISSING STRUCTURE",
+                        "MISSING STRUCTURE DATA",
+                        PathingType.NonRestricted
+                ),
+                DrawInfo(
+                        0,
+                        Color.magenta,
+                        Color.magenta
+                )
+        )
+    }
+}

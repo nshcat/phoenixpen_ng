@@ -1,0 +1,16 @@
+[
+  {
+    "basic_data":
+    {
+      "identifier": "boulder",
+      "display_name": "Boulder",
+      "description": "A medium sized boulder",
+    },
+    "tile":
+    {
+      "glyph": 236,
+      "foreground": "#949494",
+      "background": "#AFAAAA"
+    }
+  }
+]

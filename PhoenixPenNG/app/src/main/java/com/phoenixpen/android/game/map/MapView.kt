@@ -4,6 +4,10 @@ import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.game.ascii.*
 import com.phoenixpen.android.game.simulation.Simulation
 import com.phoenixpen.android.game.core.TickCounter
+import com.phoenixpen.android.game.data.Structure
+import com.phoenixpen.android.game.simulation.StructureHolder
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Class that actually does the rendering of a portion of the map.
@@ -16,6 +20,11 @@ import com.phoenixpen.android.game.core.TickCounter
 class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val topLeft: Position, var height: Int)
     : SceneComponent
 {
+    /**
+     * All registered structure holders. These are used to retrieve all structures that need to be rendered.
+     */
+    private val structureHolders = ArrayList<StructureHolder>()
+
     /**
      * Tick counter used to control height change
      */
@@ -32,12 +41,187 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
     }
 
     /**
+     * Register new structure holder to be used as a source of structures.
+     *
+     * @param holder The structure holder to add
+     */
+    fun registerHolder(holder: StructureHolder)
+    {
+        this.structureHolders.add(holder)
+    }
+
+    /**
+     * Retrieve all structures managed by the registered structure holders.
+     *
+     * @return List containing all structures managed by registered structure holders
+     */
+    private fun retrieveStructures(): List<Structure>
+    {
+        // Destination collection for the structure references
+        val structures = ArrayList<Structure>()
+
+        // Aggregate all structures
+        for(holder in this.structureHolders)
+        {
+            structures.addAll(holder.structures())
+        }
+
+        return structures
+    }
+
+
+    /**
+     * Try to find a map cell to draw in the given column. Returns empty optional if such a map
+     * cell could not be found
+     */
+    private fun getDrawableCellAt(mapPosition: Position3D): Optional<Pair<MapCell, Position3D>>
+    {
+        // Retrieve cell
+        val cell = this.simulation.map.cellAt(mapPosition)
+
+        // If cell is solid, it might not be able to be drawn
+        if(cell.state == MapCellState.Solid)
+        {
+            // Only draw if there exists a ground or air cell adjacent to it
+            for(dx in -1 .. 1)
+            {
+                for(dz in -1 .. 1)
+                {
+                    val newPos = mapPosition + Position3D(dx, 0, dz)
+
+                    if(this.simulation.map.isInBounds(newPos) && this.simulation.map.cellAt(newPos).state == MapCellState.Ground)
+                    {
+                        // We did find an adjacent ground cell. This means the solid cell can be drawn.
+                        return Optional.of(Pair(cell, mapPosition))
+                    }
+                }
+            }
+
+            // This solid cell should not be drawn.
+            return Optional.empty()
+        }
+
+        // Only draw if not transparent
+        if(!cell.isTransparent())
+        {
+            // The cell will be drawn.
+            return Optional.of(Pair(cell, mapPosition))
+        }
+        else
+        {
+            // This cell will not be drawn. Search downwards to find a cell to render instead, with proper depth fog
+            // applied.
+            for(dy in this.height-1 downTo 0)
+            {
+                // Retrieve cell
+                val cell = this.simulation.map.cellAt(Position3D(mapPosition.x, dy, mapPosition.z))
+
+                // Is it drawable?
+                if(!cell.isTransparent())
+                {
+                    val currentPos = Position3D(mapPosition.x, dy, mapPosition.z)
+
+                    return Optional.of(Pair(cell, currentPos))
+                }
+            }
+
+            // We did not find a cell that is drawable and underneath the requested position
+            return Optional.empty()
+        }
+    }
+
+    /**
+     * Determine the set of drop shadows that need to be applied to a cell at given position
+     */
+    private fun calculateShadowsAt(position: Position3D): ShadowDirections
+    {
+        // We check one cell above the cell in question
+        val currentPos = Position3D(position.x, position.y + 1, position.z)
+
+        // Set to store directions in
+        val directions = emptyShadowDirections()
+
+        // Test all main directions (W, S, E, N). They apply full-width drop
+        // shadows
+        val testMainDirection = { dPos: Position3D, direction: ShadowDirection ->
+            val newPos = currentPos + dPos
+
+            if(this.simulation.map.isInBounds(newPos))
+                if(!this.simulation.map.cellAt(newPos).isTransparent())
+                    directions.add(direction)
+        }
+
+        testMainDirection(Position3D(-1, 0, 0), ShadowDirection.West)
+        testMainDirection(Position3D(1, 0, 0), ShadowDirection.East)
+        testMainDirection(Position3D(0, 0, -1), ShadowDirection.North)
+        testMainDirection(Position3D(0, 0, 1), ShadowDirection.South)
+
+        // Test all diagonal directions (SW, SE, NW, NE). They apply a little corner
+        // drop shadow, but only if it wouldnt be overlayed with a full drop shadow
+        val testDiagonalDirection = { dPos: Position3D, direction: ShadowDirection, blockingDirections: ShadowDirections ->
+            val newPos = currentPos + dPos
+
+            if(this.simulation.map.isInBounds(newPos))
+            {
+                if (!this.simulation.map.cellAt(newPos).isTransparent())
+                {
+                    // The cell is candidate for applying the corner shadow.
+                    // Check that none of the blocking shadows are already
+                    // applied.
+                    if(!directions.any{ x -> blockingDirections.has(x) })
+                        directions.add(direction)
+                }
+            }
+        }
+
+        testDiagonalDirection(Position3D(-1, 0, -1), ShadowDirection.TopLeft, ShadowDirections.of(ShadowDirection.North, ShadowDirection.West))
+        testDiagonalDirection(Position3D(1, 0, -1), ShadowDirection.TopRight, ShadowDirections.of(ShadowDirection.North, ShadowDirection.East))
+        testDiagonalDirection(Position3D(1, 0, 1), ShadowDirection.BottomRight, ShadowDirections.of(ShadowDirection.South, ShadowDirection.East))
+        testDiagonalDirection(Position3D(-1, 0, 1), ShadowDirection.BottomLeft, ShadowDirections.of(ShadowDirection.South, ShadowDirection.West))
+
+        return directions
+    }
+
+    /**
+     * Draw a map cell. This will apply depth value and drop shadows according to relative depth to
+     * display height.
+     *
+     * @param screen Screen to draw to
+     * @param cell Cell to draw
+     * @param position Position of said cell
+     */
+    private fun drawCell(screen: Screen, cell: MapCell, position: Position3D)
+    {
+        // Apply draw info
+        screen.setTile(position.xz(), cell.tile())
+
+        // If the cell is not directly at display level, depth and shadows need to be applied.
+        if(position.y < this.height)
+        {
+            // Calculate relative depth
+            val depth = this.height - position.y
+
+            // Apply depth
+            screen.setDepth(position.xz(), depth)
+
+            // Determine which drop shadows need to be applied
+            val shadows = this.calculateShadowsAt(position)
+
+            // Apply shadows
+            screen.setShadows(position.xz(), shadows)
+        }
+    }
+
+    /**
      * Render component to screen
      *
      * @param screen Screen to render component to
      */
     override fun render(screen: Screen)
     {
+        // Retrieve all structures
+        val structures = this.retrieveStructures()
+
         for(ix in 0 until this.dimensions.width)
         {
             for(iz in 0 until this.dimensions.height)
@@ -46,112 +230,21 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
                 val mapPos = Position3D(ix + this.topLeft.x, this.height, iz + this.topLeft.y)
 
                 // Only continue of its inside of the map bounds. If its not, us not drawing anything here
-                // causes the screen to be black. TODO maybe different effect?
+                // causes the screen to be black.
                 if(this.simulation.map.isInBounds(mapPos))
                 {
-                    // Retrieve cell
-                    val cell = this.simulation.map.cellAt(mapPos)
+                    // Try to retrieve a map cell that can be drawn. This will either be a cell at the current
+                    // display height, or one that is somewhere below that level.
+                    val cellToDraw = this.getDrawableCellAt(mapPos)
 
-                    // If cell is solid, it might not be able to be drawn
-                    if(cell.state == MapCellState.Solid)
+                    // We might not have a cell to draw.
+                    if(cellToDraw.isPresent)
                     {
-                        // Only draw if there exists a ground or air cell adjacent to it
-                        var found = false
-                        for(dx in -1 .. 1)
-                        {
-                            for(dz in -1 .. 1)
-                            {
-                                val newPos = mapPos + Position3D(dx, 0, dz)
+                        // Retrieve map cell reference and its position
+                        val pair = cellToDraw.get()
 
-                                if(this.simulation.map.isInBounds(newPos) && this.simulation.map.cellAt(newPos).state == MapCellState.Ground)
-                                {
-                                    found = true
-                                    break
-                                }
-                            }
-
-                            if(found)
-                                break
-                        }
-
-                        if(!found)
-                            continue
-                    }
-
-                    // Only draw if not transparent
-                    if(!cell.isTransparent())
-                    {
-                        // Retrieve graphical representation of map cell
-                        val tile = cell.tile()
-
-                        // Draw to screen
-                        screen.setTile(Position(ix, iz), tile)
-                    }
-                    else
-                    {
-
-                        for(dy in this.height-1 downTo 0)
-                        {
-                            // Retrieve cell
-                            val cell = this.simulation.map.cellAt(Position3D(ix, dy ,iz))
-
-                            if(!cell.isTransparent())
-                            {
-                                val depth = this.height - dy
-                                screen.setTile(Position(ix, iz), cell.tile())
-                                screen.setDepth(Position(ix, iz), depth)
-
-                                val directions = emptyShadowDirections()
-
-                                val currentPos = Position3D(ix, dy+1, iz)
-
-                                // Test all main directions (W, S, E, N). They apply full-width drop
-                                // shadows
-                                val testMainDirection = { dPos: Position3D, direction: ShadowDirection ->
-                                    val newPos = currentPos + dPos
-
-                                    if(this.simulation.map.isInBounds(newPos))
-                                        if(!this.simulation.map.cellAt(newPos).isTransparent())
-                                            directions.add(direction)
-                                }
-
-                                testMainDirection(Position3D(-1, 0, 0), ShadowDirection.West)
-                                testMainDirection(Position3D(1, 0, 0), ShadowDirection.East)
-                                testMainDirection(Position3D(0, 0, -1), ShadowDirection.North)
-                                testMainDirection(Position3D(0, 0, 1), ShadowDirection.South)
-
-                                // Test all diagonal directions (SW, SE, NW, NE). They apply a little corner
-                                // drop shadow, but only if it wouldnt be overlayed with a full drop shadow
-                                val testDiagonalDirection = { dPos: Position3D, direction: ShadowDirection, blockingDirections: ShadowDirections ->
-                                    val newPos = currentPos + dPos
-
-                                    if(this.simulation.map.isInBounds(newPos))
-                                    {
-                                        if (!this.simulation.map.cellAt(newPos).isTransparent())
-                                        {
-                                            // The cell is candidate for applying the corner shadow.
-                                            // Check that none of the blocking shadows are already
-                                            // applied.
-                                            if(!directions.any({ x -> blockingDirections.has(x) }))
-                                                directions.add(direction)
-                                        }
-                                    }
-                                }
-
-                                testDiagonalDirection(Position3D(-1, 0, -1), ShadowDirection.TopLeft, ShadowDirections.of(ShadowDirection.North, ShadowDirection.West))
-                                testDiagonalDirection(Position3D(1, 0, -1), ShadowDirection.TopRight, ShadowDirections.of(ShadowDirection.North, ShadowDirection.East))
-                                testDiagonalDirection(Position3D(1, 0, 1), ShadowDirection.BottomRight, ShadowDirections.of(ShadowDirection.South, ShadowDirection.East))
-                                testDiagonalDirection(Position3D(-1, 0, 1), ShadowDirection.BottomLeft, ShadowDirections.of(ShadowDirection.South, ShadowDirection.West))
-
-                                // Apply all accumulated shadows
-                                screen.setShadows(Position(ix, iz), directions)
-
-
-
-                                break
-                            }
-                        }
-
+                        // Actually draw the cell
+                        this.drawCell(screen, pair.first, pair.second)
                     }
                 }
             }

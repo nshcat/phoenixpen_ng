@@ -19,6 +19,14 @@ operator fun Position.unaryMinus(): Position
     return Position(-this.x, -this.y)
 }
 
+/**
+ * Extract x and z components of given 3d position
+ */
+fun Position3D.xz(): Position
+{
+    return Position(this.x, this.z)
+}
+
 operator fun Position.plus(rhs: Position): Position
 {
     return Position(this.x + rhs.x, this.y + rhs.y)

@@ -17,5 +17,5 @@ data class StructureType(
         val identifier: String,
         @SerialName("display_name") val displayName: String,
         val description: String = "",
-        @SerialName("pathing_type") val pathingType: PathingType
+        @SerialName("pathing_type") val pathingType: PathingType = PathingType.NonRestricted
 )
