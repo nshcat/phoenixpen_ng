@@ -312,13 +312,13 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
                     // position (height wise). We thus overwrite map cell drawing with the structure if they share the same height.
                     if(structureToDraw.isPresent && (!cellToDraw.isPresent || cellToDraw.get().second.y <= structureToDraw.get().position.y))
                     {
-                        // Draw the structure
                         this.drawStructure(screen, structureToDraw.get())
                     }
                     else // Try to draw the map cell
                     {
                         // We might not have a cell to draw.
-                        if (cellToDraw.isPresent) {
+                        if (cellToDraw.isPresent)
+                        {
                             // Retrieve map cell reference and its position
                             val pair = cellToDraw.get()
 

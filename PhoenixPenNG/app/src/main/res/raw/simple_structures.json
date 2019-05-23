@@ -4,13 +4,27 @@
     {
       "identifier": "boulder",
       "display_name": "Boulder",
-      "description": "A medium sized boulder",
+      "description": "A medium sized boulder"
     },
     "tile":
     {
       "glyph": 236,
-      "foreground": "#6D6969",
+      "foreground": "#514343",
       "background": "#5E5E5E"
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "test_plant",
+      "display_name": "Test plant",
+      "description": "A plant for testing"
+    },
+    "tile":
+    {
+      "glyph": 6,
+      "foreground": "#ADEBD2",
+      "background": "#000000"
     }
   }
 ]
