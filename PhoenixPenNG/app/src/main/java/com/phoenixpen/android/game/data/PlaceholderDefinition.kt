@@ -1,6 +1,5 @@
 package com.phoenixpen.android.game.data
 
-import com.phoenixpen.android.game.ascii.Color
 import kotlinx.serialization.*
 import kotlinx.serialization.internal.StringDescriptor
 import kotlinx.serialization.json.JsonInput
@@ -8,6 +7,7 @@ import kotlinx.serialization.json.JsonInput
 /**
  * A class mapping tree shape placeholder labels to actual tree part type identifiers.
  */
+@Serializable(with=PlaceholderDefinitionSerializer::class)
 class PlaceholderDefinition(val definitions: Map<PlaceholderType, String>)
 
 /**
