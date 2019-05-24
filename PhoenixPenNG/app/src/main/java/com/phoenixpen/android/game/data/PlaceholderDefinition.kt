@@ -8,7 +8,19 @@ import kotlinx.serialization.json.JsonInput
  * A class mapping tree shape placeholder labels to actual tree part type identifiers.
  */
 @Serializable(with=PlaceholderDefinitionSerializer::class)
-class PlaceholderDefinition(val definitions: Map<PlaceholderType, String>)
+class PlaceholderDefinition(val definitions: HashMap<PlaceholderType, String>)
+{
+    companion object
+    {
+        /**
+         * Placeholder instance used in placeholder tree type
+         */
+        val placeholder = PlaceholderDefinition(HashMap()).apply{
+            for(type in PlaceholderType.values())
+                this.definitions.put(type, "placeholder")
+        }
+    }
+}
 
 /**
  * Custom serializer for placeholder definitions

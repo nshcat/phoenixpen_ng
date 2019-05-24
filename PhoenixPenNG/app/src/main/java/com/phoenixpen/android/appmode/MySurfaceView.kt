@@ -6,6 +6,8 @@ import com.phoenixpen.android.game.ascii.ColorSerializer
 import com.phoenixpen.android.game.core.AsciiApplication
 import com.phoenixpen.android.game.data.PlaceholderDefinition
 import com.phoenixpen.android.game.data.PlaceholderDefinitionSerializer
+import com.phoenixpen.android.game.data.TreeStructure
+import com.phoenixpen.android.game.data.TreeStructureType
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
@@ -20,7 +22,27 @@ class MySurfaceView(ctx: Context): GLSurfaceView(ctx)
         preserveEGLContextOnPause = true
         //setRenderer(AsciiApplication(ctx))
 
-        val test = Json.parse(Test.serializer(), "{ \"def\": { \"trunk\": \"test\" } }")
+        val json =
+        """
+            {
+                "identifier": "test",
+                "structure" : [
+                    [
+                        "OOO",
+                        "OOO",
+                        "OOO"
+                    ],
+                    [
+                        "OOO",
+                        "OOO",
+                        "OOO"
+                    ]
+                ]
+            }
+
+        """.trimIndent()
+
+        val test = Json.parse(TreeStructureType.serializer(), json)
 
         android.os.Debug.waitForDebugger()
 
