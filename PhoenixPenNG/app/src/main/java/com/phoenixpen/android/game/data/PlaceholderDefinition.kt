@@ -10,6 +10,17 @@ import kotlinx.serialization.json.JsonInput
 @Serializable(with=PlaceholderDefinitionSerializer::class)
 class PlaceholderDefinition(val definitions: HashMap<PlaceholderType, String>)
 {
+    /**
+     * Retrieve definition for given placeholder type
+     *
+     * @param placeholder Placeholder type to look up definition for
+     * @return Definition for given placeholder type
+     */
+    fun definitionFor(placeholder: PlaceholderType): String
+    {
+        return this.definitions[placeholder] ?: throw IllegalArgumentException("Unknown placeholder type")
+    }
+
     companion object
     {
         /**
