@@ -43,6 +43,11 @@ class Simulation(val context: Context)
     val simpleStructureHolder = SimpleStructureHolder()
 
     /**
+     * Tree system
+     */
+    val treeHolder = TreeHolder(this.context)
+
+    /**
      * Simulation state initialization procedure
      */
     init
@@ -60,12 +65,14 @@ class Simulation(val context: Context)
         // Load map. In this case, a test map is regenerated on each app launch.
         this.map = Map.load(TestMapGenerator(materialManager))
 
-
         // Add a test structure
         this.simpleStructureHolder.structureCollection.add(
                 SimpleStructure(this.simpleStructureManager.lookupSimpleStructureSafe("boulder"),
                         Position3D(6, 1, 6))
         )
+
+        // Add a tree
+        this.treeHolder.generateTree(Position3D(12, 2, 12), "test_tree")
     }
 
     /**

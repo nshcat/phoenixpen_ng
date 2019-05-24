@@ -37,6 +37,7 @@ class MainScene(application: Application, dimensions: ScreenDimensions): Scene(a
     {
         // Register holders in simulation with map view
         this.mapView.registerHolder(this.simulationState.simpleStructureHolder)
+        this.mapView.registerHolder(this.simulationState.treeHolder)
     }
 
 

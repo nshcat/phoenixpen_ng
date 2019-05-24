@@ -1,3 +1,13 @@
 [
+  {
+    "identifier": "test_tree",
+    "display_name": "test tree",
+    "description": "a tree type used to test the tree system",
+    "parts": {
 
+    },
+    "structure_types": [
+      "small_tree_1"
+    ]
+  }
 ]
