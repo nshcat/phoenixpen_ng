@@ -33,7 +33,7 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
     /**
      * Tick counter used to control height change
      */
-    private val counter = TickCounter(10)
+    private val counter = TickCounter(20)
 
     /**
      * Update scene based on given amount of elapsed ticks
@@ -42,7 +42,9 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
      */
     override fun update(elapsedTicks: Int)
     {
-        this.height = (this.height + this.counter.update(elapsedTicks)) % this.simulation.map.dimensions.height
+        this.counter.update(elapsedTicks)
+
+        this.height = 2 + (this.counter.totalPeriods % 6)
     }
 
     /**

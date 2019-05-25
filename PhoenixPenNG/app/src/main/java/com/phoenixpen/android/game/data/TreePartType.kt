@@ -2,6 +2,7 @@ package com.phoenixpen.android.game.data
 
 import com.phoenixpen.android.game.ascii.Color
 import com.phoenixpen.android.game.ascii.DrawInfo
+import com.phoenixpen.android.game.core.WeightedList
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -10,11 +11,15 @@ import kotlinx.serialization.Serializable
  *
  * @property basicData Basic structure information, like identifier and description
  * @property tile Information about how to draw this tree part
+ * @property variedTile Whether this tree part has multiple different tile representations
+ * @property tiles Weighted list of tile representations. Only used if [variedTile] is set to true.
  */
 @Serializable
 data class TreePartType(
         @SerialName("basic_data") val basicData: StructureType,
-        val tile: DrawInfo
+        val tile: DrawInfo,
+        @SerialName("varied_tile") val variedTile: Boolean = false,
+        val tiles: WeightedList<DrawInfo> = WeightedList(listOf())
 )
 {
     companion object
