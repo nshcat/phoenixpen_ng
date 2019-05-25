@@ -8,7 +8,9 @@
     },
     "structure_types": [
       "small_tree_1",
-      "small_tree_2"
+      "small_tree_2",
+      "small_tree_3",
+      "medium_tree_1"
     ]
   }
 ]

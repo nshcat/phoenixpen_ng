@@ -9,6 +9,7 @@ import com.phoenixpen.android.game.data.SimpleStructure
 import com.phoenixpen.android.game.data.SimpleStructureManager
 import com.phoenixpen.android.game.map.Map
 import com.phoenixpen.android.game.map.TestMapGenerator
+import kotlin.random.Random
 
 /**
  * The main simulation class which aggregates all game subsystems and data holding objects
@@ -72,9 +73,24 @@ class Simulation(val context: Context)
         )
 
         // Add a tree
+        /*this.treeHolder.generateTree(Position3D(14, 2, 3), "test_tree")
         this.treeHolder.generateTree(Position3D(12, 2, 12), "test_tree")
         this.treeHolder.generateTree(Position3D(5, 2, 1), "test_tree")
-        this.treeHolder.generateTree(Position3D(1, 2, 8), "test_tree")
+        this.treeHolder.generateTree(Position3D(1, 2, 8), "test_tree")*/
+
+
+        for(x in 1 .. 9)
+        {
+            Random.nextInt(4)
+            Random.nextInt(4)
+            Random.nextInt(4)
+            Random.nextInt(4)
+            Random.nextInt(4)
+
+
+            val pos = Position3D(Random.nextInt(-3, 20), 2, Random.nextInt(-3, 15))
+            this.treeHolder.generateTree(pos, "test_tree")
+        }
     }
 
     /**
