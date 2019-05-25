@@ -190,11 +190,14 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
         // Test all main directions (W, S, E, N). They apply full-width drop
         // shadows
         val testMainDirection = { dPos: Position3D, direction: ShadowDirection ->
-            val newPos = currentPos + dPos
+            for(dy in (position.y + 1) .. height)
+            {
+                val newPos = Position3D(position.x, dy, position.z) + dPos
 
-            if(this.simulation.map.isInBounds(newPos))
-                if(!this.simulation.map.cellAt(newPos).isTransparent())
-                    directions.add(direction)
+                if (this.simulation.map.isInBounds(newPos))
+                    if (!this.simulation.map.cellAt(newPos).isTransparent() || getStructuresAtExact(newPos).isNotEmpty())
+                        directions.add(direction)
+            }
         }
 
         testMainDirection(Position3D(-1, 0, 0), ShadowDirection.West)
@@ -205,17 +208,20 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
         // Test all diagonal directions (SW, SE, NW, NE). They apply a little corner
         // drop shadow, but only if it wouldnt be overlayed with a full drop shadow
         val testDiagonalDirection = { dPos: Position3D, direction: ShadowDirection, blockingDirections: ShadowDirections ->
-            val newPos = currentPos + dPos
-
-            if(this.simulation.map.isInBounds(newPos))
+            for(dy in (position.y + 1) .. height)
             {
-                if (!this.simulation.map.cellAt(newPos).isTransparent())
+                val newPos = Position3D(position.x, dy, position.z) + dPos
+
+                if(this.simulation.map.isInBounds(newPos))
                 {
-                    // The cell is candidate for applying the corner shadow.
-                    // Check that none of the blocking shadows are already
-                    // applied.
-                    if(!directions.any{ x -> blockingDirections.has(x) })
-                        directions.add(direction)
+                    if (!this.simulation.map.cellAt(newPos).isTransparent() || getStructuresAtExact(newPos).isNotEmpty())
+                    {
+                        // The cell is candidate for applying the corner shadow.
+                        // Check that none of the blocking shadows are already
+                        // applied.
+                        if(!directions.any{ x -> blockingDirections.has(x) })
+                            directions.add(direction)
+                    }
                 }
             }
         }
@@ -277,6 +283,12 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
 
             // Apply depth
             screen.setDepth(structure.position.xz(), depth)
+
+            // Determine which drop shadows need to be applied
+            val shadows = this.calculateShadowsAt(structure.position)
+
+            // Apply shadows
+            screen.setShadows(structure.position.xz(), shadows)
         }
     }
 

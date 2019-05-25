@@ -73,6 +73,8 @@ class Simulation(val context: Context)
 
         // Add a tree
         this.treeHolder.generateTree(Position3D(12, 2, 12), "test_tree")
+        this.treeHolder.generateTree(Position3D(5, 2, 1), "test_tree")
+        this.treeHolder.generateTree(Position3D(1, 2, 8), "test_tree")
     }
 
     /**
