@@ -12,6 +12,11 @@ import android.view.ViewGroup
  */
 class OpenGLFragment: Fragment()
 {
+    companion object
+    {
+        const val TAG = "OpenGLFragment"
+    }
+
     private lateinit var glView: GLSurfaceView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
