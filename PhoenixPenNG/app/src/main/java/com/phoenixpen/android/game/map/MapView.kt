@@ -49,7 +49,7 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
     override fun update(elapsedTicks: Int)
     {
         this.counter.update(elapsedTicks)
-        this.height = 7
+        this.height = 3
 
         //this.height = 2 + (this.counter.totalPeriods % 6)
     }
@@ -221,7 +221,6 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
             return Optional.empty()
         }
     }
-
 
     /**
      * Direction vectors used in the iterations of the drop shadow calculation algorithm
