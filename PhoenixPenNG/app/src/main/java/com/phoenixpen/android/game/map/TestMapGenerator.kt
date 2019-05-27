@@ -16,16 +16,16 @@ class TestMapGenerator(val materialManager: MaterialManager): MapLoader
     override fun load(): Map
     {
         // Create empty map
-        val map = Map(MapDimensions(25, 8, 20))
+        val map = Map(MapDimensions(30, 8, 60))
 
         // Lookup the materials we will be using
         val grass = this.materialManager.lookupMaterial("grass")
         val stone = this.materialManager.lookupMaterial("stone")
 
         // Generate terrain
-        for(ix in 0 until 25)
+        for(ix in 0 until 30)
         {
-            for(iz in 0 until 20)
+            for(iz in 0 until 60)
             {
                 // Fill the ground with stone
                 for(iy in 0 until 2)

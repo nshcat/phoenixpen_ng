@@ -6,6 +6,7 @@ import com.phoenixpen.android.game.simulation.Simulation
 import com.phoenixpen.android.game.core.TickCounter
 import com.phoenixpen.android.game.data.Structure
 import com.phoenixpen.android.game.simulation.StructureHolder
+import java.lang.Integer.min
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -26,6 +27,11 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
     private val structureHolders = ArrayList<StructureHolder>()
 
     /**
+     * A hash map used to speed up lookup for structures at a given position in the world map
+     */
+    private val structureMap = HashMap<Position3D, MutableList<Structure>>()
+
+    /**
      * Buffer used to hold all aggregated structures in each frame.
      */
     private var structureBuffer = ArrayList<Structure>()
@@ -43,8 +49,35 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
     override fun update(elapsedTicks: Int)
     {
         this.counter.update(elapsedTicks)
+        this.height = 7
 
-        this.height = 2 + (this.counter.totalPeriods % 6)
+        //this.height = 2 + (this.counter.totalPeriods % 6)
+    }
+
+    /**
+     * Update the structure map for faster structure look up
+     */
+    private fun updateStructureMap()
+    {
+        // Clear the hash map
+        this.structureMap.clear()
+
+        // Insert all elements
+        for(structure in this.structureBuffer)
+        {
+            // Is there already a list in the map?
+            if(!this.structureMap.containsKey(structure.position))
+            {
+                // If not, add one
+                this.structureMap.put(structure.position, ArrayList())
+            }
+
+            // Retrieve list. It is guaranteed to exist by now.
+            val list = this.structureMap.get(structure.position) ?: throw RuntimeException("Should not happen")
+
+            // Add the structure to it
+            list.add(structure)
+        }
     }
 
     /**
@@ -95,8 +128,8 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
             val structures = this.getStructuresAtExact(Position3D(mapPosition.x, iy, mapPosition.z))
 
             // If we found any structures, return the first one found.
-            if(!structures.isEmpty())
-                return Optional.of(structures.first())
+            if(structures.isPresent && structures.get().isNotEmpty())
+                return Optional.of(structures.get().first())
         }
 
         // No structure was found
@@ -109,9 +142,24 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
      * @param mapPosition Position to check for structures at
      * @return Structures found at the given position
      */
-    private fun getStructuresAtExact(mapPosition: Position3D): List<Structure>
+    private fun getStructuresAtExact(mapPosition: Position3D): Optional<List<Structure>>
     {
-        return this.structureBuffer.filter { s -> s.position == mapPosition }
+        return Optional.ofNullable(this.structureMap[mapPosition])
+    }
+
+    /**
+     * Retrieve first structure present at a given map position, but NOT below.
+     *
+     * @param mapPosition Position to check for structures at
+     * @return Structure found at the given position
+     */
+    private fun getStructureAtExact(mapPosition: Position3D): Optional<Structure>
+    {
+        val result = this.getStructuresAtExact(mapPosition)
+
+        if(result.isPresent && result.get().isNotEmpty())
+            return Optional.of(result.get().first())
+        else return Optional.empty()
     }
 
     /**
@@ -175,6 +223,48 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
     }
 
 
+    /**
+     * Direction vectors used in the iterations of the drop shadow calculation algorithm
+     */
+    val directionVectors = listOf(
+            Position3D(-1, 0, 0),
+            Position3D(1, 0, 0),
+            Position3D(0, 0, -1),
+            Position3D(0, 0, 1),
+            Position3D(-1, 0, -1),
+            Position3D(1, 0, -1),
+            Position3D(1, 0, 1),
+            Position3D(-1, 0, 1)
+    )
+
+    /**
+     * Drop shadow values for the iterations in the drop shadow calculation algorithm
+     */
+    val directionValues = listOf(
+            ShadowDirection.West,
+            ShadowDirection.East,
+            ShadowDirection.North,
+            ShadowDirection.South,
+            ShadowDirection.TopLeft,
+            ShadowDirection.TopRight,
+            ShadowDirection.BottomRight,
+            ShadowDirection.BottomLeft
+    )
+
+    /**
+     * Shadow directions that block a certain shadow direction from being applied. This only applies
+     * to the diagonal drop shadows.
+     */
+    private val blockingDirections = listOf(
+            emptyShadowDirections(),
+            emptyShadowDirections(),
+            emptyShadowDirections(),
+            emptyShadowDirections(),
+            ShadowDirections.of(ShadowDirection.North, ShadowDirection.West),
+            ShadowDirections.of(ShadowDirection.North, ShadowDirection.East),
+            ShadowDirections.of(ShadowDirection.South, ShadowDirection.East),
+            ShadowDirections.of(ShadowDirection.South, ShadowDirection.West)
+    )
 
     /**
      * Determine the set of drop shadows that need to be applied to a cell at given position
@@ -185,51 +275,24 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
         val currentPos = Position3D(position.x, position.y + 1, position.z)
 
         // Set to store directions in
-        val directions = emptyShadowDirections()
+        val directions = emptyShadowDirections.apply { clear() }
 
-        // Test all main directions (W, S, E, N). They apply full-width drop
-        // shadows
-        val testMainDirection = { dPos: Position3D, direction: ShadowDirection ->
-            for(dy in (position.y + 1) .. height)
+        for(dy in (position.y + 1) .. min(position.y + 2, height)/*height*/)
+        {
+            val pos = Position3D(position.x, dy, position.z)
+
+            for(i in 0 until directionVectors.size)
             {
-                val newPos = Position3D(position.x, dy, position.z) + dPos
+                val dir = directionVectors[i]
+                val newPos = Position3D(pos.x + dir.x, dy, pos.z + dir.z)
 
                 if (this.simulation.map.isInBounds(newPos))
-                    if (!this.simulation.map.cellAt(newPos).isTransparent() || getStructuresAtExact(newPos).isNotEmpty())
-                        directions.add(direction)
+                    if (!this.simulation.map.cellAt(newPos).isTransparent() || getStructureAtExact(newPos).isPresent)
+                        if(!directions.any{ x -> blockingDirections[i].has(x) })
+                            directions.add(directionValues[i])
             }
+
         }
-
-        testMainDirection(Position3D(-1, 0, 0), ShadowDirection.West)
-        testMainDirection(Position3D(1, 0, 0), ShadowDirection.East)
-        testMainDirection(Position3D(0, 0, -1), ShadowDirection.North)
-        testMainDirection(Position3D(0, 0, 1), ShadowDirection.South)
-
-        // Test all diagonal directions (SW, SE, NW, NE). They apply a little corner
-        // drop shadow, but only if it wouldnt be overlayed with a full drop shadow
-        val testDiagonalDirection = { dPos: Position3D, direction: ShadowDirection, blockingDirections: ShadowDirections ->
-            for(dy in (position.y + 1) .. height)
-            {
-                val newPos = Position3D(position.x, dy, position.z) + dPos
-
-                if(this.simulation.map.isInBounds(newPos))
-                {
-                    if (!this.simulation.map.cellAt(newPos).isTransparent() || getStructuresAtExact(newPos).isNotEmpty())
-                    {
-                        // The cell is candidate for applying the corner shadow.
-                        // Check that none of the blocking shadows are already
-                        // applied.
-                        if(!directions.any{ x -> blockingDirections.has(x) })
-                            directions.add(direction)
-                    }
-                }
-            }
-        }
-
-        testDiagonalDirection(Position3D(-1, 0, -1), ShadowDirection.TopLeft, ShadowDirections.of(ShadowDirection.North, ShadowDirection.West))
-        testDiagonalDirection(Position3D(1, 0, -1), ShadowDirection.TopRight, ShadowDirections.of(ShadowDirection.North, ShadowDirection.East))
-        testDiagonalDirection(Position3D(1, 0, 1), ShadowDirection.BottomRight, ShadowDirections.of(ShadowDirection.South, ShadowDirection.East))
-        testDiagonalDirection(Position3D(-1, 0, 1), ShadowDirection.BottomLeft, ShadowDirections.of(ShadowDirection.South, ShadowDirection.West))
 
         return directions
     }
@@ -301,6 +364,9 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
     {
         // Retrieve all structures
         this.structureBuffer = this.retrieveStructures()
+
+        // Update structure map
+        this.updateStructureMap()
 
         // Render all map cells
         for(ix in 0 until this.dimensions.width)
