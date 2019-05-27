@@ -13,9 +13,6 @@ import com.phoenixpen.android.game.simulation.TreeHolder
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-@Serializable
-class Test(@Serializable(with= PlaceholderDefinitionSerializer::class) val def: PlaceholderDefinition)
-
 class MySurfaceView(ctx: Context): GLSurfaceView(ctx)
 {
     init
