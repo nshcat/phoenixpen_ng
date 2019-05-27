@@ -18,13 +18,20 @@ class MainActivity : FragmentActivity() {
         }*/
 
         val fm = supportFragmentManager
-        for (i in 0 until fm.getBackStackEntryCount()) {
+        /*for (i in 0 until fm.getBackStackEntryCount()) {
             fm.popBackStack()
-        }
+        }*/
 
         //if(savedInstanceState == null)
-            supportFragmentManager.beginTransaction().add(R.id.main_container, OpenGLFragment())
+
+        val frag = fm.findFragmentByTag(OpenGLFragment.TAG)
+
+
+        if(frag != null)
+        {
+            supportFragmentManager.beginTransaction().add(R.id.main_container, OpenGLFragment(), OpenGLFragment.TAG)
                     .addToBackStack(null).commit()
+        }
     }
 
 }
