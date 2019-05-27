@@ -78,6 +78,21 @@ class Map(val dimensions: MapDimensions)
     }
 
     /**
+     * Determine if the given position is inside of the current map bounds
+     *
+     * @param x X coordinate of the position to check
+     * @param y X coordinate of the position to check
+     * @param z X coordinate of the position to check
+     * @return Flag indicating check result
+     */
+    fun isInBounds(x: Int, y: Int, z: Int): Boolean
+    {
+        return (x >= 0 && x < this.dimensions.width) &&
+                (y >= 0 && y < this.dimensions.height) &&
+                (z >= 0 && z < this.dimensions.depth)
+    }
+
+    /**
      * Map creation routines
      */
     companion object

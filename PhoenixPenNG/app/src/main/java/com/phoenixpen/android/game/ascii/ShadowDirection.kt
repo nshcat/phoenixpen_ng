@@ -51,3 +51,8 @@ fun emptyShadowDirections(): ShadowDirections
 {
     return ShadowDirections.noneOf(ShadowDirection::class.java)
 }
+
+/**
+ * Global empty shadow directions instance
+ */
+val emptyShadowDirections = emptyShadowDirections()

@@ -79,7 +79,7 @@ class Simulation(val context: Context)
         this.treeHolder.generateTree(Position3D(1, 2, 8), "test_tree")*/
 
 
-        for(x in 1 .. 9)
+        for(x in 1 .. 30)
         {
             Random.nextInt(4)
             Random.nextInt(4)
@@ -88,7 +88,7 @@ class Simulation(val context: Context)
             Random.nextInt(4)
 
 
-            val pos = Position3D(Random.nextInt(-3, 20), 2, Random.nextInt(-3, 15))
+            val pos = Position3D(Random.nextInt(-3, 27), 2, Random.nextInt(-3, 50))
             this.treeHolder.generateTree(pos, "test_tree")
         }
     }
