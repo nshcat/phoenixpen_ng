@@ -12,5 +12,5 @@ class Tree(val type: TreeType)
     /**
      * All structures that make up this tree
      */
-    val structures = ArrayList<TreePartStructure>()
+    val structures = ArrayList<TreePart>()
 }

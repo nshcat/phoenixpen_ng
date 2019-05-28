@@ -27,7 +27,12 @@ enum class TileTypeMode
     /*Animated*/ // Not yet supported
 }
 
-class TileInstance
+/**
+ * An opaque handle class used to store information about the instantiation of a tile type as part of
+ * a game object. This class, for example, stores the index into the weighted tile list, if varied tiles
+ * are activated.
+ */
+data class TileInstance(val tileIndex: Int = -1)
 
 /**
  * A class encapsulating the different ways a graphical representation of a game object can be specified.
@@ -56,7 +61,11 @@ class TileType(
      */
     fun createInstance(): TileInstance
     {
-        throw NotImplementedError()
+        return when(this.mode)
+        {
+            TileTypeMode.Static -> TileInstance()
+            TileTypeMode.Varied -> TileInstance(this.variedTiles.drawIndex())
+        }
     }
 
     /**
@@ -67,7 +76,11 @@ class TileType(
      */
     fun tile(instance: TileInstance): DrawInfo
     {
-        throw NotImplementedError()
+        return when(this.mode)
+        {
+            TileTypeMode.Static -> this.staticTile
+            TileTypeMode.Varied -> this.variedTiles.elementAt(instance.tileIndex)
+        }
     }
 }
 
@@ -93,13 +106,16 @@ class TileTypeSerializer : KSerializer<TileType>
             // Decode JSON to AST and interpret as JSON object
             val root = jsonInput.decodeJson().jsonObject
 
-            // Retrieve mode entry
-            if(!root.containsKey("mode"))
-                throw RuntimeException("missing \"mode\" entry")
+            // Assume static glyph mode per default
+            var mode = TileTypeMode.Static
 
-            // Parse mode entry
-            val modeEntry = root.getPrimitive("mode")
-            val mode = Json.parse(EnumSerializer(TileTypeMode::class), modeEntry.content)
+            // Retrieve mode entry
+            if(root.containsKey("mode"))
+            {
+                // Parse mode entry
+                val modeEntry = root.getPrimitive("mode")
+                mode = Json.parse(EnumSerializer(TileTypeMode::class), modeEntry.content)
+            }
 
             // The data entry definitly has to exist.
             if(!root.containsKey("data"))

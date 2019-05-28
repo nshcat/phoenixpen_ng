@@ -21,23 +21,6 @@ class MySurfaceView(ctx: Context): GLSurfaceView(ctx)
     {
         setEGLContextClientVersion(3)
         preserveEGLContextOnPause = true
-        //setRenderer(AsciiApplication(ctx))
-
-        android.os.Debug.waitForDebugger()
-
-        val json = """
-            {
-                "mode": "Varied",
-                "data" : [
-                    { "tile": { "glyph": 1 }, "probability": 0.3  }
-                ]
-            }
-        """.trimIndent()
-
-        val tile = Json.parse(TileTypeSerializer(), json)
-
-        val x = 1
-
-
+        setRenderer(AsciiApplication(ctx))
     }
 }
