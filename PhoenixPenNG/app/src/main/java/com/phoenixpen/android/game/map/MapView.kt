@@ -6,6 +6,7 @@ import com.phoenixpen.android.game.simulation.Simulation
 import com.phoenixpen.android.game.core.TickCounter
 import com.phoenixpen.android.game.data.Covering
 import com.phoenixpen.android.game.data.CoveringDrawMode
+import com.phoenixpen.android.game.data.CoveringType
 import com.phoenixpen.android.game.data.Structure
 import com.phoenixpen.android.game.simulation.CoveringHolder
 import com.phoenixpen.android.game.simulation.StructureHolder
@@ -545,7 +546,9 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
                         val covering = this.coveringAtExact(structure.position)
 
                         // If it is the case, draw the covering instead, possibly staining the underlying structure
-                        if(covering.isPresent)
+                        // If the structure disallows staining and the covering wants to stain, nothing will happen and
+                        // the structure is drawn as usual
+                        if(covering.isPresent && !(covering.get().type.drawMode == CoveringDrawMode.Staining && !structure.baseType.isStainable))
                         {
                             this.drawCovering(screen, covering.get(), structure.tile())
                         }

@@ -11,11 +11,13 @@ import kotlinx.serialization.Serializable
  * @property displayName Human-readable name for this structure type
  * @property description Short description text for this structure type
  * @property pathingType How this structure interacts with path finding
+ * @property isStainable Whether this structure is stainable by coverings
  */
 @Serializable
 data class StructureType(
         val identifier: String,
         @SerialName("display_name") val displayName: String,
         val description: String = "",
-        @SerialName("pathing_type") val pathingType: PathingType = PathingType.NonRestricted
+        @SerialName("pathing_type") val pathingType: PathingType = PathingType.NonRestricted,
+        @SerialName("is_stainable") val isStainable: Boolean = false
 )
