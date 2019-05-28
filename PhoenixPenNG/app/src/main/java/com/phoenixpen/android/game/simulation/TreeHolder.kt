@@ -112,7 +112,7 @@ class TreeHolder(val context: Context): StructureHolder
                         val pos = Position3D(position.x + ix, position.y + dy, position.z + iz)
 
                         // Save in tree object
-                        tree.structures.add(TreePartStructure(treePartType, pos))
+                        tree.structures.add(TreePart.create(treePartType, pos))
                     }
                 }
             }

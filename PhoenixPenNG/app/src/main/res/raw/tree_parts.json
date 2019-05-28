@@ -6,22 +6,17 @@
       "display_name": "leaves, branches",
       "description": "branches with leaves"
     },
-    "tile":
-    {
-      "glyph": 172,
-      "foreground": "#00CC55"
-    },
-    "varied_tile": true,
-    "tiles": {
-      "values": [
-        { "value": { "glyph": 172, "foreground": "#00CC55" }, "probability": 0.2 },
-        { "value": { "glyph": 172, "foreground": "#05AE4C" }, "probability": 0.2 },
-        { "value": { "glyph": 172, "foreground": "#049A42" }, "probability": 0.2 },
-        { "value": { "glyph": 172, "foreground": "#039A56" }, "probability": 0.15 },
-        { "value": { "glyph": 172, "foreground": "#06AC4B" }, "probability": 0.1 },
-        { "value": { "glyph": 172, "foreground": "#299D59" }, "probability": 0.06 },
-        { "value": { "glyph": 172, "foreground": "#00AD47" }, "probability": 0.06 },
-        { "value": { "glyph": 172, "foreground": "#0C7A39" }, "probability": 0.03 }
+    "tile": {
+      "mode": "Varied",
+      "data": [
+        { "tile": { "glyph": 172, "foreground": "#00CC55" }, "probability": 0.2  },
+        { "tile": { "glyph": 172, "foreground": "#05AE4C" }, "probability": 0.2  },
+        { "tile": { "glyph": 172, "foreground": "#049A42" }, "probability": 0.2  },
+        { "tile": { "glyph": 172, "foreground": "#039A56" }, "probability": 0.15 },
+        { "tile": { "glyph": 172, "foreground": "#06AC4B" }, "probability": 0.1  },
+        { "tile": { "glyph": 172, "foreground": "#299D59" }, "probability": 0.06 },
+        { "tile": { "glyph": 172, "foreground": "#00AD47" }, "probability": 0.06 },
+        { "tile": { "glyph": 172, "foreground": "#0C7A39" }, "probability": 0.03 }
       ]
     }
   },
@@ -32,22 +27,17 @@
       "display_name": "leaves, twigs",
       "description": "twigs with leaves"
     },
-    "tile":
-    {
-      "glyph": 59,
-      "foreground": "#00CC55"
-    },
-    "varied_tile": true,
-    "tiles": {
-      "values": [
-        { "value": { "glyph": 59, "foreground": "#00CC55" }, "probability": 0.2 },
-        { "value": { "glyph": 59, "foreground": "#05AE4C" }, "probability": 0.2 },
-        { "value": { "glyph": 59, "foreground": "#049A42" }, "probability": 0.2 },
-        { "value": { "glyph": 59, "foreground": "#039A56" }, "probability": 0.15 },
-        { "value": { "glyph": 59, "foreground": "#06AC4B" }, "probability": 0.1 },
-        { "value": { "glyph": 59, "foreground": "#299D59" }, "probability": 0.06 },
-        { "value": { "glyph": 59, "foreground": "#00AD47" }, "probability": 0.06 },
-        { "value": { "glyph": 59, "foreground": "#0C7A39" }, "probability": 0.03 }
+    "tile": {
+      "mode": "Varied",
+      "data": [
+        { "tile": { "glyph": 172, "foreground": "#00CC55" }, "probability": 0.2  },
+        { "tile": { "glyph": 172, "foreground": "#05AE4C" }, "probability": 0.2  },
+        { "tile": { "glyph": 172, "foreground": "#049A42" }, "probability": 0.2  },
+        { "tile": { "glyph": 172, "foreground": "#039A56" }, "probability": 0.15 },
+        { "tile": { "glyph": 172, "foreground": "#06AC4B" }, "probability": 0.1  },
+        { "tile": { "glyph": 172, "foreground": "#299D59" }, "probability": 0.06 },
+        { "tile": { "glyph": 172, "foreground": "#00AD47" }, "probability": 0.06 },
+        { "tile": { "glyph": 172, "foreground": "#0C7A39" }, "probability": 0.03 }
       ]
     }
   },
@@ -60,8 +50,10 @@
     },
     "tile":
     {
-      "glyph": 79,
-      "foreground": "#8E6004"
+      "data" : {
+        "glyph": 79,
+        "foreground": "#8E6004"
+      }
     }
   },
   {
@@ -73,8 +65,10 @@
     },
     "tile":
     {
-      "glyph": 127,
-      "foreground": "#473002"
+      "data" : {
+        "glyph": 127,
+        "foreground": "#473002"
+      }
     }
   },
   {
@@ -86,8 +80,10 @@
     },
     "tile":
     {
-      "glyph": 196,
-      "foreground": "#473002"
+      "data" : {
+        "glyph": 196,
+        "foreground": "#473002"
+      }
     }
   },
   {
@@ -99,8 +95,10 @@
     },
     "tile":
     {
-      "glyph": 179,
-      "foreground": "#473002"
+      "data": {
+        "glyph": 179,
+        "foreground": "#473002"
+      }
     }
   },
   {
@@ -112,8 +110,10 @@
     },
     "tile":
     {
-      "glyph": 182,
-      "foreground": "#473002"
+      "data": {
+        "glyph": 182,
+        "foreground": "#473002"
+      }
     }
   },
   {
@@ -125,8 +125,10 @@
     },
     "tile":
     {
-      "glyph": 218,
-      "foreground": "#473002"
+      "data": {
+        "glyph": 218,
+        "foreground": "#473002"
+      }
     }
   },
   {
@@ -138,8 +140,10 @@
     },
     "tile":
     {
-      "glyph": 217,
-      "foreground": "#473002"
+      "data": {
+        "glyph": 217,
+        "foreground": "#473002"
+      }
     }
   },
   {
@@ -151,8 +155,10 @@
     },
     "tile":
     {
-      "glyph": 191,
-      "foreground": "#473002"
+      "data": {
+        "glyph": 191,
+        "foreground": "#473002"
+      }
     }
   },
   {
@@ -164,8 +170,10 @@
     },
     "tile":
     {
-      "glyph": 192,
-      "foreground": "#473002"
+      "data": {
+        "glyph": 192,
+        "foreground": "#473002"
+      }
     }
   },
   {
@@ -177,8 +185,10 @@
     },
     "tile":
     {
-      "glyph": 199,
-      "foreground": "#473002"
+      "data" : {
+        "glyph": 199,
+        "foreground": "#473002"
+      }
     }
   },
   {
@@ -190,8 +200,10 @@
     },
     "tile":
     {
-      "glyph": 195,
-      "foreground": "#473002"
+      "data" : {
+        "glyph": 195,
+        "foreground": "#473002"
+      }
     }
   },
   {
@@ -203,8 +215,10 @@
     },
     "tile":
     {
-      "glyph": 194,
-      "foreground": "#473002"
+      "data" : {
+        "glyph": 194,
+        "foreground": "#473002"
+      }
     }
   },
   {
@@ -216,8 +230,10 @@
     },
     "tile":
     {
-      "glyph": 193,
-      "foreground": "#473002"
+      "data" : {
+        "glyph": 193,
+        "foreground": "#473002"
+      }
     }
   },
   {
@@ -229,8 +245,10 @@
     },
     "tile":
     {
-      "glyph": 205,
-      "foreground": "#8E6004"
+      "data" : {
+        "glyph": 205,
+        "foreground": "#8E6004"
+      }
     }
   },
   {
@@ -242,8 +260,10 @@
     },
     "tile":
     {
-      "glyph": 186,
-      "foreground": "#8E6004"
+      "data" : {
+        "glyph": 186,
+        "foreground": "#8E6004"
+      }
     }
   },
   {
@@ -255,8 +275,10 @@
     },
     "tile":
     {
-      "glyph": 201,
-      "foreground": "#8E6004"
+      "data" : {
+        "glyph": 201,
+        "foreground": "#8E6004"
+      }
     }
   },
   {
@@ -268,8 +290,10 @@
     },
     "tile":
     {
-      "glyph": 188,
-      "foreground": "#8E6004"
+      "data" : {
+        "glyph": 188,
+        "foreground": "#8E6004"
+      }
     }
   },
   {
@@ -281,8 +305,10 @@
     },
     "tile":
     {
-      "glyph": 200,
-      "foreground": "#8E6004"
+      "data" : {
+        "glyph": 200,
+        "foreground": "#8E6004"
+      }
     }
   },
   {
@@ -294,8 +320,10 @@
     },
     "tile":
     {
-      "glyph": 187,
-      "foreground": "#8E6004"
+      "data" : {
+        "glyph": 187,
+        "foreground": "#8E6004"
+      }
     }
   },
   {
@@ -307,8 +335,10 @@
     },
     "tile":
     {
-      "glyph": 206,
-      "foreground": "#8E6004"
+      "data" : {
+        "glyph": 206,
+        "foreground": "#8E6004"
+      }
     }
   },
   {
@@ -320,8 +350,10 @@
     },
     "tile":
     {
-      "glyph": 185,
-      "foreground": "#8E6004"
+      "data" : {
+        "glyph": 185,
+        "foreground": "#8E6004"
+      }
     }
   },
   {
@@ -333,8 +365,10 @@
     },
     "tile":
     {
-      "glyph": 204,
-      "foreground": "#8E6004"
+      "data" : {
+        "glyph": 204,
+        "foreground": "#8E6004"
+      }
     }
   },
   {
@@ -346,8 +380,10 @@
     },
     "tile":
     {
-      "glyph": 203,
-      "foreground": "#8E6004"
+      "data" : {
+        "glyph": 203,
+        "foreground": "#8E6004"
+      }
     }
   },
   {
@@ -359,8 +395,10 @@
     },
     "tile":
     {
-      "glyph": 202,
-      "foreground": "#8E6004"
+      "data" : {
+        "glyph": 202,
+        "foreground": "#8E6004"
+      }
     }
   }
 ]

@@ -4,6 +4,8 @@ import android.content.Context
 import android.opengl.GLSurfaceView
 import com.phoenixpen.android.game.ascii.ColorSerializer
 import com.phoenixpen.android.game.ascii.Position3D
+import com.phoenixpen.android.game.ascii.TileType
+import com.phoenixpen.android.game.ascii.TileTypeSerializer
 import com.phoenixpen.android.game.core.AsciiApplication
 import com.phoenixpen.android.game.data.PlaceholderDefinition
 import com.phoenixpen.android.game.data.PlaceholderDefinitionSerializer

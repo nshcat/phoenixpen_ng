@@ -2,6 +2,8 @@ package com.phoenixpen.android.game.data
 
 import com.phoenixpen.android.game.ascii.Color
 import com.phoenixpen.android.game.ascii.DrawInfo
+import com.phoenixpen.android.game.ascii.TileType
+import com.phoenixpen.android.game.ascii.TileTypeSerializer
 import com.phoenixpen.android.game.core.WeightedList
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -10,16 +12,12 @@ import kotlinx.serialization.Serializable
  * A type class holding all required data for a tree part, which is a structure.
  *
  * @property basicData Basic structure information, like identifier and description
- * @property tile Information about how to draw this tree part
- * @property variedTile Whether this tree part has multiple different tile representations
- * @property tiles Weighted list of tile representations. Only used if [variedTile] is set to true.
+ * @property tile Graphical representation of this tree part
  */
 @Serializable
 data class TreePartType(
         @SerialName("basic_data") val basicData: StructureType,
-        val tile: DrawInfo,
-        @SerialName("varied_tile") val variedTile: Boolean = false,
-        val tiles: WeightedList<DrawInfo> = WeightedList(listOf())
+        @SerialName("tile") @Serializable(with=TileTypeSerializer::class) val tileType: TileType = TileType()
 )
 {
     companion object
@@ -34,11 +32,7 @@ data class TreePartType(
                         "MISSING STRUCTURE DATA",
                         PathingType.NonRestricted
                 ),
-                DrawInfo(
-                        0,
-                        Color.green,
-                        Color.green
-                )
+                TileType(staticTile = DrawInfo(background = Color.green))
         )
     }
 }

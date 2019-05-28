@@ -3,10 +3,7 @@ package com.phoenixpen.android.game.simulation
 import android.content.Context
 import com.phoenixpen.android.R
 import com.phoenixpen.android.game.ascii.Position3D
-import com.phoenixpen.android.game.data.ItemManager
-import com.phoenixpen.android.game.data.MaterialManager
-import com.phoenixpen.android.game.data.SimpleStructure
-import com.phoenixpen.android.game.data.SimpleStructureManager
+import com.phoenixpen.android.game.data.*
 import com.phoenixpen.android.game.map.Map
 import com.phoenixpen.android.game.map.TestMapGenerator
 import kotlin.random.Random
@@ -39,6 +36,11 @@ class Simulation(val context: Context)
     val simpleStructureManager = SimpleStructureManager()
 
     /**
+     * Manager for all covering types.
+     */
+    val coveringManager = CoveringManager()
+
+    /**
      * Holder for all simple structures. For testing purposes.
      */
     val simpleStructureHolder = SimpleStructureHolder()
@@ -47,6 +49,11 @@ class Simulation(val context: Context)
      * Tree system
      */
     val treeHolder = TreeHolder(this.context)
+
+    /**
+     * Snow system
+     */
+    val snowSystem: SnowSystem
 
     /**
      * Simulation state initialization procedure
@@ -62,6 +69,9 @@ class Simulation(val context: Context)
 
         // Load simple structure types
         this.simpleStructureManager.loadSimpleStructures(this.context, R.raw.simple_structures)
+
+        // Load covering types
+        this.coveringManager.loadCoverings(this.context, R.raw.coverings)
 
         // Load map. In this case, a test map is regenerated on each app launch.
         this.map = Map.load(TestMapGenerator(materialManager))
@@ -91,6 +101,9 @@ class Simulation(val context: Context)
             val pos = Position3D(Random.nextInt(-3, 27), 2, Random.nextInt(-3, 50))
             this.treeHolder.generateTree(pos, "test_tree")
         }
+
+        // Cover everything in snow
+        this.snowSystem = SnowSystem(this)
     }
 
     /**

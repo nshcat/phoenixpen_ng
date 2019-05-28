@@ -2,37 +2,24 @@
   {
     "identifier": "stone",
     "description": "Test stone",
-    "glyphs": {
-      "values": [
-        { "value": { "glyph": 0, "foreground": "#000000", "background": "#ADADAD" }, "probability": 1.0 }
-      ]
-    },
-    "glyphs_fancy": {
-      "values": [
-        { "value": { "glyph": 0, "foreground": "#000000", "background": "#ADADAD" }, "probability": 1.0 }
-      ]
+    "tile": {
+      "data": { "glyph": 0, "foreground": "#000000", "background": "#ADADAD" }
     }
   },
   {
     "identifier": "grass",
     "description": "Test grass",
-    "glyphs": {
-      "values": [
-        { "value": { "glyph": 44, "foreground": "#00FF00", "background": "#000000" }, "probability": 1.0 }
-      ]
-    },
-    "glyphs_fancy": {
-      "values": [
-        { "value": { "glyph": 0, "foreground": "#000000", "background": "#00662B" }, "probability": 0.2 },
-        { "value": { "glyph": 0, "foreground": "#000000", "background": "#446629" }, "probability": 0.2 },
-        { "value": { "glyph": 0, "foreground": "#000000", "background": "#003E17" }, "probability": 0.2 },
-        { "value": { "glyph": 0, "foreground": "#000000", "background": "#6B6B36" }, "probability": 0.15 },
-
-        { "value": { "glyph": 0, "foreground": "#000000", "background": "#334D1F" }, "probability": 0.1 },
-
-        { "value": { "glyph": 0, "foreground": "#000000", "background": "#558033" }, "probability": 0.06 },
-        { "value": { "glyph": 0, "foreground": "#000000", "background": "#005C26" }, "probability": 0.06 },
-        { "value": { "glyph": 0, "foreground": "#000000", "background": "#5E5E5E" }, "probability": 0.03 }
+    "tile": {
+      "mode": "Varied",
+      "data": [
+        { "tile": { "glyph": 0, "foreground": "#000000", "background": "#00662B" }, "probability": 0.2 },
+        { "tile": { "glyph": 0, "foreground": "#000000", "background": "#446629" }, "probability": 0.2 },
+        { "tile": { "glyph": 0, "foreground": "#000000", "background": "#003E17" }, "probability": 0.2 },
+        { "tile": { "glyph": 0, "foreground": "#000000", "background": "#6B6B36" }, "probability": 0.15 },
+        { "tile": { "glyph": 0, "foreground": "#000000", "background": "#334D1F" }, "probability": 0.1 },
+        { "tile": { "glyph": 0, "foreground": "#000000", "background": "#558033" }, "probability": 0.06 },
+        { "tile": { "glyph": 0, "foreground": "#000000", "background": "#005C26" }, "probability": 0.06 },
+        { "tile": { "glyph": 0, "foreground": "#000000", "background": "#5E5E5E" }, "probability": 0.03 }
       ]
     }
   }
