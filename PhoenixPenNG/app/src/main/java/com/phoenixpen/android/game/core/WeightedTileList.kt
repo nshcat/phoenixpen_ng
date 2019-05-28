@@ -1,16 +1,26 @@
 package com.phoenixpen.android.game.core
 
+import com.phoenixpen.android.game.ascii.DrawInfo
 import kotlinx.serialization.*
+import kotlinx.serialization.internal.StringDescriptor
 import java.util.concurrent.ThreadLocalRandom
+
+/**
+ * A commonly used type alias for a weighted list containing tile draw info instances.
+ */
+//typealias WeightedTileList = WeightedList<DrawInfo>
+
+// TODO fix generic serialization! For now, own class.
+
 
 /**
  * A pair of a value and its associated probability.
  *
- * @property value The value
+ * @property tile The value
  * @property probability The values probability
  */
 @Serializable
-data class WeightedPair<T>(val value: T, val probability: Double)
+data class WeightedTilePair(val tile: DrawInfo, val probability: Double)
 
 
 /**
@@ -23,7 +33,7 @@ data class WeightedPair<T>(val value: T, val probability: Double)
  * @property values All values in the list. The probabilities are not allowed to be 0 or negative.
  */
 @Serializable
-class WeightedList<T>(val values: List<WeightedPair<T>>)
+class WeightedTileList(val values: List<WeightedTilePair>)
 {
     /**
      * The total probability value. Needed to determine the required range of
@@ -31,17 +41,13 @@ class WeightedList<T>(val values: List<WeightedPair<T>>)
      */
     @Transient
     protected val totalProbability: Double
-        = this.values.stream().mapToDouble(WeightedPair<T>::probability).sum()
+            = this.values.stream().mapToDouble(WeightedTilePair::probability).sum()
 
     /**
      * Check input
      */
     init
     {
-        // We need at least one value
-        //if(this.values.isEmpty())
-        //    throw IllegalArgumentException("WeightedList: Value collection must not be empty")
-
         // Negative or zero probabilities are not allowed
         if(this.values.stream().anyMatch{ x -> x.probability <= 0.0 })
             throw IllegalArgumentException("WeightedList: Value probabilities must not be negative or zero")
@@ -64,9 +70,9 @@ class WeightedList<T>(val values: List<WeightedPair<T>>)
      *
      * @return Randomly selected value of type T
      */
-    fun drawElement(): T
+    fun drawElement(): DrawInfo
     {
-        return this.drawEntry().second.value
+        return this.drawEntry().second.tile
     }
 
     /**
@@ -87,12 +93,12 @@ class WeightedList<T>(val values: List<WeightedPair<T>>)
      * @param idx Index of element to retrieve
      * @return Element at given index, if it exists.
      */
-    fun elementAt(idx: Int): T
+    fun elementAt(idx: Int): DrawInfo
     {
         if(idx >= this.values.size)
             throw IllegalArgumentException("WeightedList::elementAt: Index out of bounds")
 
-        return this.values[idx].value
+        return this.values[idx].tile
     }
 
     /**
@@ -110,7 +116,7 @@ class WeightedList<T>(val values: List<WeightedPair<T>>)
      *
      * @return Pair of the selected entry as well as its index.
      */
-    private fun drawEntry(): Pair<Int, WeightedPair<T>>
+    private fun drawEntry(): Pair<Int, WeightedTilePair>
     {
         if(this.values.isEmpty())
             throw IllegalStateException("Can't draw element from empty weighted list")
@@ -134,3 +140,26 @@ class WeightedList<T>(val values: List<WeightedPair<T>>)
     }
 }
 
+
+
+/**
+ * Serializer implementation for [WeightedTileList]. We don't want a deep nesting normally caused by
+ * the list property [values].
+ */
+class WeightedTileListSerializer : KSerializer<WeightedTileList>
+{
+    override val descriptor: SerialDescriptor
+        get() = StringDescriptor.withName("WeightedTileList")
+
+    @ImplicitReflectionSerializer
+    override fun deserialize(decoder: Decoder): WeightedTileList
+    {
+        return WeightedTileList(decoder.decode(WeightedTilePair.serializer().list))
+    }
+
+    @ImplicitReflectionSerializer
+    override fun serialize(encoder: Encoder, obj: WeightedTileList)
+    {
+        encoder.encode(obj.values)
+    }
+}
