@@ -1,0 +1,15 @@
+[
+  {
+    "identifier": "snow",
+    "display_name": "a dusting of snow",
+    "description": "a dusting of snow",
+    "tile": {
+      "mode": "Varied",
+      "data": [
+        { "tile": { "glyph": 0, "background": "#FFFFFF" }, "probability": 0.6 },
+        { "tile": { "glyph": 0, "background": "#F0F0F0" }, "probability": 0.2 },
+        { "tile": { "glyph": 0, "background": "#E6E6E6" }, "probability": 0.2 }
+      ]
+    }
+  }
+]
