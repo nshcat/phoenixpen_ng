@@ -35,10 +35,6 @@ class MainScene(application: Application, dimensions: ScreenDimensions): Scene(a
      */
     init
     {
-        // Register holders in simulation with map view
-        this.mapView.registerHolder(this.simulationState.simpleStructureHolder)
-        this.mapView.registerHolder(this.simulationState.treeHolder)
-        this.mapView.registerHolder(this.simulationState.snowSystem)
     }
 
 

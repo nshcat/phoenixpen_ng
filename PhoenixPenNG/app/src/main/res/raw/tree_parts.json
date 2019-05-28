@@ -4,7 +4,8 @@
     {
       "identifier": "primary_leaf_default",
       "display_name": "leaves, branches",
-      "description": "branches with leaves"
+      "description": "branches with leaves",
+      "is_stainable": true
     },
     "tile": {
       "mode": "Varied",
@@ -25,7 +26,8 @@
     {
       "identifier": "secondary_leaf_default",
       "display_name": "leaves, twigs",
-      "description": "twigs with leaves"
+      "description": "twigs with leaves",
+      "is_stainable": true
     },
     "tile": {
       "mode": "Varied",
