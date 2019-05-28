@@ -1,6 +1,14 @@
 package com.phoenixpen.android.game.map
 
 import com.phoenixpen.android.game.ascii.Position3D
+import com.phoenixpen.android.game.core.Updateable
+import com.phoenixpen.android.game.data.Covering
+import com.phoenixpen.android.game.data.Structure
+import com.phoenixpen.android.game.simulation.CoveringHolder
+import com.phoenixpen.android.game.simulation.StructureHolder
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 /**
  * A class managing all data belonging to the game map. This class is not responsible for rendering
@@ -8,13 +16,45 @@ import com.phoenixpen.android.game.ascii.Position3D
  *
  * @param dimensions The current map dimensions. Width is in x direction, height in y and depth in z
  */
-class Map(val dimensions: MapDimensions)
+class Map(val dimensions: MapDimensions): Updateable
 {
     /**
      * Three dimensional array containing all map cells. This is stored in a linear fashion. Use
      * [calculateIndex] to convert x,y,z coordinates to a corresponding index into this array.
      */
     val cells = ArrayList<MapCell>(dimensions.width * dimensions.height * dimensions.depth)
+
+    /**
+     * All structures that are present in the game world. Note that this class does not own them,
+     * they are contributed by a number of [StructureHolder] classes
+     */
+    var structures = ArrayList<Structure>()
+
+    /**
+     * All coverings that are present in the game world. Note that this class does not own them,
+     * they are contributed by a number of [CoveringHolder] classes
+     */
+    var coverings = ArrayList<Covering>()
+
+    /**
+     * Hashmap of all coverings associated with their position, for faster lookup
+     */
+    private val coveringMap = HashMap<Position3D, MutableList<Covering>>()
+
+    /**
+     * Hashmap of all structure associated with their position, for faster lookup
+     */
+    private val structureMap = HashMap<Position3D, MutableList<Structure>>()
+
+    /**
+     * All registered structure holders. These are used to retrieve all structures that need to be rendered.
+     */
+    private val structureHolders = ArrayList<StructureHolder>()
+
+    /**
+     * All registered covering holders. These are used to retrieve all coverings that need to be rendered.
+     */
+    private val coveringHolders = ArrayList<CoveringHolder>()
 
     /**
      * Initialize each map cell to a known, empty default
@@ -28,6 +68,184 @@ class Map(val dimensions: MapDimensions)
         for(i in 0 until cellCount)
         {
             cells.add(MapCell.empty())
+        }
+    }
+
+    /**
+     * Update structure and covering caches
+     */
+    override fun update(elapsedTicks: Int)
+    {
+        this.updateDatastructures()
+    }
+
+    /**
+     * Update all acceleration datastructures
+     */
+    fun updateDatastructures()
+    {
+        // Update game object collections
+        this.coverings = this.retrieveCoverings()
+        this.structures = this.retrieveStructures()
+
+        // Update acceleration structures
+        this.updateCoveringMap()
+        this.updateStructureMap()
+    }
+
+    /**
+     * Register new structure holder to be used as a source of structures.
+     *
+     * @param holder The structure holder to add
+     */
+    fun registerHolder(holder: StructureHolder)
+    {
+        this.structureHolders.add(holder)
+    }
+
+    /**
+     * Register new covering holder to be used as a source of coverings.
+     *
+     * @param holder The covering holder to add
+     */
+    fun registerHolder(holder: CoveringHolder)
+    {
+        this.coveringHolders.add(holder)
+    }
+
+    /**
+     * Retrieve all structures managed by the registered structure holders.
+     *
+     * @return List containing all structures managed by registered structure holders
+     */
+    private fun retrieveStructures(): ArrayList<Structure>
+    {
+        // Destination collection for the structure references
+        val structures = ArrayList<Structure>()
+
+        // Aggregate all structures
+        for(holder in this.structureHolders)
+        {
+            structures.addAll(holder.structures())
+        }
+
+        return structures
+    }
+
+    /**
+     * Retrieve all structures present at a given map position, but NOT below.
+     *
+     * @param mapPosition Position to check for structures at
+     * @return Structures found at the given position
+     */
+    fun getStructuresAtExact(mapPosition: Position3D): Optional<List<Structure>>
+    {
+        return Optional.ofNullable(this.structureMap[mapPosition])
+    }
+
+    /**
+     * Retrieve first structure present at a given map position, but NOT below.
+     *
+     * @param mapPosition Position to check for structures at
+     * @return Structure found at the given position
+     */
+    fun getStructureAtExact(mapPosition: Position3D): Optional<Structure>
+    {
+        val result = this.getStructuresAtExact(mapPosition)
+
+        if(result.isPresent && result.get().isNotEmpty())
+            return Optional.of(result.get().first())
+        else return Optional.empty()
+    }
+
+    /**
+     * Retrieve covering at given position, if one exists. Returns the last encountered covering,
+     * since it overlays all the other ones.
+     *
+     * @param position Position to look at
+     * @return Covering reference, if found
+     */
+    fun coveringAtExact(position: Position3D): Optional<Covering>
+    {
+        if(this.coveringMap.containsKey(position))
+        {
+            val list = this.coveringMap[position] ?: throw RuntimeException("Should not happen")
+
+            if(list.isNotEmpty())
+                return Optional.of(list.last())
+        }
+
+        return Optional.empty()
+    }
+
+    /**
+     * Retrieve all coverings managed by the registered covering holders.
+     *
+     * @return List containing all coverings managed by registered covering holders
+     */
+    private fun retrieveCoverings(): ArrayList<Covering>
+    {
+        // Destination collection for the covering references
+        val coverings = ArrayList<Covering>()
+
+        // Aggregate all structures
+        for(holder in this.coveringHolders)
+        {
+            coverings.addAll(holder.coverings())
+        }
+
+        return coverings
+    }
+
+    /**
+     * Update the structure map for faster structure look up
+     */
+    private fun updateStructureMap()
+    {
+        // Clear the hash map
+        this.structureMap.clear()
+
+        // Insert all elements
+        for(structure in this.structures)
+        {
+            // Is there already a list in the map?
+            if(!this.structureMap.containsKey(structure.position))
+            {
+                // If not, add one
+                this.structureMap.put(structure.position, ArrayList())
+            }
+
+            // Retrieve list. It is guaranteed to exist by now.
+            val list = this.structureMap.get(structure.position) ?: throw RuntimeException("Should not happen")
+
+            // Add the structure to it
+            list.add(structure)
+        }
+    }
+
+    /**
+     * Update the covering map for faster covering look up
+     */
+    private fun updateCoveringMap()
+    {
+        // Clear the hash map
+        this.coveringMap.clear()
+
+        // Insert all elements
+        for(covering in this.coverings)
+        {
+            // Is there already a list in the map?
+            if(!this.coveringMap.containsKey(covering.position))
+            {
+                // If not, add one
+                this.coveringMap.put(covering.position, ArrayList())
+            }
+
+            // Retrieve list. It is guaranteed to exist by now.
+            val list = this.coveringMap.get(covering.position) ?: throw RuntimeException("Should not happen")
+
+            // Add the structure to it
+            list.add(covering)
         }
     }
 

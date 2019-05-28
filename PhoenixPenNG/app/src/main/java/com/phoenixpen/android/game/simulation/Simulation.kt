@@ -3,6 +3,7 @@ package com.phoenixpen.android.game.simulation
 import android.content.Context
 import com.phoenixpen.android.R
 import com.phoenixpen.android.game.ascii.Position3D
+import com.phoenixpen.android.game.core.Updateable
 import com.phoenixpen.android.game.data.*
 import com.phoenixpen.android.game.map.Map
 import com.phoenixpen.android.game.map.TestMapGenerator
@@ -13,7 +14,7 @@ import kotlin.random.Random
  *
  * @property context The android application context
  */
-class Simulation(val context: Context)
+class Simulation(val context: Context): Updateable
 {
     /**
      * The main game map.
@@ -82,6 +83,10 @@ class Simulation(val context: Context)
                         Position3D(6, 1, 6))
         )
 
+        // Connect map to structure and covering holders
+        this.map.registerHolder(this.treeHolder)
+        this.map.registerHolder(this.simpleStructureHolder)
+
         // Add a tree
         /*this.treeHolder.generateTree(Position3D(14, 2, 3), "test_tree")
         this.treeHolder.generateTree(Position3D(12, 2, 12), "test_tree")
@@ -102,8 +107,11 @@ class Simulation(val context: Context)
             this.treeHolder.generateTree(pos, "test_tree")
         }
 
+        this.map.updateDatastructures()
+
         // Cover everything in snow
         this.snowSystem = SnowSystem(this)
+        this.map.registerHolder(this.snowSystem)
     }
 
     /**
@@ -111,8 +119,10 @@ class Simulation(val context: Context)
      *
      * @param elapsedTicks The number of elapsed ticks since last update
      */
-    fun update(elapsedTicks: Int)
+    override fun update(elapsedTicks: Int)
     {
-
+        // Update map (acceleration structures inside map class)
+        // THIS HAS TO BE DONE FIRST
+        this.map.update(elapsedTicks)
     }
 }

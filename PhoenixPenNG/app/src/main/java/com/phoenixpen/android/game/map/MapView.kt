@@ -26,36 +26,6 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
     : SceneComponent
 {
     /**
-     * All registered structure holders. These are used to retrieve all structures that need to be rendered.
-     */
-    private val structureHolders = ArrayList<StructureHolder>()
-
-    /**
-     * All registered covering holders. These are used to retrieve all coverings that need to be rendered.
-     */
-    private val coveringHolders = ArrayList<CoveringHolder>()
-
-    /**
-     * A hash map used to speed up lookup for structures at a given position in the world map
-     */
-    private val structureMap = HashMap<Position3D, MutableList<Structure>>()
-
-    /**
-     * A hash map used to speed up lookup for coverings at a given position in the world map
-     */
-    private val coveringMap = HashMap<Position3D, MutableList<Covering>>()
-
-    /**
-     * Buffer used to hold all aggregated structures in each frame.
-     */
-    private var structureBuffer = ArrayList<Structure>()
-
-    /**
-     * Buffer used to hold all aggregated coverings in each frame.
-     */
-    private var coveringBuffer = ArrayList<Covering>()
-
-    /**
      * Tick counter used to control height change
      */
     private val counter = TickCounter(20)
@@ -68,119 +38,9 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
     override fun update(elapsedTicks: Int)
     {
         this.counter.update(elapsedTicks)
-        this.height = 3
+        //this.height = 3
 
-        //this.height = 2 + (this.counter.totalPeriods % 6)
-    }
-
-    /**
-     * Update the structure map for faster structure look up
-     */
-    private fun updateStructureMap()
-    {
-        // Clear the hash map
-        this.structureMap.clear()
-
-        // Insert all elements
-        for(structure in this.structureBuffer)
-        {
-            // Is there already a list in the map?
-            if(!this.structureMap.containsKey(structure.position))
-            {
-                // If not, add one
-                this.structureMap.put(structure.position, ArrayList())
-            }
-
-            // Retrieve list. It is guaranteed to exist by now.
-            val list = this.structureMap.get(structure.position) ?: throw RuntimeException("Should not happen")
-
-            // Add the structure to it
-            list.add(structure)
-        }
-    }
-
-    /**
-     * Update the covering map for faster covering look up
-     */
-    private fun updateCoveringMap()
-    {
-        // Clear the hash map
-        this.coveringMap.clear()
-
-        // Insert all elements
-        for(covering in this.coveringBuffer)
-        {
-            // Is there already a list in the map?
-            if(!this.coveringMap.containsKey(covering.position))
-            {
-                // If not, add one
-                this.coveringMap.put(covering.position, ArrayList())
-            }
-
-            // Retrieve list. It is guaranteed to exist by now.
-            val list = this.coveringMap.get(covering.position) ?: throw RuntimeException("Should not happen")
-
-            // Add the structure to it
-            list.add(covering)
-        }
-    }
-
-    /**
-     * Register new structure holder to be used as a source of structures.
-     *
-     * @param holder The structure holder to add
-     */
-    fun registerHolder(holder: StructureHolder)
-    {
-        this.structureHolders.add(holder)
-    }
-
-    /**
-     * Register new covering holder to be used as a source of coverings.
-     *
-     * @param holder The covering holder to add
-     */
-    fun registerHolder(holder: CoveringHolder)
-    {
-        this.coveringHolders.add(holder)
-    }
-
-    /**
-     * Retrieve all structures managed by the registered structure holders.
-     *
-     * @return List containing all structures managed by registered structure holders
-     */
-    private fun retrieveStructures(): ArrayList<Structure>
-    {
-        // Destination collection for the structure references
-        val structures = ArrayList<Structure>()
-
-        // Aggregate all structures
-        for(holder in this.structureHolders)
-        {
-            structures.addAll(holder.structures())
-        }
-
-        return structures
-    }
-
-    /**
-     * Retrieve all coverings managed by the registered covering holders.
-     *
-     * @return List containing all coverings managed by registered covering holders
-     */
-    private fun retrieveCoverings(): ArrayList<Covering>
-    {
-        // Destination collection for the covering references
-        val coverings = ArrayList<Covering>()
-
-        // Aggregate all structures
-        for(holder in this.coveringHolders)
-        {
-            coverings.addAll(holder.coverings())
-        }
-
-        return coverings
+        this.height = 2 + (this.counter.totalPeriods % 6)
     }
 
     /**
@@ -199,7 +59,7 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
         for(iy in mapPosition.y downTo 0)
         {
             // Try to retrieve structures at this position
-            val structures = this.getStructuresAtExact(Position3D(mapPosition.x, iy, mapPosition.z))
+            val structures = this.simulation.map.getStructuresAtExact(Position3D(mapPosition.x, iy, mapPosition.z))
 
             // If we found any structures, return the first one found.
             if(structures.isPresent && structures.get().isNotEmpty())
@@ -208,32 +68,6 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
 
         // No structure was found
         return Optional.empty()
-    }
-
-    /**
-     * Retrieve all structures present at a given map position, but NOT below.
-     *
-     * @param mapPosition Position to check for structures at
-     * @return Structures found at the given position
-     */
-    private fun getStructuresAtExact(mapPosition: Position3D): Optional<List<Structure>>
-    {
-        return Optional.ofNullable(this.structureMap[mapPosition])
-    }
-
-    /**
-     * Retrieve first structure present at a given map position, but NOT below.
-     *
-     * @param mapPosition Position to check for structures at
-     * @return Structure found at the given position
-     */
-    private fun getStructureAtExact(mapPosition: Position3D): Optional<Structure>
-    {
-        val result = this.getStructuresAtExact(mapPosition)
-
-        if(result.isPresent && result.get().isNotEmpty())
-            return Optional.of(result.get().first())
-        else return Optional.empty()
     }
 
     /**
@@ -360,7 +194,7 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
                 val newPos = Position3D(pos.x + dir.x, dy, pos.z + dir.z)
 
                 if (this.simulation.map.isInBounds(newPos))
-                    if (!this.simulation.map.cellAt(newPos).isTransparent() || getStructureAtExact(newPos).isPresent)
+                    if (!this.simulation.map.cellAt(newPos).isTransparent() || this.simulation.map.getStructureAtExact(newPos).isPresent)
                         if(!directions.any{ x -> blockingDirections[i].has(x) })
                             directions.add(directionValues[i])
             }
@@ -429,26 +263,6 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
     }
 
     /**
-     * Retrieve covering at given position, if one exists. Returns the last encountered covering,
-     * since it overlays all the other ones.
-     *
-     * @param position Position to look at
-     * @return Covering reference, if found
-     */
-    private fun coveringAtExact(position: Position3D): Optional<Covering>
-    {
-        if(this.coveringMap.containsKey(position))
-        {
-            val list = this.coveringMap[position] ?: throw RuntimeException("Should not happen")
-
-            if(list.isNotEmpty())
-                return Optional.of(list.last())
-        }
-
-        return Optional.empty()
-    }
-
-    /**
      * Draw give covering to screen, possibly modifying the tile of underlying structure of map cell
      *
      * @param screen Screen to draw to
@@ -503,17 +317,11 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
      */
     override fun render(screen: Screen)
     {
-        // Retrieve all structures
-        this.structureBuffer = this.retrieveStructures()
+        // Retrieve map reference
+        val map = this.simulation.map
 
-        // Retrieve all coverings
-        this.coveringBuffer = this.retrieveCoverings()
-
-        // Update structure map
-        this.updateStructureMap()
-
-        // Update covering map
-        this.updateCoveringMap()
+        // Make sure map data is up to date
+        map.updateDatastructures()
 
         // Render all map cells
         for(ix in 0 until this.dimensions.width)
@@ -543,7 +351,7 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
                         val structure = structureToDraw.get()
 
                         // We know that we have a structure that can be drawn, but it might have a covering on it.
-                        val covering = this.coveringAtExact(structure.position)
+                        val covering = map.coveringAtExact(structure.position)
 
                         // If it is the case, draw the covering instead, possibly staining the underlying structure
                         // If the structure disallows staining and the covering wants to stain, nothing will happen and
@@ -567,7 +375,7 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
                             val pair = cellToDraw.get()
 
                             // We know that we have a map cell that can be drawn, but it might have a covering on it.
-                            val covering = this.coveringAtExact(pair.second)
+                            val covering = map.coveringAtExact(pair.second)
 
                             // If it is the case, draw the covering instead, possibly staining the underlying map cell
                             if(covering.isPresent)
