@@ -42,6 +42,26 @@ data class Color(var r: Int, var g: Int, var b: Int)
         val white = Color(255, 255, 255)
         val magenta = Color(255, 0, 255)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Color
+
+        if (r != other.r) return false
+        if (g != other.g) return false
+        if (b != other.b) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = r
+        result = 31 * result + g
+        result = 31 * result + b
+        return result
+    }
 }
 
 

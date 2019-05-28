@@ -4,7 +4,10 @@ import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.game.ascii.*
 import com.phoenixpen.android.game.simulation.Simulation
 import com.phoenixpen.android.game.core.TickCounter
+import com.phoenixpen.android.game.data.Covering
+import com.phoenixpen.android.game.data.CoveringDrawMode
 import com.phoenixpen.android.game.data.Structure
+import com.phoenixpen.android.game.simulation.CoveringHolder
 import com.phoenixpen.android.game.simulation.StructureHolder
 import java.lang.Integer.min
 import java.util.*
@@ -27,14 +30,29 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
     private val structureHolders = ArrayList<StructureHolder>()
 
     /**
+     * All registered covering holders. These are used to retrieve all coverings that need to be rendered.
+     */
+    private val coveringHolders = ArrayList<CoveringHolder>()
+
+    /**
      * A hash map used to speed up lookup for structures at a given position in the world map
      */
     private val structureMap = HashMap<Position3D, MutableList<Structure>>()
 
     /**
+     * A hash map used to speed up lookup for coverings at a given position in the world map
+     */
+    private val coveringMap = HashMap<Position3D, MutableList<Covering>>()
+
+    /**
      * Buffer used to hold all aggregated structures in each frame.
      */
     private var structureBuffer = ArrayList<Structure>()
+
+    /**
+     * Buffer used to hold all aggregated coverings in each frame.
+     */
+    private var coveringBuffer = ArrayList<Covering>()
 
     /**
      * Tick counter used to control height change
@@ -81,6 +99,32 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
     }
 
     /**
+     * Update the covering map for faster covering look up
+     */
+    private fun updateCoveringMap()
+    {
+        // Clear the hash map
+        this.coveringMap.clear()
+
+        // Insert all elements
+        for(covering in this.coveringBuffer)
+        {
+            // Is there already a list in the map?
+            if(!this.coveringMap.containsKey(covering.position))
+            {
+                // If not, add one
+                this.coveringMap.put(covering.position, ArrayList())
+            }
+
+            // Retrieve list. It is guaranteed to exist by now.
+            val list = this.coveringMap.get(covering.position) ?: throw RuntimeException("Should not happen")
+
+            // Add the structure to it
+            list.add(covering)
+        }
+    }
+
+    /**
      * Register new structure holder to be used as a source of structures.
      *
      * @param holder The structure holder to add
@@ -88,6 +132,16 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
     fun registerHolder(holder: StructureHolder)
     {
         this.structureHolders.add(holder)
+    }
+
+    /**
+     * Register new covering holder to be used as a source of coverings.
+     *
+     * @param holder The covering holder to add
+     */
+    fun registerHolder(holder: CoveringHolder)
+    {
+        this.coveringHolders.add(holder)
     }
 
     /**
@@ -107,6 +161,25 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
         }
 
         return structures
+    }
+
+    /**
+     * Retrieve all coverings managed by the registered covering holders.
+     *
+     * @return List containing all coverings managed by registered covering holders
+     */
+    private fun retrieveCoverings(): ArrayList<Covering>
+    {
+        // Destination collection for the covering references
+        val coverings = ArrayList<Covering>()
+
+        // Aggregate all structures
+        for(holder in this.coveringHolders)
+        {
+            coverings.addAll(holder.coverings())
+        }
+
+        return coverings
     }
 
     /**
@@ -355,6 +428,74 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
     }
 
     /**
+     * Retrieve covering at given position, if one exists. Returns the last encountered covering,
+     * since it overlays all the other ones.
+     *
+     * @param position Position to look at
+     * @return Covering reference, if found
+     */
+    private fun coveringAtExact(position: Position3D): Optional<Covering>
+    {
+        if(this.coveringMap.containsKey(position))
+        {
+            val list = this.coveringMap[position] ?: throw RuntimeException("Should not happen")
+
+            if(list.isNotEmpty())
+                return Optional.of(list.last())
+        }
+
+        return Optional.empty()
+    }
+
+    /**
+     * Draw give covering to screen, possibly modifying the tile of underlying structure of map cell
+     *
+     * @param screen Screen to draw to
+     * @param covering Covering to draw
+     * @param underlying Tile of underlying structure or map cell.
+     */
+    private fun drawCovering(screen: Screen, covering: Covering, underlying: DrawInfo)
+    {
+        // Are we supposed to stain the underlying object?
+        // Having a underlying tile with glyph 0 basically forces us to just overwrite the draw info.
+        if(covering.type.drawMode == CoveringDrawMode.Staining && underlying.glyph != 0)
+        {
+            // Retrieve covering tile to extract data from
+            val coveringTile = covering.tile()
+
+            // Modify tile graphical representation
+            screen.setTile(covering.position.xz(), underlying.apply {
+                this.foreground = coveringTile.foreground
+
+                // Leave background as it is if its black
+                if(this.background != Color.black)
+                    this.background = coveringTile.background
+            })
+        }
+        else
+        {
+            // Otherwise just overwrite the draw info
+            screen.setTile(covering.position.xz(), covering.tile())
+        }
+
+        // If the covering is not directly at view height, we need to apply depth information
+        if(covering.position.y < this.height)
+        {
+            // Calculate relative depth
+            val depth = this.height - covering.position.y
+
+            // Apply depth
+            screen.setDepth(covering.position.xz(), depth)
+
+            // Determine which drop shadows need to be applied
+            val shadows = this.calculateShadowsAt(covering.position)
+
+            // Apply shadows
+            screen.setShadows(covering.position.xz(), shadows)
+        }
+    }
+
+    /**
      * Render component to screen
      *
      * @param screen Screen to render component to
@@ -364,8 +505,14 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
         // Retrieve all structures
         this.structureBuffer = this.retrieveStructures()
 
+        // Retrieve all coverings
+        this.coveringBuffer = this.retrieveCoverings()
+
         // Update structure map
         this.updateStructureMap()
+
+        // Update covering map
+        this.updateCoveringMap()
 
         // Render all map cells
         for(ix in 0 until this.dimensions.width)
@@ -391,7 +538,22 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
                     // position (height wise). We thus overwrite map cell drawing with the structure if they share the same height.
                     if(structureToDraw.isPresent && (!cellToDraw.isPresent || cellToDraw.get().second.y <= structureToDraw.get().position.y))
                     {
-                        this.drawStructure(screen, structureToDraw.get())
+                        // Retrieve structure reference
+                        val structure = structureToDraw.get()
+
+                        // We know that we have a structure that can be drawn, but it might have a covering on it.
+                        val covering = this.coveringAtExact(structure.position)
+
+                        // If it is the case, draw the covering instead, possibly staining the underlying structure
+                        if(covering.isPresent)
+                        {
+                            this.drawCovering(screen, covering.get(), structure.tile())
+                        }
+                        else
+                        {
+                            // Otherwise just draw the structure
+                            this.drawStructure(screen, structure)
+                        }
                     }
                     else // Try to draw the map cell
                     {
@@ -401,8 +563,19 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
                             // Retrieve map cell reference and its position
                             val pair = cellToDraw.get()
 
-                            // Actually draw the cell
-                            this.drawCell(screen, pair.first, pair.second)
+                            // We know that we have a map cell that can be drawn, but it might have a covering on it.
+                            val covering = this.coveringAtExact(pair.second)
+
+                            // If it is the case, draw the covering instead, possibly staining the underlying map cell
+                            if(covering.isPresent)
+                            {
+                                this.drawCovering(screen, covering.get(), pair.first.tile())
+                            }
+                            else
+                            {
+                                // Otherwise just draw the cell
+                                this.drawCell(screen, pair.first, pair.second)
+                            }
                         }
                     }
                 }

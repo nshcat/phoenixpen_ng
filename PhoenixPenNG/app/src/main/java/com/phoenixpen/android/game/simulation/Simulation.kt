@@ -51,6 +51,11 @@ class Simulation(val context: Context)
     val treeHolder = TreeHolder(this.context)
 
     /**
+     * Snow system
+     */
+    val snowSystem: SnowSystem
+
+    /**
      * Simulation state initialization procedure
      */
     init
@@ -96,6 +101,9 @@ class Simulation(val context: Context)
             val pos = Position3D(Random.nextInt(-3, 27), 2, Random.nextInt(-3, 50))
             this.treeHolder.generateTree(pos, "test_tree")
         }
+
+        // Cover everything in snow
+        this.snowSystem = SnowSystem(this)
     }
 
     /**

@@ -32,6 +32,7 @@ enum class TileTypeMode
  * a game object. This class, for example, stores the index into the weighted tile list, if varied tiles
  * are activated.
  */
+@Serializable
 data class TileInstance(val tileIndex: Int = -1)
 
 /**
