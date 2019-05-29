@@ -331,7 +331,7 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
                 // Calculate map position
                 val mapPos = Position3D(ix + this.topLeft.x, this.height, iz + this.topLeft.y)
 
-                // Only continue of its inside of the map bounds. If its not, us not drawing anything here
+                // Only continue if position is inside of map bounds. If its not, us not drawing anything here
                 // causes the screen to be black.
                 if(this.simulation.map.isInBounds(mapPos))
                 {
