@@ -1,6 +1,8 @@
 package com.phoenixpen.android.game.ascii
 
 import com.phoenixpen.android.application.ScreenDimensions
+import kotlinx.serialization.*
+import kotlinx.serialization.internal.StringDescriptor
 import org.joml.Vector2i
 import org.joml.Vector3i
 
@@ -68,4 +70,36 @@ operator fun Position3D.minus(rhs: Position3D): Position3D
 fun ScreenDimensions.toPosition(): Position
 {
     return Position(this.width, this.height)
+}
+
+
+/**
+ * Serializer for [Position]
+ */
+@Serializer(forClass = Position::class)
+object PositionSerializer: KSerializer<Position>
+{
+    override val descriptor: SerialDescriptor =
+            StringDescriptor.withName("Position")
+
+    override fun serialize(output: Encoder, obj: Position)
+    {
+        output.encodeString("{${obj.x},${obj.y}}")
+    }
+
+    override fun deserialize(input: Decoder): Position
+    {
+        val string = input.decodeString()
+
+        if(string.length < 5)
+            throw RuntimeException("Expected position literal")
+
+        // Remove first and last character
+        val trimmed = string.drop(1).dropLast(1)
+
+        // Split
+        val split = trimmed.split(',')
+
+        return Position(split[0].toInt(), split[1].toInt())
+    }
 }

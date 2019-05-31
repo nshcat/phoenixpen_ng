@@ -1,6 +1,7 @@
 [
   {
     "identifier": "small_tree_1",
+    "trunk_position": "{2,3}",
     "structure": [
       [
         "      ",
@@ -30,6 +31,7 @@
   },
   {
     "identifier": "small_tree_2",
+    "trunk_position": "{3,1}",
     "structure": [
       [
         "      ",
@@ -70,6 +72,7 @@
   },
   {
     "identifier": "small_tree_3",
+    "trunk_position": "{1,2}",
     "structure": [
       [
         "    ",
@@ -110,6 +113,7 @@
   },
   {
     "identifier": "medium_tree_1",
+    "trunk_position": "{3,3}",
     "structure": [
       [
         "       ",

@@ -4,6 +4,7 @@ import android.content.Context
 import com.phoenixpen.android.R
 import com.phoenixpen.android.game.ascii.Position
 import com.phoenixpen.android.game.ascii.Position3D
+import com.phoenixpen.android.game.ascii.minus
 import com.phoenixpen.android.game.data.*
 
 /**
@@ -11,7 +12,7 @@ import com.phoenixpen.android.game.data.*
  *
  * @property context The Android application context
  */
-class TreeHolder(val context: Context): StructureHolder
+class TreeSystem(val context: Context): StructureHolder
 {
     /**
      * Collection of all trees currently present in the game world
@@ -66,7 +67,8 @@ class TreeHolder(val context: Context): StructureHolder
     }
 
     /**
-     * Generate a tree of given type at given position
+     * Generate a tree of given type at given position. This will center the tree structure at the
+     * given position, using the structures trunk position information
      *
      * @param position Position to generate tree at
      * @param type Type of tree to generate
@@ -84,6 +86,12 @@ class TreeHolder(val context: Context): StructureHolder
 
         // Retrieve the type class object
         val structureType = this.treeStructureManager.lookupTreeStructure(structure)
+
+        // Retrieve trunk position
+        val trunkPos = structureType.trunkPosition
+
+        // Calculate real top left position where we have to start inserting the structure
+        val topLeft = position - Position3D(trunkPos.x, 0, trunkPos.y)
 
         // Generate each layer
         for((dy, layer) in structureType.structure.layers.withIndex())
@@ -109,7 +117,7 @@ class TreeHolder(val context: Context): StructureHolder
                         val treePartType = this.treePartManager.lookupTreePart(partType)
 
                         // Generate actual structure
-                        val pos = Position3D(position.x + ix, position.y + dy, position.z + iz)
+                        val pos = Position3D(topLeft.x + ix, topLeft.y + dy, topLeft.z + iz)
 
                         // Save in tree object
                         tree.structures.add(TreePart.create(treePartType, pos))

@@ -49,7 +49,7 @@ class Simulation(val context: Context): Updateable
     /**
      * Tree system
      */
-    val treeHolder = TreeHolder(this.context)
+    val treeHolder = TreeSystem(this.context)
 
     /**
      * Snow system
@@ -103,7 +103,7 @@ class Simulation(val context: Context): Updateable
             Random.nextInt(4)
 
 
-            val pos = Position3D(Random.nextInt(-3, 27), 2, Random.nextInt(-3, 50))
+            val pos = Position3D(Random.nextInt(0, 27), 2, Random.nextInt(0, 50))
             this.treeHolder.generateTree(pos, "test_tree")
         }
 
