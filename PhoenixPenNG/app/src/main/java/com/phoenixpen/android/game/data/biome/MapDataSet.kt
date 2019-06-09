@@ -1,6 +1,7 @@
 package com.phoenixpen.android.game.data.biome
 
 import android.content.Context
+import com.phoenixpen.android.game.ascii.Color
 import com.phoenixpen.android.game.ascii.Position
 import com.phoenixpen.android.game.ascii.Position3D
 import com.phoenixpen.android.game.data.Material
@@ -60,6 +61,10 @@ class MapDataSet(context: Context, mapInfoId: Int, mapTemplateIds: List<Int>)
 
                     // Retrieve layer entry
                     val entry = layer.entryAt(Position(ix, iz))
+
+                    // Ignore if its black
+                    if(entry == Color.black)
+                        continue
 
                     // Translate
                     val keyEntry = this.mapInfo.key[entry] ?: throw IllegalStateException("Key entry missing for color ${entry.r}:${entry.g}:${entry.b}")

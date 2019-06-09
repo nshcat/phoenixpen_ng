@@ -1,0 +1,9 @@
+{
+  "height": 8,
+  "key": {
+    "#FFFFFF" : {
+      "material": "grass",
+      "cell_type": "Ground"
+    }
+  }
+}
