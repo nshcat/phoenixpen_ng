@@ -19,7 +19,7 @@ class Simulation(val context: Context): Updateable
     /**
      * The main game map.
      */
-    val map: Map
+    var map: Map
 
     /**
      * The material manager for map cells

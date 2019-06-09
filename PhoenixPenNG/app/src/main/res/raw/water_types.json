@@ -11,10 +11,12 @@
       "mode": "Animated",
       "speed": "4",
       "frames": [
-        { "glyph": 247, "foreground": "#0479E6", "background": "#043363" },
-        { "glyph": 247, "foreground": "#0479E6", "background": "#043363" },
-        { "glyph": 247, "foreground": "#0479E6", "background": "#043363" },
-        { "glyph": 126, "foreground": "#0479E6", "background": "#043F79" }
+        { "glyph": 247, "foreground": "#0088FF", "background": "#003666" },
+        { "glyph": 247, "foreground": "#0088FF", "background": "#003666" },
+        { "glyph": 247, "foreground": "#0088FF", "background": "#003666" },
+        { "glyph": 247, "foreground": "#0088FF", "background": "#003666" },
+        { "glyph": 126, "foreground": "#0088FF", "background": "#004480" },
+        { "glyph": 126, "foreground": "#0088FF", "background": "#004480" }
       ]
     }
   }
