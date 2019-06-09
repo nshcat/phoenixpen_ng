@@ -1,0 +1,21 @@
+[
+  {
+    "basic_data": {
+      "identifier": "default_water",
+      "display_name": "water",
+      "description": "water",
+      "pathing_type": "Water",
+      "is_stainable": false
+    },
+    "tile": {
+      "mode": "Animated",
+      "speed": "4",
+      "frames": [
+        { "glyph": 247, "foreground": "#0479E6", "background": "#043363" },
+        { "glyph": 247, "foreground": "#0479E6", "background": "#043363" },
+        { "glyph": 247, "foreground": "#0479E6", "background": "#043363" },
+        { "glyph": 126, "foreground": "#0479E6", "background": "#043F79" }
+      ]
+    }
+  }
+]

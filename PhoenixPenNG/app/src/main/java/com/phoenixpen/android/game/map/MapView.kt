@@ -40,7 +40,7 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
         this.counter.update(elapsedTicks)
         //this.height = 3
 
-        this.height = 2 + (this.counter.totalPeriods % 6)
+        this.height = 2 //+ (this.counter.totalPeriods % 6)
     }
 
     /**

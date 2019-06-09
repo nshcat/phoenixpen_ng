@@ -1,8 +1,6 @@
 package com.phoenixpen.android.game.ascii
 
-import com.phoenixpen.android.game.core.WeightedTileList
-import com.phoenixpen.android.game.core.WeightedTileListSerializer
-import com.phoenixpen.android.game.core.WeightedTilePair
+import com.phoenixpen.android.game.core.*
 import kotlinx.serialization.*
 import kotlinx.serialization.internal.EnumSerializer
 import kotlinx.serialization.internal.StringDescriptor
@@ -24,7 +22,10 @@ enum class TileTypeMode
      */
     Varied,
 
-    /*Animated*/ // Not yet supported
+    /**
+     * A selection of tiles meant to be played in sequential order, repeating.
+     */
+    Animated
 }
 
 /**
@@ -32,8 +33,21 @@ enum class TileTypeMode
  * a game object. This class, for example, stores the index into the weighted tile list, if varied tiles
  * are activated.
  */
-@Serializable
-data class TileInstance(val tileIndex: Int = -1)
+data class TileInstance(
+        val tileIndex: Int = -1,
+        val animIdx: TickCounter = TickCounter(0)): Updateable
+{
+    /**
+     * Update animation state, if used
+     *
+     * @param elapsedTicks Number of ticks elapsed since last update
+     */
+    override fun update(elapsedTicks: Int)
+    {
+        if(this.animIdx.isNotEmpty())
+            this.animIdx.update(elapsedTicks)
+    }
+}
 
 /**
  * A class encapsulating the different ways a graphical representation of a game object can be specified.
@@ -42,15 +56,16 @@ data class TileInstance(val tileIndex: Int = -1)
  * instances in order to save e.g. the chosen varied tile.
  *
  * @property mode The current tile type mode. Per default, this is set to static.
- * @property glyph Static glyph, only used in static mode.
- * @property foreground Static foreground color, only used in static mode.
- * @property background Static background color, only used in static mode.
+ * @property staticTile The static tile info, if used
+ * @property variedTiles The varied tile info, if used
+ * @property animatedTile The tile animation, if used
  */
 @Serializable
 class TileType(
         val mode: TileTypeMode = TileTypeMode.Static,
         val staticTile: DrawInfo = DrawInfo(),
-        val variedTiles: WeightedTileList = WeightedTileList(listOf())
+        val variedTiles: WeightedTileList = WeightedTileList(listOf()),
+        val animatedTile: Animation = Animation.empty()
 )
 {
 
@@ -58,14 +73,17 @@ class TileType(
      * Create a new tile instance based on this tile type. In the case of varied tiles,
      * this will pick a graphical representation.
      *
+     * @param animOffset Animation offset. Will only have an effect if tile actually uses animation.
+     *
      * @return New tile instance based on this tile type.
      */
-    fun createInstance(): TileInstance
+    fun createInstance(animOffset: Int = 0): TileInstance
     {
         return when(this.mode)
         {
             TileTypeMode.Static -> TileInstance()
             TileTypeMode.Varied -> TileInstance(this.variedTiles.drawIndex())
+            TileTypeMode.Animated -> TileInstance(animIdx = TickCounter(period = this.animatedTile.speed, initial = animOffset))
         }
     }
 
@@ -81,6 +99,7 @@ class TileType(
         {
             TileTypeMode.Static -> this.staticTile
             TileTypeMode.Varied -> this.variedTiles.elementAt(instance.tileIndex)
+            TileTypeMode.Animated -> this.animatedTile.frameAtRaw(instance.animIdx.totalPeriods)
         }
     }
 }
@@ -118,27 +137,37 @@ class TileTypeSerializer : KSerializer<TileType>
                 mode = Json.parse(EnumSerializer(TileTypeMode::class), modeEntry.content)
             }
 
-            // The data entry definitly has to exist.
-            if(!root.containsKey("data"))
-                throw RuntimeException("missing \"data\" entry")
-
             // Decide what to do depending on the mode value
             return when (mode)
             {
                 TileTypeMode.Static ->
                 {
+                    // The data entry definitly has to exist.
+                    if(!root.containsKey("data"))
+                        throw RuntimeException("missing \"data\" entry")
+
                     // Interpret data entry as draw info
                     val entry = root.getObject("data")
                     TileType(mode, staticTile = Json.parse(DrawInfo.serializer(), entry.toString()))
                 }
                 TileTypeMode.Varied ->
                 {
+                    // The data entry definitly has to exist.
+                    if(!root.containsKey("data"))
+                        throw RuntimeException("missing \"data\" entry")
+
                     // Interpret data entry as array
                     val entry = root.getArray("data")
                     TileType(mode, variedTiles = Json.parse(WeightedTileListSerializer(), entry.toString()))
                 }
-
-                else -> throw RuntimeException("Invalid tile type mode value")
+                TileTypeMode.Animated ->
+                {
+                    // Retrieve frames
+                    val frameEntry = root.getArray("frames")
+                    val frames = Json.parse(DrawInfo.serializer().list, frameEntry.toString())
+                    val speed = root.getPrimitive("speed").int
+                    TileType(mode, animatedTile = Animation(speed, frames))
+                }
             }
         }
         catch(ex: Exception)

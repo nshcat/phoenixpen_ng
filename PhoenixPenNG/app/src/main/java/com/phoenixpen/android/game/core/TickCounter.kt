@@ -4,8 +4,10 @@ package com.phoenixpen.android.game.core
  * A class used to count ticks and fire an event every fixed number of ticks (called the period)
  *
  * @property period The tick period of this counter. Event will be fired every [period] ticks.
+ * @param initial The initial number of elapsed ticks stored in [totalPeriods]. This is used for animation
+ * offset.
  */
-class TickCounter(val period: Int)
+class TickCounter(val period: Int, initial: Int = 0)
 {
     /**
      * The current tick count
@@ -15,7 +17,7 @@ class TickCounter(val period: Int)
     /**
      * How many events were fired since creation of this tick counter instance
      */
-    var totalPeriods = 0
+    var totalPeriods = initial
         private set
 
     /**
@@ -33,5 +35,24 @@ class TickCounter(val period: Int)
         this.counter = tickCount % this.period
 
         return firedEvents
+    }
+
+    /**
+     * Check whether this tick counter is empty, which means it does nothing. This is the case
+     * if the period is 0.
+     */
+    fun isEmpty(): Boolean = this.period == 0
+
+    /**
+     * Check if tick counter is not empty. Negated version of [isEmpty]
+     */
+    fun isNotEmpty(): Boolean = !this.isEmpty()
+
+    companion object
+    {
+        /**
+         * An empty tick counter.
+         */
+        fun empty(): TickCounter = TickCounter(0)
     }
 }

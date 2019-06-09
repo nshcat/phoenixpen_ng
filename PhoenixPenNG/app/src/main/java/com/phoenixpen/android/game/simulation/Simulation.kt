@@ -57,6 +57,11 @@ class Simulation(val context: Context): Updateable
     val snowSystem: SnowSystem
 
     /**
+     * Water system
+     */
+    val waterSystem: WaterSystem
+
+    /**
      * Simulation state initialization procedure
      */
     init
@@ -83,9 +88,12 @@ class Simulation(val context: Context): Updateable
                         Position3D(6, 1, 6))
         )
 
+        this.waterSystem = WaterSystem(this.context)
+
         // Connect map to structure and covering holders
         this.map.registerHolder(this.treeHolder)
         this.map.registerHolder(this.simpleStructureHolder)
+        this.map.registerHolder(this.waterSystem)
 
         // Add a tree
         /*this.treeHolder.generateTree(Position3D(14, 2, 3), "test_tree")
@@ -124,5 +132,8 @@ class Simulation(val context: Context): Updateable
         // Update map (acceleration structures inside map class)
         // THIS HAS TO BE DONE FIRST
         this.map.update(elapsedTicks)
+
+        // Update water system
+        this.waterSystem.update(elapsedTicks)
     }
 }
