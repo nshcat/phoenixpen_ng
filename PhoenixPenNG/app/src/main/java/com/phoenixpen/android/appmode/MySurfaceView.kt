@@ -15,9 +15,9 @@ class MySurfaceView(ctx: Context): GLSurfaceView(ctx)
     {
         setEGLContextClientVersion(3)
         preserveEGLContextOnPause = true
-        //setRenderer(AsciiApplication(ctx))
+        setRenderer(AsciiApplication(ctx))
 
-        val test = HashMap<String, Int>()
+        /*val test = HashMap<String, Int>()
 
         test.put("test", 3)
         test.put("test2", 4)
@@ -27,6 +27,6 @@ class MySurfaceView(ctx: Context): GLSurfaceView(ctx)
 
         val json = Json.indented.toJson(serializer, test).toString()
 
-        Log.d("JSON", json)
+        Log.d("JSON", json)*/
     }
 }

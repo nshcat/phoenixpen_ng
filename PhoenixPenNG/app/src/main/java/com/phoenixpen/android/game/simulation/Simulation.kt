@@ -5,6 +5,7 @@ import com.phoenixpen.android.R
 import com.phoenixpen.android.game.ascii.Position3D
 import com.phoenixpen.android.game.core.Updateable
 import com.phoenixpen.android.game.data.*
+import com.phoenixpen.android.game.data.biome.BiomeDataSet
 import com.phoenixpen.android.game.map.Map
 import com.phoenixpen.android.game.map.TestMapGenerator
 import kotlin.random.Random
@@ -19,7 +20,7 @@ class Simulation(val context: Context): Updateable
     /**
      * The main game map.
      */
-    var map: Map
+    lateinit var map: Map
 
     /**
      * The material manager for map cells
@@ -80,15 +81,16 @@ class Simulation(val context: Context): Updateable
         this.coveringManager.loadCoverings(this.context, R.raw.coverings)
 
         // Load map. In this case, a test map is regenerated on each app launch.
-        this.map = Map.load(TestMapGenerator(materialManager))
+        //this.map = Map.load(TestMapGenerator(materialManager))
 
-        // Add a test structure
-        this.simpleStructureHolder.structureCollection.add(
-                SimpleStructure(this.simpleStructureManager.lookupSimpleStructureSafe("boulder"),
-                        Position3D(6, 1, 6))
-        )
-
+        // Initialize water system
         this.waterSystem = WaterSystem(this.context)
+
+        // Create biome data set
+        val biomeDataSet = BiomeDataSet(this.context, R.raw.biome_test_mapinfo, listOf(R.drawable.biome_test_layer0, R.drawable.biome_test_layer1))
+
+        // Load biome
+        biomeDataSet.apply(this)
 
         // Connect map to structure and covering holders
         this.map.registerHolder(this.treeHolder)
@@ -102,7 +104,7 @@ class Simulation(val context: Context): Updateable
         this.treeHolder.generateTree(Position3D(1, 2, 8), "test_tree")*/
 
 
-        for(x in 1 .. 30)
+        /*for(x in 1 .. 30)
         {
             Random.nextInt(4)
             Random.nextInt(4)
@@ -113,13 +115,13 @@ class Simulation(val context: Context): Updateable
 
             val pos = Position3D(Random.nextInt(0, 27), 2, Random.nextInt(0, 50))
             this.treeHolder.generateTree(pos, "test_tree")
-        }
+        }*/
 
         this.map.updateDatastructures()
 
         // Cover everything in snow
         this.snowSystem = SnowSystem(this)
-        this.map.registerHolder(this.snowSystem)
+        //this.map.registerHolder(this.snowSystem)
     }
 
     /**

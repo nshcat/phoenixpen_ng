@@ -38,7 +38,7 @@ class WaterSystem(val context: Context): StructureHolder, Updateable
 
         // Create some water
         // Generate lower area in middle
-        for(ix in 5 until 10)
+        /*for(ix in 5 until 10)
         {
             for (iz in 5 until 10)
             {
@@ -54,7 +54,7 @@ class WaterSystem(val context: Context): StructureHolder, Updateable
                                 )
                 )
             }
-        }
+        }*/
     }
 
     /**
