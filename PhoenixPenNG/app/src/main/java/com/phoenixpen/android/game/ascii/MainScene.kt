@@ -6,6 +6,8 @@ import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.game.map.MapView
 import com.phoenixpen.android.game.simulation.Simulation
 import com.phoenixpen.android.game.core.TickCounter
+import com.phoenixpen.android.input.Direction
+import com.phoenixpen.android.input.MapViewMoveEvent
 
 /**
  * The game main scene, displaying the map and allowing interaction with the game.
@@ -52,6 +54,33 @@ class MainScene(application: Application, dimensions: ScreenDimensions): Scene(a
      */
     override fun update(elapsedTicks: Int)
     {
+        // Check for input
+        if(this.application.input.hasEvents())
+        {
+            Log.d("INPUT", "Main scene had events")
+
+            // Consume all events
+            val events = this.application.input.consumeEvents()
+
+            for(event in events)
+            {
+                when(event)
+                {
+                    is MapViewMoveEvent ->
+                    {
+                        when(event.direction)
+                        {
+                            Direction.Up -> this.mapView.move(Position(0, -4))
+                            Direction.Down -> this.mapView.move(Position(0, 4))
+                            Direction.Left -> this.mapView.move(Position(-4, 0))
+                            Direction.Right -> this.mapView.move(Position(4, 0))
+                        }
+                    }
+                }
+
+            }
+        }
+
         // Update simulation state
         this.simulationState.update(elapsedTicks)
 

@@ -6,6 +6,7 @@ import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.game.ascii.MainScene
 import com.phoenixpen.android.game.ascii.Scene
 import com.phoenixpen.android.game.ascii.Screen
+import com.phoenixpen.android.input.InputProvider
 import com.phoenixpen.android.rendering.*
 
 /**
@@ -15,7 +16,7 @@ import com.phoenixpen.android.rendering.*
  *
  * @property context The Android app context, used to extract resources
  */
-class AsciiApplication (context: Context): Application(context)
+class AsciiApplication (context: Context, input: InputProvider): Application(context, input)
 {
     /**
      * A texture render target as our first render pass

@@ -4,6 +4,7 @@ import android.content.Context
 import android.opengl.GLSurfaceView
 import android.os.SystemClock
 import com.phoenixpen.android.game.core.FpsCounter
+import com.phoenixpen.android.input.InputProvider
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -12,8 +13,9 @@ import javax.microedition.khronos.opengles.GL10
  * It supplies screen, input and render events that the applications can react to.
  *
  * @property context The current android app context
+ * @property input The current input provider
  */
-abstract class Application (val context: Context): GLSurfaceView.Renderer
+abstract class Application (val context: Context, val input: InputProvider): GLSurfaceView.Renderer
 {
     // TODO: Implement touch input via this class.
 

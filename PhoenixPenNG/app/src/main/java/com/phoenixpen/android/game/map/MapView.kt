@@ -1,5 +1,6 @@
 package com.phoenixpen.android.game.map
 
+import android.util.Log
 import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.game.ascii.*
 import com.phoenixpen.android.game.simulation.Simulation
@@ -22,7 +23,7 @@ import kotlin.collections.ArrayList
  * @property topLeft Position in the game map that corresponds to the top left point of the view
  * @property height Current height that is displayed
  */
-class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val topLeft: Position, var height: Int)
+class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var topLeft: Position, var height: Int)
     : SceneComponent
 {
     /**
@@ -131,6 +132,16 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
     }
 
     /**
+     * Move the map view by the given delta position
+     *
+     * @param delta Delta position to move the view by
+     */
+    fun move(delta: Position)
+    {
+        this.topLeft += delta
+    }
+
+    /**
      * Direction vectors used in the iterations of the drop shadow calculation algorithm
      */
     val directionVectors = listOf(
@@ -215,7 +226,7 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
     private fun drawCell(screen: Screen, cell: MapCell, position: Position3D)
     {
         // Apply draw info
-        screen.setTile(position.xz(), cell.tile())
+        screen.setTile(position.xz() - this.topLeft, cell.tile())
 
         // If the cell is not directly at display level, depth and shadows need to be applied.
         if(position.y < this.height)
@@ -224,13 +235,13 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
             val depth = this.height - position.y
 
             // Apply depth
-            screen.setDepth(position.xz(), depth)
+            screen.setDepth(position.xz() - this.topLeft, depth)
 
             // Determine which drop shadows need to be applied
             val shadows = this.calculateShadowsAt(position)
 
             // Apply shadows
-            screen.setShadows(position.xz(), shadows)
+            screen.setShadows(position.xz() - this.topLeft, shadows)
         }
     }
 
@@ -243,7 +254,7 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
     private fun drawStructure(screen: Screen, structure: Structure)
     {
         // Apply draw info
-        screen.setTile(structure.position.xz(), structure.tile())
+        screen.setTile(structure.position.xz() - this.topLeft, structure.tile())
 
         // If the structure is not directly at view height, we need to apply depth information
         if(structure.position.y < this.height)
@@ -252,13 +263,13 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
             val depth = this.height - structure.position.y
 
             // Apply depth
-            screen.setDepth(structure.position.xz(), depth)
+            screen.setDepth(structure.position.xz() - this.topLeft, depth)
 
             // Determine which drop shadows need to be applied
             val shadows = this.calculateShadowsAt(structure.position)
 
             // Apply shadows
-            screen.setShadows(structure.position.xz(), shadows)
+            screen.setShadows(structure.position.xz() - this.topLeft, shadows)
         }
     }
 
@@ -279,7 +290,7 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
             val coveringTile = covering.tile()
 
             // Modify tile graphical representation
-            screen.setTile(covering.position.xz(), underlying.apply {
+            screen.setTile(covering.position.xz() - this.topLeft, underlying.apply {
                 this.foreground = coveringTile.foreground
 
                 // Leave background as it is if its black
@@ -290,7 +301,7 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
         else
         {
             // Otherwise just overwrite the draw info
-            screen.setTile(covering.position.xz(), covering.tile())
+            screen.setTile(covering.position.xz() - this.topLeft, covering.tile())
         }
 
         // If the covering is not directly at view height, we need to apply depth information
@@ -300,13 +311,13 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, val 
             val depth = this.height - covering.position.y
 
             // Apply depth
-            screen.setDepth(covering.position.xz(), depth)
+            screen.setDepth(covering.position.xz() - this.topLeft, depth)
 
             // Determine which drop shadows need to be applied
             val shadows = this.calculateShadowsAt(covering.position)
 
             // Apply shadows
-            screen.setShadows(covering.position.xz(), shadows)
+            screen.setShadows(covering.position.xz() - this.topLeft, shadows)
         }
     }
 
