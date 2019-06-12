@@ -2,15 +2,12 @@ package com.phoenixpen.android.game.simulation
 
 import android.content.Context
 import com.phoenixpen.android.R
-import com.phoenixpen.android.game.ascii.Position3D
 import com.phoenixpen.android.game.core.Updateable
 import com.phoenixpen.android.game.data.*
 import com.phoenixpen.android.game.data.biome.BiomeDataSet
 import com.phoenixpen.android.game.data.biome.TreeDataSetIds
 import com.phoenixpen.android.game.map.Map
-import com.phoenixpen.android.game.map.TestMapGenerator
 import java.util.*
-import kotlin.random.Random
 
 /**
  * The main simulation class which aggregates all game subsystems and data holding objects
@@ -35,19 +32,14 @@ class Simulation(val context: Context): Updateable
     val itemManager = ItemManager()
 
     /**
-     * Manager for all simple structure types. For testing purposes
-     */
-    val simpleStructureManager = SimpleStructureManager()
-
-    /**
      * Manager for all covering types.
      */
     val coveringManager = CoveringManager()
 
     /**
-     * Holder for all simple structures. For testing purposes.
+     * System managing all map decorations.
      */
-    val simpleStructureHolder = SimpleStructureHolder()
+    val mapDecorationSystem: MapDecorationSystem
 
     /**
      * Tree system
@@ -76,14 +68,11 @@ class Simulation(val context: Context): Updateable
         // Load item types from JSON resource
         this.itemManager.loadItems(this.context, R.raw.items)
 
-        // Load simple structure types
-        this.simpleStructureManager.loadSimpleStructures(this.context, R.raw.simple_structures)
-
         // Load covering types
         this.coveringManager.loadCoverings(this.context, R.raw.coverings)
 
-        // Load map. In this case, a test map is regenerated on each app launch.
-        //this.map = Map.load(TestMapGenerator(materialManager))
+        // Initialize map decoration system
+        this.mapDecorationSystem = MapDecorationSystem(this.context)
 
         // Initialize water system
         this.waterSystem = WaterSystem(this.context)
@@ -100,29 +89,10 @@ class Simulation(val context: Context): Updateable
 
         // Connect map to structure and covering holders
         this.map.registerHolder(this.treeHolder)
-        this.map.registerHolder(this.simpleStructureHolder)
+        this.map.registerHolder(this.mapDecorationSystem)
         this.map.registerHolder(this.waterSystem)
 
-        // Add a tree
-        /*this.treeHolder.generateTree(Position3D(14, 2, 3), "test_tree")
-        this.treeHolder.generateTree(Position3D(12, 2, 12), "test_tree")
-        this.treeHolder.generateTree(Position3D(5, 2, 1), "test_tree")
-        this.treeHolder.generateTree(Position3D(1, 2, 8), "test_tree")*/
-
-
-        /*for(x in 1 .. 30)
-        {
-            Random.nextInt(4)
-            Random.nextInt(4)
-            Random.nextInt(4)
-            Random.nextInt(4)
-            Random.nextInt(4)
-
-
-            val pos = Position3D(Random.nextInt(0, 27), 2, Random.nextInt(0, 50))
-            this.treeHolder.generateTree(pos, "test_tree")
-        }*/
-
+        // Update all map data structures to detect all initial data
         this.map.updateDatastructures()
 
         // Cover everything in snow

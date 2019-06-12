@@ -1,21 +1,20 @@
 package com.phoenixpen.android.game.data
 
-import com.phoenixpen.android.game.ascii.Color
-import com.phoenixpen.android.game.ascii.DrawInfo
+import com.phoenixpen.android.game.ascii.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * A type class holding all required data for simple structures, which have a fixed glyph and no
+ * A type class holding all required data for map decorations, which have no
  * logic attached to them.
  *
  * @property basicData Basic structure information, like identifier and description
  * @property tile Information about how to draw this structure
  */
 @Serializable
-data class SimpleStructureType(
+data class MapDecorationType(
         @SerialName("basic_data") val basicData: StructureType,
-        val tile: DrawInfo
+        @Serializable(with=TileTypeSerializer::class) val tile: TileType
 )
 {
     companion object
@@ -23,17 +22,20 @@ data class SimpleStructureType(
         /**
          * Placeholder simple structure type, used if a type is missing
          */
-        val placeholder = SimpleStructureType(
+        val placeholder = MapDecorationType(
                 StructureType(
                         "placeholder",
                         "MISSING STRUCTURE",
                         "MISSING STRUCTURE DATA",
                         PathingType.NonRestricted
                 ),
-                DrawInfo(
-                        0,
-                        Color.magenta,
-                        Color.magenta
+                TileType(
+                        mode = TileTypeMode.Static,
+                        staticTile = DrawInfo(
+                                0,
+                                Color.magenta,
+                                Color.magenta
+                        )
                 )
         )
     }
