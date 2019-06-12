@@ -70,10 +70,12 @@ class MainScene(application: Application, dimensions: ScreenDimensions): Scene(a
                     {
                         when(event.direction)
                         {
-                            Direction.Up -> this.mapView.move(Position(0, -4))
-                            Direction.Down -> this.mapView.move(Position(0, 4))
-                            Direction.Left -> this.mapView.move(Position(-4, 0))
-                            Direction.Right -> this.mapView.move(Position(4, 0))
+                            Direction.North -> this.mapView.move(Position(0, -4))
+                            Direction.South -> this.mapView.move(Position(0, 4))
+                            Direction.West -> this.mapView.move(Position(-4, 0))
+                            Direction.East -> this.mapView.move(Position(4, 0))
+                            Direction.Up -> this.mapView.moveUp(1)
+                            Direction.Down -> this.mapView.moveUp(-1)
                         }
                     }
                 }

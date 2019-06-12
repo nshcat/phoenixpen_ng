@@ -2,7 +2,6 @@ package com.phoenixpen.android.appmode
 
 import android.content.Context
 import android.opengl.GLSurfaceView
-import android.renderscript.ScriptGroup
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -10,10 +9,6 @@ import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.game.ascii.Position
 import com.phoenixpen.android.game.core.AsciiApplication
 import com.phoenixpen.android.input.*
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.list
-import kotlinx.serialization.map
-import kotlinx.serialization.serializer
 import java.util.*
 
 class SurfaceViewInputProvider: InputProvider
@@ -78,23 +73,36 @@ class MySurfaceView(ctx: Context): GLSurfaceView(ctx)
 
                 if(pos.y < screenDim.height/4)
                 {
-                    this.inputProvider.queueEvent(MapViewMoveEvent(Direction.Up))
-                    Log.d("INPUT", "Emitted UP")
+                    this.inputProvider.queueEvent(MapViewMoveEvent(Direction.North))
+                    Log.d("INPUT", "Emitted NORTH")
                 }
                 else if(pos.y >= screenDim.height - screenDim.height/4)
                 {
-                    this.inputProvider.queueEvent(MapViewMoveEvent(Direction.Down))
-                    Log.d("INPUT", "Emitted DOWN")
+                    this.inputProvider.queueEvent(MapViewMoveEvent(Direction.South))
+                    Log.d("INPUT", "Emitted SOUTH")
                 }
                 else if(pos.x <= screenDim.width / 4)
                 {
-                    this.inputProvider.queueEvent(MapViewMoveEvent(Direction.Left))
-                    Log.d("INPUT", "Emitted LEFT")
+                    this.inputProvider.queueEvent(MapViewMoveEvent(Direction.West))
+                    Log.d("INPUT", "Emitted WEST")
                 }
                 else if(pos.x >= screenDim.width - screenDim.width/4)
                 {
-                    this.inputProvider.queueEvent(MapViewMoveEvent(Direction.Right))
-                    Log.d("INPUT", "Emitted RIGHT")
+                    this.inputProvider.queueEvent(MapViewMoveEvent(Direction.East))
+                    Log.d("INPUT", "Emitted EAST")
+                }
+                else if(pos.x >= screenDim.width/4 && pos.x <= (screenDim.width - screenDim.width/4))
+                {
+                    if(pos.y <= screenDim.height/2)
+                    {
+                        this.inputProvider.queueEvent(MapViewMoveEvent(Direction.Up))
+                        Log.d("INPUT", "Emitted UP")
+                    }
+                    else
+                    {
+                        this.inputProvider.queueEvent(MapViewMoveEvent(Direction.Down))
+                        Log.d("INPUT", "Emitted DOWN")
+                    }
                 }
             }
         }

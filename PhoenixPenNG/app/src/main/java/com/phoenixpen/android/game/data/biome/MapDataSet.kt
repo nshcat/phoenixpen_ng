@@ -32,7 +32,7 @@ class MapDataSet(context: Context, mapInfoId: Int, mapTemplateIds: List<Int>)
     /**
      * The map template
      */
-    val mapTemplate: MapTemplate = MapTemplate.fromBitmaps(context, *mapTemplateIds.toIntArray())
+    val mapTemplate: BiomeTemplate = BiomeTemplate.fromBitmaps(context, *mapTemplateIds.toIntArray())
 
     /**
      * Actually load the map

@@ -14,6 +14,7 @@ import com.phoenixpen.android.game.simulation.StructureHolder
 import java.lang.Integer.min
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.max
 
 /**
  * Class that actually does the rendering of a portion of the map.
@@ -41,7 +42,7 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var 
         this.counter.update(elapsedTicks)
         //this.height = 3
 
-        this.height = 2 //+ (this.counter.totalPeriods % 6)
+        //this.height = 2 //+ (this.counter.totalPeriods % 6)
     }
 
     /**
@@ -139,6 +140,16 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var 
     fun move(delta: Position)
     {
         this.topLeft += delta
+    }
+
+    /**
+     * Move the map view height up by given delta value.
+     *
+     * @param delta Delta value to change map view height by
+     */
+    fun moveUp(delta: Int)
+    {
+        this.height = max(0, this.height + delta)
     }
 
     /**

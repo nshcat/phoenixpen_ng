@@ -50,7 +50,7 @@ class AsciiApplication (context: Context, input: InputProvider): Application(con
     private var orthoProjection = OrthographicProjection()
 
     /**
-     * Left over milliseconds that did not make up a whole simulation tick. Will be used
+     * West over milliseconds that did not make up a whole simulation tick. Will be used
      * in next frame.
      */
     private var leftoverTime: Int = 0

@@ -3,11 +3,9 @@ package com.phoenixpen.android.game.data.biome
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
 import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.game.ascii.Color
 import com.phoenixpen.android.game.ascii.Position
-import com.phoenixpen.android.game.data.StructureLayer
 
 /**
  * A typealias used to describe the dimensions of a single map template layer
@@ -16,9 +14,9 @@ typealias LayerDimensions = ScreenDimensions
 
 
 /**
- * A single layer in a map template.
+ * A single layer in a biome template.
  */
-class MapTemplateLayer(val dimensions: LayerDimensions)
+class BiomeTemplateLayer(val dimensions: LayerDimensions)
 {
     /**
      * All entries in this layer, which are colors
@@ -44,7 +42,7 @@ class MapTemplateLayer(val dimensions: LayerDimensions)
     {
         // Perform bounds check
         if(!this.isInBounds(position))
-            throw IllegalArgumentException("MapTemplateLayer::entryAt: Position out of layer bounds")
+            throw IllegalArgumentException("BiomeTemplateLayer::entryAt: Position out of layer bounds")
 
         return this.entries[this.indexFor(position)]
     }
@@ -76,10 +74,10 @@ class MapTemplateLayer(val dimensions: LayerDimensions)
         /**
          * Load a map template layer from given bitmap.
          */
-        fun fromBitmap(bitmap: Bitmap): MapTemplateLayer
+        fun fromBitmap(bitmap: Bitmap): BiomeTemplateLayer
         {
             // Create empty instance
-            val layer = MapTemplateLayer(LayerDimensions(bitmap.width, bitmap.height))
+            val layer = BiomeTemplateLayer(LayerDimensions(bitmap.width, bitmap.height))
 
             // Copy data
             for(ix in 0 until layer.dimensions.width)
@@ -105,7 +103,7 @@ class MapTemplateLayer(val dimensions: LayerDimensions)
         /**
          * Load from bitmap stored in resources
          */
-        fun fromBitmap(context: Context, id: Int): MapTemplateLayer
+        fun fromBitmap(context: Context, id: Int): BiomeTemplateLayer
         {
             return fromBitmap(BitmapFactory.decodeResource(context.resources, id))
         }
@@ -114,14 +112,14 @@ class MapTemplateLayer(val dimensions: LayerDimensions)
 
 
 /**
- * A class describing how a map should be generated. It is made up from multiple [MapTemplateLayer] instances.
+ * A class describing how a certain part of a map should be generated. It is made up from multiple [BiomeTemplateLayer] instances.
  */
-class MapTemplate
+class BiomeTemplate
 {
     /**
-     * All layers in this map template
+     * All layers in this biome template
      */
-    val layers = ArrayList<MapTemplateLayer>()
+    val layers = ArrayList<BiomeTemplateLayer>()
 
     /**
      * Determine dimensions of whole structure. Note that this is only possible if there is at least
@@ -133,7 +131,7 @@ class MapTemplate
     {
         // We cant determine the dimensions if there is not at least one layer present
         if(this.layers.size <= 0)
-            throw IllegalStateException("Cant determine dimensions of empty MapTemplate")
+            throw IllegalStateException("Cant determine dimensions of empty BiomeTemplate")
 
         // Otherwise just use the dimensions of the first layer, since they are required to be the same
         // for all the layers in this structure.
@@ -146,18 +144,18 @@ class MapTemplate
         /**
          * Create from set of bitmap resources
          */
-        fun fromBitmaps(context: Context, vararg ids: Int): MapTemplate
+        fun fromBitmaps(context: Context, vararg ids: Int): BiomeTemplate
         {
             if(ids.isEmpty())
                 throw IllegalArgumentException("at least one layer bitmap is required")
 
             // Create empty template
-            val template = MapTemplate()
+            val template = BiomeTemplate()
 
             // Load all layers
             for(id in ids)
             {
-                template.layers.add(MapTemplateLayer.fromBitmap(context, id))
+                template.layers.add(BiomeTemplateLayer.fromBitmap(context, id))
             }
 
             return template
