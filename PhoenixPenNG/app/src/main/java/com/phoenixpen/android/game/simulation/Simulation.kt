@@ -5,6 +5,7 @@ import com.phoenixpen.android.R
 import com.phoenixpen.android.game.core.Updateable
 import com.phoenixpen.android.game.data.*
 import com.phoenixpen.android.game.data.biome.BiomeDataSet
+import com.phoenixpen.android.game.data.biome.DecorationDataSetIds
 import com.phoenixpen.android.game.data.biome.TreeDataSetIds
 import com.phoenixpen.android.game.map.Map
 import java.util.*
@@ -82,6 +83,7 @@ class Simulation(val context: Context): Updateable
                 this.context,
                 R.raw.biome_test_mapinfo, listOf(R.drawable.biome_test_layer0, R.drawable.biome_test_layer1),
                 Optional.of(TreeDataSetIds(R.raw.biome_test_trees, listOf(R.drawable.biome_test_trees_layer0)))
+                //Optional.of(DecorationDataSetIds(R.raw.biome_test_decorations, listOf(R.drawable.biome_test_decorations_layer0)))
         )
 
         // Load biome

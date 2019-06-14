@@ -1,9 +1,9 @@
 [
   {
     "basic_data": {
-      "identifier": "default_water",
-      "display_name": "water",
-      "description": "water",
+      "identifier": "flowing_water",
+      "display_name": "flowing water",
+      "description": "flowing water",
       "pathing_type": "Water",
       "is_stainable": false
     },
@@ -18,6 +18,20 @@
         { "glyph": 126, "foreground": "#0088FF", "background": "#004480" },
         { "glyph": 126, "foreground": "#0088FF", "background": "#004480" }
       ]
+    }
+  },
+  {
+    "basic_data": {
+      "identifier": "still_water",
+      "display_name": "still water",
+      "description": "still water",
+      "pathing_type": "Water",
+      "is_stainable": false
+    },
+    "tile": {
+      "data": {
+        "glyph": 247, "foreground": "#0088FF", "background": "#003666"
+      }
     }
   }
 ]
