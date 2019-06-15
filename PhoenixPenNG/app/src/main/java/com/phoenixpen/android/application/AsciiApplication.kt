@@ -16,6 +16,11 @@ import com.phoenixpen.android.rendering.*
 class AsciiApplication (context: Context, input: InputProvider): Application(context, input)
 {
     /**
+     * Android logger instance
+     */
+    private var logger = AndroidLogger()
+
+    /**
      * A texture render target as our first render pass
      */
     private lateinit var firstPass: TextureTarget
@@ -70,7 +75,7 @@ class AsciiApplication (context: Context, input: InputProvider): Application(con
             this.screen.resize(screenDimensions)
             this.orthoProjection.refresh(screenDimensions)
 
-            this.scene = MainScene(this.resources, this.input, this.screen.size)
+            this.scene = MainScene(this.resources, this.input, this.logger, this.screen.size)
         }
     }
 

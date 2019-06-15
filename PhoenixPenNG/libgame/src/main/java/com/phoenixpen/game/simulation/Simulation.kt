@@ -4,6 +4,7 @@ import com.phoenixpen.game.core.Updateable
 import com.phoenixpen.game.data.*
 import com.phoenixpen.game.data.biome.BiomeDataSet
 import com.phoenixpen.game.data.biome.TreeDataSetIds
+import com.phoenixpen.game.logging.GlobalLogger
 import com.phoenixpen.game.map.Map
 import com.phoenixpen.game.resources.ResourceProvider
 import java.util.*
@@ -60,6 +61,8 @@ class Simulation(val resources: ResourceProvider): Updateable
      */
     init
     {
+        GlobalLogger.d("Simulation", "Initializing simulation")
+
         // The material manager needs to be initialized and materials loaded before
         // the map can be loaded
         this.materialManager.loadMaterials(this.resources, "materials.json")

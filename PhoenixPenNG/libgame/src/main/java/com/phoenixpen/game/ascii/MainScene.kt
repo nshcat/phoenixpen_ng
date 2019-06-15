@@ -5,6 +5,8 @@ import com.phoenixpen.game.simulation.Simulation
 import com.phoenixpen.game.input.Direction
 import com.phoenixpen.game.input.InputProvider
 import com.phoenixpen.game.input.MapViewMoveEvent
+import com.phoenixpen.game.logging.GlobalLogger
+import com.phoenixpen.game.logging.Logger
 import com.phoenixpen.game.resources.ResourceProvider
 
 /**
@@ -12,10 +14,24 @@ import com.phoenixpen.game.resources.ResourceProvider
  *
  * @property resources The resource manager to retrieve game data from
  * @property input The input manager providing input events
+ * @property logger The logger instance to use
  * @property dimensions The screen dimensions
  */
-class MainScene(resources: ResourceProvider, input: InputProvider, dimensions: ScreenDimensions): Scene(resources, input, dimensions)
+class MainScene(
+        resources: ResourceProvider,
+        input: InputProvider,
+        logger: Logger,
+        dimensions: ScreenDimensions
+): Scene(resources, input, logger, dimensions)
 {
+    /**
+     * Initialize global logger
+     */
+    init
+    {
+        GlobalLogger.setLogger(logger)
+    }
+
     /**
      * The main simulation state
      */
