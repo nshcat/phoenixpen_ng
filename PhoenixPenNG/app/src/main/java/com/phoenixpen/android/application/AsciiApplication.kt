@@ -1,10 +1,9 @@
 package com.phoenixpen.android.application
 
 import android.content.Context
-import com.phoenixpen.android.game.ascii.AndroidScreen
-import com.phoenixpen.android.game.ascii.MainScene
-import com.phoenixpen.android.game.ascii.Scene
-import com.phoenixpen.android.game.input.InputProvider
+import com.phoenixpen.game.ascii.MainScene
+import com.phoenixpen.game.ascii.Scene
+import com.phoenixpen.game.input.InputProvider
 import com.phoenixpen.android.rendering.*
 
 /**
@@ -16,6 +15,11 @@ import com.phoenixpen.android.rendering.*
  */
 class AsciiApplication (context: Context, input: InputProvider): Application(context, input)
 {
+    /**
+     * Android logger instance
+     */
+    private var logger = AndroidLogger()
+
     /**
      * A texture render target as our first render pass
      */
@@ -58,7 +62,7 @@ class AsciiApplication (context: Context, input: InputProvider): Application(con
      */
     private val msPerTick: Int = 50
 
-    override fun onScreenChanged(screenDimensions: ScreenDimensions)
+    override fun onScreenChanged(screenDimensions: com.phoenixpen.game.ascii.ScreenDimensions)
     {
         // Update projection state to fit new screen size
         this.orthoProjection.refresh(screenDimensions)
@@ -71,7 +75,7 @@ class AsciiApplication (context: Context, input: InputProvider): Application(con
             this.screen.resize(screenDimensions)
             this.orthoProjection.refresh(screenDimensions)
 
-            this.scene = MainScene(this.resources, this.input, this.screen.size)
+            this.scene = MainScene(this.resources, this.input, this.logger, this.screen.size)
         }
     }
 
@@ -82,7 +86,7 @@ class AsciiApplication (context: Context, input: InputProvider): Application(con
         this.secondPass = ScreenTarget()
 
         // Create an empty screen
-        this.screen = AndroidScreen(this.context, ScreenDimensions.empty())
+        this.screen = AndroidScreen(this.context, com.phoenixpen.game.ascii.ScreenDimensions.empty())
 
         // Create the fullscreen quad
         this.fullscreenQuad = FullscreenQuad(this.context)

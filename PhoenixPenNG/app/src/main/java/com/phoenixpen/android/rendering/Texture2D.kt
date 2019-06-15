@@ -3,14 +3,14 @@ package com.phoenixpen.android.rendering
 import android.content.Context
 import android.opengl.GLES31
 import android.opengl.GLUtils
-import com.phoenixpen.android.application.ScreenDimensions
+import com.phoenixpen.game.ascii.ScreenDimensions
 import java.nio.ByteBuffer
 import android.graphics.*
 
 /**
  * A semantic alias for texture dimensions.
  */
-typealias Texture2DDimensions = ScreenDimensions
+typealias Texture2DDimensions = com.phoenixpen.game.ascii.ScreenDimensions
 
 /**
  * A class managing a two dimensional OpenGL texture object.

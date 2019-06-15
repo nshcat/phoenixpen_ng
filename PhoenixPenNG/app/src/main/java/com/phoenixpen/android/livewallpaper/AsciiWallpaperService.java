@@ -5,7 +5,7 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.preference.PreferenceManager;
 
 import com.phoenixpen.android.application.AsciiApplication;
-import com.phoenixpen.android.game.input.NullInputProvider;
+import com.phoenixpen.game.input.NullInputProvider;
 
 
 public class AsciiWallpaperService extends OpenGLES31WallpaperService {

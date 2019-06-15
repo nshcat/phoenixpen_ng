@@ -1,7 +1,7 @@
 package com.phoenixpen.android.rendering
 
 import android.opengl.GLES31
-import com.phoenixpen.android.application.ScreenDimensions
+import com.phoenixpen.game.ascii.ScreenDimensions
 
 /**
  * A render target that renders the scene to a GPU texture. This is useful if any postprocessing
@@ -48,7 +48,7 @@ class TextureTarget: RenderTarget()
      *
      * @param renderDimensions The new screen dimensions
      */
-    override fun updateDimensions(renderDimensions: ScreenDimensions)
+    override fun updateDimensions(renderDimensions: com.phoenixpen.game.ascii.ScreenDimensions)
     {
         super.updateDimensions(renderDimensions)
 

@@ -1,6 +1,6 @@
 package com.phoenixpen.android.rendering
 
-import com.phoenixpen.android.application.ScreenDimensions
+import com.phoenixpen.game.ascii.ScreenDimensions
 import org.joml.Matrix4f
 
 /**
@@ -24,7 +24,7 @@ class OrthographicProjection
      *
      * @param dimensions New screen dimensions.
      */
-    fun refresh(dimensions: ScreenDimensions)
+    fun refresh(dimensions: com.phoenixpen.game.ascii.ScreenDimensions)
     {
         // We flip the y-axis, in order to have (0,0) at the top left of the screen
         this.projection.setOrtho(
