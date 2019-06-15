@@ -30,5 +30,4 @@ interface ResourceProvider
      * @return Bitmap read from resource
      */
     fun bitmap(id: String): Bitmap
-    // TODO val factoryOptions = BitmapFactory.Options().apply { inScaled = false } is important
 }

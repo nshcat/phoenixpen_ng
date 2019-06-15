@@ -1,8 +1,12 @@
 package com.phoenixpen.android.resources
 
 import android.content.Context
-import java.nio.file.Paths
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import com.phoenixpen.android.game.ascii.Position
 import org.apache.commons.io.FilenameUtils;
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 /**
  * A resource providing based on the Android application resources
@@ -13,8 +17,11 @@ class AndroidResourceProvider(val ctx: Context): ResourceProvider
 {
     override fun text(id: String): String
     {
-        // Strip extension from resource id
-        Paths.get(text).
+        // Retrieve resource id
+        val id = this.findResourceId(id, "raw")
+
+        // Get resource and read all text
+        return BufferedReader(InputStreamReader(this.ctx.resources.openRawResource(id))).readText()
     }
 
     override fun json(id: String): String
@@ -23,8 +30,39 @@ class AndroidResourceProvider(val ctx: Context): ResourceProvider
         return this.text(id)
     }
 
-    override fun bitmap(id: String): Bitmap {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun bitmap(id: String): Bitmap
+    {
+        // Retrieve resource id
+        val id = this.findResourceId(id, "drawable")
+
+        // Make sure the bitmap is no stretched
+        val factoryOptions = BitmapFactory.Options().apply { inScaled = false }
+        val androidBitmap = BitmapFactory.decodeResource(this.ctx.resources, id, factoryOptions)
+
+        // Create game bitmap
+        val bitmap = Bitmap(androidBitmap.width, androidBitmap.height)
+
+        // Copy all pixels
+        for(ix in 0 until bitmap.width)
+        {
+            for(iy in 0 until bitmap.height)
+            {
+                // Retrieve android bitmap pixel
+                val androidPixel = androidBitmap.getPixel(ix, iy)
+
+                // Convert to game color instance
+                val color = com.phoenixpen.android.game.ascii.Color(
+                        Color.red(androidPixel),
+                        Color.green(androidPixel),
+                        Color.blue(androidPixel)
+                )
+
+                // Store
+                bitmap.setPixelAt(Position(ix, iy), color)
+            }
+        }
+
+        return bitmap
     }
 
     /**
@@ -44,7 +82,6 @@ class AndroidResourceProvider(val ctx: Context): ResourceProvider
         val stripped = this.stripExtension(id)
 
         // Retrieve android resource id
-        return this.ctx.resources.getResourcePackageName()
-
+        return this.ctx.resources.getIdentifier(stripped, type, "com.nshcat.phoenixpen")
     }
 }
