@@ -3,8 +3,7 @@ package com.phoenixpen.game.ascii
 import com.phoenixpen.game.ascii.ScreenDimensions
 import kotlinx.serialization.*
 import kotlinx.serialization.internal.StringDescriptor
-import org.joml.Vector2i
-import org.joml.Vector3i
+import com.phoenixpen.game.math.*
 
 /**
  * A simple, two dimensional integral position
