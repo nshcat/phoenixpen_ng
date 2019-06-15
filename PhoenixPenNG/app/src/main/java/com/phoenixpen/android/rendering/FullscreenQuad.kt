@@ -2,7 +2,6 @@ package com.phoenixpen.android.rendering
 
 import android.content.Context
 import android.opengl.GLES31
-import com.phoenixpen.android.rendering.materials.FullscreenQuadMaterial
 import com.phoenixpen.android.rendering.materials.TexturedQuadMaterial
 
 /**
