@@ -3,6 +3,7 @@ package com.phoenixpen.android.game.core
 import android.content.Context
 import com.phoenixpen.android.application.Application
 import com.phoenixpen.android.application.ScreenDimensions
+import com.phoenixpen.android.game.ascii.AndroidScreen
 import com.phoenixpen.android.game.ascii.MainScene
 import com.phoenixpen.android.game.ascii.Scene
 import com.phoenixpen.android.game.ascii.Screen
@@ -31,7 +32,7 @@ class AsciiApplication (context: Context, input: InputProvider): Application(con
     /**
      * The glyph matrix used to render the game scene to
      */
-    private lateinit var screen: Screen
+    private lateinit var screen: AndroidScreen
 
     /**
      * A full screen quad we use to render the scene to screen in the second pass
@@ -84,7 +85,7 @@ class AsciiApplication (context: Context, input: InputProvider): Application(con
         this.secondPass = ScreenTarget()
 
         // Create an empty screen
-        this.screen = Screen(this.context, ScreenDimensions.empty())
+        this.screen = AndroidScreen(this.context, ScreenDimensions.empty())
 
         // Create the fullscreen quad
         this.fullscreenQuad = FullscreenQuad(this.context)
