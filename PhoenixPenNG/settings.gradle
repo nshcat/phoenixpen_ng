@@ -1,1 +1,1 @@
-include ':app', ':libgame'
+include ':app', ':libgame', ':desktop'
