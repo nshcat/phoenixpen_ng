@@ -1,4 +1,4 @@
-package com.phoenixpen.android.input
+package com.phoenixpen.android.game.input
 
 /**
  * Input provider implementation that does nothing.

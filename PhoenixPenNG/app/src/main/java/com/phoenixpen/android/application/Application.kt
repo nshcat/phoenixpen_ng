@@ -3,10 +3,7 @@ package com.phoenixpen.android.application
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.os.SystemClock
-import com.phoenixpen.android.game.core.FpsCounter
-import com.phoenixpen.android.input.InputProvider
-import com.phoenixpen.android.resources.AndroidResourceProvider
-import com.phoenixpen.android.resources.ResourceProvider
+import com.phoenixpen.android.game.input.InputProvider
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 

@@ -1,9 +1,8 @@
 package com.phoenixpen.android.game.data
 
-import com.phoenixpen.android.resources.ResourceProvider
+import com.phoenixpen.android.game.resources.ResourceProvider
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.list
-import java.io.*
 
 /**
  * A class managing all TreePart type classes. TreeParts can be loaded from JSON file and

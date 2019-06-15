@@ -4,10 +4,10 @@ import android.util.Log
 import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.game.map.MapView
 import com.phoenixpen.android.game.simulation.Simulation
-import com.phoenixpen.android.input.Direction
-import com.phoenixpen.android.input.InputProvider
-import com.phoenixpen.android.input.MapViewMoveEvent
-import com.phoenixpen.android.resources.ResourceProvider
+import com.phoenixpen.android.game.input.Direction
+import com.phoenixpen.android.game.input.InputProvider
+import com.phoenixpen.android.game.input.MapViewMoveEvent
+import com.phoenixpen.android.game.resources.ResourceProvider
 
 /**
  * The game main scene, displaying the map and allowing interaction with the game.

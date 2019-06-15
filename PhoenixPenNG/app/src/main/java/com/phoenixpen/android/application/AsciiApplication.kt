@@ -1,13 +1,10 @@
-package com.phoenixpen.android.game.core
+package com.phoenixpen.android.application
 
 import android.content.Context
-import com.phoenixpen.android.application.Application
-import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.game.ascii.AndroidScreen
 import com.phoenixpen.android.game.ascii.MainScene
 import com.phoenixpen.android.game.ascii.Scene
-import com.phoenixpen.android.game.ascii.Screen
-import com.phoenixpen.android.input.InputProvider
+import com.phoenixpen.android.game.input.InputProvider
 import com.phoenixpen.android.rendering.*
 
 /**

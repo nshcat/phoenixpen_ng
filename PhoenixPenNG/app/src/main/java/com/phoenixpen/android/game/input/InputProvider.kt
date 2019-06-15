@@ -1,4 +1,4 @@
-package com.phoenixpen.android.input
+package com.phoenixpen.android.game.input
 
 /**
  * Interface for classes that emit input events for the game logic to process and react on

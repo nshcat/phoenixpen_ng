@@ -1,7 +1,7 @@
 package com.phoenixpen.android.game.data.biome
 
 import com.phoenixpen.android.game.simulation.Simulation
-import com.phoenixpen.android.resources.ResourceProvider
+import com.phoenixpen.android.game.resources.ResourceProvider
 import java.util.*
 
 /**

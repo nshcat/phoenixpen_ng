@@ -1,4 +1,4 @@
-package com.phoenixpen.android.resources
+package com.phoenixpen.android.game.resources
 
 /**
  * An interface for classes that provide essential game resources

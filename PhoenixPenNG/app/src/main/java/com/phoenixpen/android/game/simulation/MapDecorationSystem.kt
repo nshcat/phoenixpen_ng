@@ -1,12 +1,10 @@
 package com.phoenixpen.android.game.simulation
 
-import android.content.Context
-import com.phoenixpen.android.R
 import com.phoenixpen.android.game.ascii.Position3D
 import com.phoenixpen.android.game.data.MapDecoration
 import com.phoenixpen.android.game.data.MapDecorationManager
 import com.phoenixpen.android.game.data.Structure
-import com.phoenixpen.android.resources.ResourceProvider
+import com.phoenixpen.android.game.resources.ResourceProvider
 
 /**
  * Class managing all instances of map decorations.

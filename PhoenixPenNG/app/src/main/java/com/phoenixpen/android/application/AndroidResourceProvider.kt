@@ -1,9 +1,11 @@
-package com.phoenixpen.android.resources
+package com.phoenixpen.android.application
 
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import com.phoenixpen.android.game.ascii.Position
+import com.phoenixpen.android.game.resources.Bitmap
+import com.phoenixpen.android.game.resources.ResourceProvider
 import org.apache.commons.io.FilenameUtils;
 import java.io.BufferedReader
 import java.io.InputStreamReader

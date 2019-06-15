@@ -1,14 +1,11 @@
 package com.phoenixpen.android.game.simulation
 
-import android.content.Context
-import com.phoenixpen.android.R
 import com.phoenixpen.android.game.core.Updateable
 import com.phoenixpen.android.game.data.*
 import com.phoenixpen.android.game.data.biome.BiomeDataSet
-import com.phoenixpen.android.game.data.biome.DecorationDataSetIds
 import com.phoenixpen.android.game.data.biome.TreeDataSetIds
 import com.phoenixpen.android.game.map.Map
-import com.phoenixpen.android.resources.ResourceProvider
+import com.phoenixpen.android.game.resources.ResourceProvider
 import java.util.*
 
 /**

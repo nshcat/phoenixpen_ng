@@ -3,8 +3,8 @@ package com.phoenixpen.android.game.data.biome
 import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.game.ascii.Color
 import com.phoenixpen.android.game.ascii.Position
-import com.phoenixpen.android.resources.Bitmap
-import com.phoenixpen.android.resources.ResourceProvider
+import com.phoenixpen.android.game.resources.Bitmap
+import com.phoenixpen.android.game.resources.ResourceProvider
 
 /**
  * A typealias used to describe the dimensions of a single map template layer

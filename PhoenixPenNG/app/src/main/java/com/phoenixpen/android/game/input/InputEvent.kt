@@ -1,4 +1,4 @@
-package com.phoenixpen.android.input
+package com.phoenixpen.android.game.input
 
 /**
  * Base interface for all input events

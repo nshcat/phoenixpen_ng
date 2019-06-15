@@ -1,4 +1,4 @@
-package com.phoenixpen.android.game.core
+package com.phoenixpen.android.application
 
 /**
  * A class implementing FPS calculation using a moving average

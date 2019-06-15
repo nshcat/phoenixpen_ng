@@ -1,8 +1,8 @@
 package com.phoenixpen.android.game.ascii
 
 import com.phoenixpen.android.application.ScreenDimensions
-import com.phoenixpen.android.input.InputProvider
-import com.phoenixpen.android.resources.ResourceProvider
+import com.phoenixpen.android.game.input.InputProvider
+import com.phoenixpen.android.game.resources.ResourceProvider
 
 /**
  * A class representing a game scene, that can be rendered to an ASCII glyph screen

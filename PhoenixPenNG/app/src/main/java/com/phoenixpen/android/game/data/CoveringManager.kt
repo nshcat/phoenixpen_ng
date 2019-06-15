@@ -1,11 +1,9 @@
 package com.phoenixpen.android.game.data
 
-import android.content.Context
 import android.util.Log
-import com.phoenixpen.android.resources.ResourceProvider
+import com.phoenixpen.android.game.resources.ResourceProvider
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.list
-import java.io.*
 
 /**
  * A class managing all Covering type classes. Coverings can be loaded from JSON file and

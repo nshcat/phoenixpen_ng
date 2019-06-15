@@ -1,6 +1,5 @@
 package com.phoenixpen.android.game.data.biome
 
-import android.content.Context
 import com.phoenixpen.android.game.ascii.Color
 import com.phoenixpen.android.game.ascii.Position
 import com.phoenixpen.android.game.ascii.Position3D
@@ -8,10 +7,8 @@ import com.phoenixpen.android.game.data.Material
 import com.phoenixpen.android.game.map.Map
 import com.phoenixpen.android.game.map.MapDimensions
 import com.phoenixpen.android.game.simulation.Simulation
-import com.phoenixpen.android.resources.ResourceProvider
+import com.phoenixpen.android.game.resources.ResourceProvider
 import kotlinx.serialization.json.Json
-import java.io.BufferedReader
-import java.io.InputStreamReader
 
 /**
  * A class containing all the data that is needed to create the map terrain.

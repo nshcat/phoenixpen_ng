@@ -7,8 +7,8 @@ import android.view.MotionEvent
 import android.view.View
 import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.game.ascii.Position
-import com.phoenixpen.android.game.core.AsciiApplication
-import com.phoenixpen.android.input.*
+import com.phoenixpen.android.application.AsciiApplication
+import com.phoenixpen.android.game.input.*
 import java.util.*
 
 class SurfaceViewInputProvider: InputProvider

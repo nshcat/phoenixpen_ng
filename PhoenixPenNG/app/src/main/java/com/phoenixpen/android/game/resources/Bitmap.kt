@@ -1,4 +1,4 @@
-package com.phoenixpen.android.resources
+package com.phoenixpen.android.game.resources
 
 import com.phoenixpen.android.game.ascii.Color
 import com.phoenixpen.android.game.ascii.Position

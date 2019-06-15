@@ -1,15 +1,12 @@
 package com.phoenixpen.android.game.data.biome
 
-import android.content.Context
 import com.phoenixpen.android.game.ascii.Color
 import com.phoenixpen.android.game.ascii.Position
 import com.phoenixpen.android.game.ascii.Position3D
 import com.phoenixpen.android.game.simulation.Simulation
-import com.phoenixpen.android.resources.ResourceProvider
+import com.phoenixpen.android.game.resources.ResourceProvider
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.map
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import java.util.concurrent.ThreadLocalRandom
 
 /**
