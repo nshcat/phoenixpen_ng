@@ -3,7 +3,7 @@ package com.phoenixpen.android.application
 import android.content.Context
 import android.opengl.GLSurfaceView
 import android.os.SystemClock
-import com.phoenixpen.android.game.input.InputProvider
+import com.phoenixpen.game.input.InputProvider
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -42,7 +42,7 @@ abstract class Application (val context: Context, val input: InputProvider): GLS
     /**
      * The current dimensions of the screen
      */
-    protected var screenDimensions: ScreenDimensions = ScreenDimensions.empty()
+    protected var screenDimensions: com.phoenixpen.game.ascii.ScreenDimensions = com.phoenixpen.game.ascii.ScreenDimensions.empty()
 
     /**
      * This method is called any time the device screen properties change.
@@ -50,7 +50,7 @@ abstract class Application (val context: Context, val input: InputProvider): GLS
      *
      * @param screenDimensions The new screen dimensions
      */
-    abstract fun onScreenChanged(screenDimensions: ScreenDimensions)
+    abstract fun onScreenChanged(screenDimensions: com.phoenixpen.game.ascii.ScreenDimensions)
 
     /**
      * This method is called every time the app is forced to recreate the drawing surface, e.g.
@@ -123,7 +123,7 @@ abstract class Application (val context: Context, val input: InputProvider): GLS
     override fun onSurfaceChanged(p0: GL10?, width: Int, height: Int)
     {
         // Create screen dimensions instance
-        val dimensions = ScreenDimensions(width, height)
+        val dimensions = com.phoenixpen.game.ascii.ScreenDimensions(width, height)
 
         // Only apply if they are not empty
         if(!dimensions.isEmpty())

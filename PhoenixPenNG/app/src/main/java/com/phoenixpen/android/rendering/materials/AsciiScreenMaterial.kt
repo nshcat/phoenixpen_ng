@@ -2,7 +2,7 @@ package com.phoenixpen.android.rendering.materials
 
 import android.content.Context
 import com.phoenixpen.android.R
-import com.phoenixpen.android.application.ScreenDimensions
+import com.phoenixpen.game.ascii.ScreenDimensions
 import com.phoenixpen.android.rendering.*
 import org.joml.Vector4f
 
@@ -28,21 +28,21 @@ class AsciiScreenMaterial(ctx: Context):
     /**
      * The dimensions of the screen, in glyphs (not pixels)
      */
-    var screenDimensions: ScreenDimensions = ScreenDimensions.empty()
+    var screenDimensions: com.phoenixpen.game.ascii.ScreenDimensions = com.phoenixpen.game.ascii.ScreenDimensions.empty()
 
     /**
      * The dimensions of the glyph texture sheet, in glyphs.
      *
      * This is currently fixed to 16x16 glyphs.
      */
-    val sheetDimensions: ScreenDimensions = ScreenDimensions(16, 16)
+    val sheetDimensions: com.phoenixpen.game.ascii.ScreenDimensions = com.phoenixpen.game.ascii.ScreenDimensions(16, 16)
 
     /**
      * The dimensions of a single glyph, in pixels.
      *
      * Currently, all glyphs have to be of the same dimensions.
      */
-    var glyphDimensions: ScreenDimensions = ScreenDimensions.empty()
+    var glyphDimensions: com.phoenixpen.game.ascii.ScreenDimensions = com.phoenixpen.game.ascii.ScreenDimensions.empty()
 
     /**
      * Apply uniform data. We only need to set the required textures here.

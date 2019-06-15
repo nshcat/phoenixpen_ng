@@ -3,9 +3,9 @@ package com.phoenixpen.android.application
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import com.phoenixpen.android.game.ascii.Position
-import com.phoenixpen.android.game.resources.Bitmap
-import com.phoenixpen.android.game.resources.ResourceProvider
+import com.phoenixpen.game.ascii.Position
+import com.phoenixpen.game.resources.Bitmap
+import com.phoenixpen.game.resources.ResourceProvider
 import org.apache.commons.io.FilenameUtils;
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -53,7 +53,7 @@ class AndroidResourceProvider(val ctx: Context): ResourceProvider
                 val androidPixel = androidBitmap.getPixel(ix, iy)
 
                 // Convert to game color instance
-                val color = com.phoenixpen.android.game.ascii.Color(
+                val color = com.phoenixpen.game.ascii.Color(
                         Color.red(androidPixel),
                         Color.green(androidPixel),
                         Color.blue(androidPixel)

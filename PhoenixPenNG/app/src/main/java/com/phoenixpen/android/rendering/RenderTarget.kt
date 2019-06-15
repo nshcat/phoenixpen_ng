@@ -1,7 +1,7 @@
 package com.phoenixpen.android.rendering
 
 import android.opengl.GLES31
-import com.phoenixpen.android.application.ScreenDimensions
+import com.phoenixpen.game.ascii.ScreenDimensions
 
 /**
  * An entity that can be rendered to using OpenGL, for example the screen framebuffer or a render
@@ -12,14 +12,14 @@ abstract class RenderTarget
     /**
      * The current dimensions of the render target. Used to set the OpenGL viewport before rendering.
      */
-    protected var renderDimensions: ScreenDimensions = ScreenDimensions.empty()
+    protected var renderDimensions: com.phoenixpen.game.ascii.ScreenDimensions = com.phoenixpen.game.ascii.ScreenDimensions.empty()
 
     /**
      * Force the render target to change its dimensions
      *
      * @param renderDimensions The new dimensions of the render target
      */
-    open fun updateDimensions(renderDimensions: ScreenDimensions)
+    open fun updateDimensions(renderDimensions: com.phoenixpen.game.ascii.ScreenDimensions)
     {
         this.renderDimensions = renderDimensions
     }

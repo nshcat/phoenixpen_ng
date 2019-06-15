@@ -5,10 +5,10 @@ import android.opengl.GLSurfaceView
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import com.phoenixpen.android.application.ScreenDimensions
-import com.phoenixpen.android.game.ascii.Position
+import com.phoenixpen.game.ascii.ScreenDimensions
+import com.phoenixpen.game.ascii.Position
 import com.phoenixpen.android.application.AsciiApplication
-import com.phoenixpen.android.game.input.*
+import com.phoenixpen.game.input.*
 import java.util.*
 
 class SurfaceViewInputProvider: InputProvider
@@ -68,7 +68,7 @@ class MySurfaceView(ctx: Context): GLSurfaceView(ctx)
             {
                 Log.d("INPUT", "Found ACTION_DOWN")
 
-                val screenDim = ScreenDimensions(v.width, v.height)
+                val screenDim = com.phoenixpen.game.ascii.ScreenDimensions(v.width, v.height)
                 val pos = Position(m.rawX.toInt(), m.rawY.toInt())
 
                 if(pos.y < screenDim.height/4)
