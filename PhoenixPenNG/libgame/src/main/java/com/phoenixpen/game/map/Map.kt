@@ -4,6 +4,7 @@ import com.phoenixpen.game.ascii.Position3D
 import com.phoenixpen.game.core.Updateable
 import com.phoenixpen.game.data.Covering
 import com.phoenixpen.game.data.Structure
+import com.phoenixpen.game.logging.GlobalLogger
 import com.phoenixpen.game.simulation.CoveringHolder
 import com.phoenixpen.game.simulation.StructureHolder
 import java.util.*

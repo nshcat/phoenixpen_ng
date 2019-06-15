@@ -259,6 +259,8 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var 
      */
     private fun drawStructure(screen: Screen, structure: Structure)
     {
+        val structurePos = structure.position.xz() - this.topLeft
+
         // Apply draw info
         screen.setTile(structure.position.xz() - this.topLeft, structure.tile())
 

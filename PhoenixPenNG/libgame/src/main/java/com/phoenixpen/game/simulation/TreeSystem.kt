@@ -2,6 +2,7 @@ package com.phoenixpen.game.simulation
 
 import com.phoenixpen.game.ascii.*
 import com.phoenixpen.game.data.*
+import com.phoenixpen.game.logging.GlobalLogger
 import com.phoenixpen.game.resources.ResourceProvider
 
 /**
