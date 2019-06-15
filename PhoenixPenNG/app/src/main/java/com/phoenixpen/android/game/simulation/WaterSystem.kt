@@ -5,13 +5,14 @@ import com.phoenixpen.android.R
 import com.phoenixpen.android.game.ascii.Position3D
 import com.phoenixpen.android.game.core.Updateable
 import com.phoenixpen.android.game.data.*
+import com.phoenixpen.android.resources.ResourceProvider
 
 /**
  * Class managing all the water tiles in the game world
  *
- * @property context The Android application context
+ * @property resources The current resource provider
  */
-class WaterSystem(val context: Context): StructureHolder, Updateable
+class WaterSystem(val resources: ResourceProvider): StructureHolder, Updateable
 {
     /**
      * Collection of all water tiles currently present in the game world
@@ -29,7 +30,7 @@ class WaterSystem(val context: Context): StructureHolder, Updateable
     init
     {
         // Load water types
-        this.waterManager.loadWaterTypes(this.context, R.raw.water_types)
+        this.waterManager.loadWaterTypes(this.resources, "water_types.json")
     }
 
     /**

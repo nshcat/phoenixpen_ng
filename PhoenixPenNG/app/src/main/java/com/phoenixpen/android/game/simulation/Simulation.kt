@@ -8,14 +8,15 @@ import com.phoenixpen.android.game.data.biome.BiomeDataSet
 import com.phoenixpen.android.game.data.biome.DecorationDataSetIds
 import com.phoenixpen.android.game.data.biome.TreeDataSetIds
 import com.phoenixpen.android.game.map.Map
+import com.phoenixpen.android.resources.ResourceProvider
 import java.util.*
 
 /**
  * The main simulation class which aggregates all game subsystems and data holding objects
  *
- * @property context The android application context
+ * @property resources The resource provider to retrieve game resources from
  */
-class Simulation(val context: Context): Updateable
+class Simulation(val resources: ResourceProvider): Updateable
 {
     /**
      * The main game map.
@@ -45,7 +46,7 @@ class Simulation(val context: Context): Updateable
     /**
      * Tree system
      */
-    val treeHolder = TreeSystem(this.context)
+    val treeHolder = TreeSystem(this.resources)
 
     /**
      * Snow system
@@ -64,26 +65,25 @@ class Simulation(val context: Context): Updateable
     {
         // The material manager needs to be initialized and materials loaded before
         // the map can be loaded
-        this.materialManager.loadMaterials(this.context, R.raw.materials)
+        this.materialManager.loadMaterials(this.resources, "materials.json")
 
         // Load item types from JSON resource
-        this.itemManager.loadItems(this.context, R.raw.items)
+        this.itemManager.loadItems(this.resources, "items.json")
 
         // Load covering types
-        this.coveringManager.loadCoverings(this.context, R.raw.coverings)
+        this.coveringManager.loadCoverings(this.resources, "coverings.json")
 
         // Initialize map decoration system
-        this.mapDecorationSystem = MapDecorationSystem(this.context)
+        this.mapDecorationSystem = MapDecorationSystem(this.resources)
 
         // Initialize water system
-        this.waterSystem = WaterSystem(this.context)
+        this.waterSystem = WaterSystem(this.resources)
 
         // Create biome data set
         val biomeDataSet = BiomeDataSet(
-                this.context,
-                R.raw.biome_test_mapinfo, listOf(R.drawable.biome_test_layer0, R.drawable.biome_test_layer1),
-                Optional.of(TreeDataSetIds(R.raw.biome_test_trees, listOf(R.drawable.biome_test_trees_layer0)))
-                //Optional.of(DecorationDataSetIds(R.raw.biome_test_decorations, listOf(R.drawable.biome_test_decorations_layer0)))
+                this.resources,
+                "biome_test_mapinfo.json", listOf("biome_test_layer0.bmp", "biome_test_layer1.bmp"),
+                Optional.of(TreeDataSetIds("biome_test_trees.json", listOf("biome_test_trees_layer0.bmp")))
         )
 
         // Load biome

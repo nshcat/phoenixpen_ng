@@ -5,6 +5,7 @@ import android.opengl.GLSurfaceView
 import android.os.SystemClock
 import com.phoenixpen.android.game.core.FpsCounter
 import com.phoenixpen.android.input.InputProvider
+import com.phoenixpen.android.resources.AndroidResourceProvider
 import com.phoenixpen.android.resources.ResourceProvider
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -22,7 +23,7 @@ abstract class Application (val context: Context, val input: InputProvider): GLS
     /**
      * The resource provider used in different parts of the game
      */
-    val resources =
+    val resources = AndroidResourceProvider(context)
 
     /**
      * The last frame time, in milliseconds. This is used to calculate the delta time supplied

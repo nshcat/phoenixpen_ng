@@ -1,7 +1,6 @@
 package com.phoenixpen.android.game.data
 
-import android.content.Context
-import android.util.Log
+import com.phoenixpen.android.resources.ResourceProvider
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.list
 import java.io.*
@@ -51,21 +50,19 @@ class TreePartManager
      */
     fun lookupTreePartSafe(key: String): TreePartType
     {
-        if(!this.treeParts.containsKey(key))
-            Log.w("TreePartManager", "Missing treePart \"$key\" replaced with placeholder treePart")
-
         return this.treeParts[key] ?: TreePartType.placeholder
     }
 
     /**
-     * Load all treePart types from given JSON document.
+     * Load all treePart types from given JSON document stored as a resource.
      *
-     * @param stream Stream containing a JSON document.
+     * @param res Resource Provider
+     * @param id Resource id
      */
-    fun loadTreeParts(stream: InputStream)
+    fun loadTreeParts(res: ResourceProvider, id: String)
     {
         // Read all treePart types contained in the JSON document
-        val treePartList = Json.parse(TreePartType.serializer().list, BufferedReader(InputStreamReader(stream)).readText())
+        val treePartList = Json.parse(TreePartType.serializer().list, res.json(id))
 
         // Store them all in the hash map for later retrieval
         for(treePart in treePartList)
@@ -76,16 +73,5 @@ class TreePartManager
 
             this.treeParts.put(treePart.basicData.identifier, treePart)
         }
-    }
-
-    /**
-     * Load all treePart types from given JSON document stored as a resource.
-     *
-     * @param ctx Android application context
-     * @param id Resource id
-     */
-    fun loadTreeParts(ctx: Context, id: Int)
-    {
-        this.loadTreeParts(ctx.resources.openRawResource(id))
     }
 }

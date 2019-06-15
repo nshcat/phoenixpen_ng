@@ -73,7 +73,7 @@ class AsciiApplication (context: Context, input: InputProvider): Application(con
             this.screen.resize(screenDimensions)
             this.orthoProjection.refresh(screenDimensions)
 
-            this.scene = MainScene(this, this.screen.size)
+            this.scene = MainScene(this.resources, this.input, this.screen.size)
         }
     }
 

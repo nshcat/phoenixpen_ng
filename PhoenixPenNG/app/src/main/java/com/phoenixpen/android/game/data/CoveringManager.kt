@@ -2,6 +2,7 @@ package com.phoenixpen.android.game.data
 
 import android.content.Context
 import android.util.Log
+import com.phoenixpen.android.resources.ResourceProvider
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.list
 import java.io.*
@@ -58,14 +59,15 @@ class CoveringManager
     }
 
     /**
-     * Load all covering types from given JSON document.
+     * Load all covering types from given JSON document stored as a resource.
      *
-     * @param stream Stream containing a JSON document.
+     * @param res Resource provider
+     * @param id Resource id
      */
-    fun loadCoverings(stream: InputStream)
+    fun loadCoverings(res: ResourceProvider, id: String)
     {
         // Read all covering types contained in the JSON document
-        val coveringList = Json.parse(CoveringType.serializer().list, BufferedReader(InputStreamReader(stream)).readText())
+        val coveringList = Json.parse(CoveringType.serializer().list, res.json(id))
 
         // Store them all in the hash map for later retrieval
         for(covering in coveringList)
@@ -76,16 +78,5 @@ class CoveringManager
 
             this.coverings.put(covering.identifier, covering)
         }
-    }
-
-    /**
-     * Load all covering types from given JSON document stored as a resource.
-     *
-     * @param ctx Android application context
-     * @param id Resource id
-     */
-    fun loadCoverings(ctx: Context, id: Int)
-    {
-        this.loadCoverings(ctx.resources.openRawResource(id))
     }
 }

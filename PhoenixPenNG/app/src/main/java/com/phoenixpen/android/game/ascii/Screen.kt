@@ -13,6 +13,8 @@ import java.nio.ByteOrder
 /**
  * A screen made up from a matrix of coloured ASCII glyphs.
  *
+ * TODO when making this platform independent, this needs to be made into an interface
+ *
  * @property size Screen dimensions, in PIXELS
  */
 class Screen(val context: Context, size: ScreenDimensions): Shadeable(AsciiScreenMaterial(context))
