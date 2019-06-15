@@ -1,7 +1,6 @@
 package com.phoenixpen.android.game.data
 
-import android.content.Context
-import android.util.Log
+import com.phoenixpen.android.resources.ResourceProvider
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.list
 import java.io.*
@@ -51,21 +50,19 @@ class TreeStructureManager
      */
     fun lookupTreeStructureSafe(key: String): TreeStructureType
     {
-        if(!this.treeStructures.containsKey(key))
-            Log.w("TreeStructureManager", "Missing treeStructure \"$key\" replaced with placeholder treeStructure")
-
         return this.treeStructures[key] ?: TreeStructureType.placeholder
     }
 
     /**
-     * Load all treeStructure types from given JSON document.
+     * Load all treeStructure types from given JSON document stored as a resource.
      *
-     * @param stream Stream containing a JSON document.
+     * @param res Resource provider
+     * @param id Resource id
      */
-    fun loadTreeStructures(stream: InputStream)
+    fun loadTreeStructures(res: ResourceProvider, id: String)
     {
         // Read all treeStructure types contained in the JSON document
-        val treeStructureList = Json.parse(TreeStructureType.serializer().list, BufferedReader(InputStreamReader(stream)).readText())
+        val treeStructureList = Json.parse(TreeStructureType.serializer().list, res.json(id))
 
         // Store them all in the hash map for later retrieval
         for(treeStructure in treeStructureList)
@@ -76,16 +73,5 @@ class TreeStructureManager
 
             this.treeStructures.put(treeStructure.identifier, treeStructure)
         }
-    }
-
-    /**
-     * Load all treeStructure types from given JSON document stored as a resource.
-     *
-     * @param ctx Android application context
-     * @param id Resource id
-     */
-    fun loadTreeStructures(ctx: Context, id: Int)
-    {
-        this.loadTreeStructures(ctx.resources.openRawResource(id))
     }
 }

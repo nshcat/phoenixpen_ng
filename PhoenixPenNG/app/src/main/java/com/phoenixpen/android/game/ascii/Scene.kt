@@ -1,12 +1,21 @@
 package com.phoenixpen.android.game.ascii
 
-import com.phoenixpen.android.application.Application
 import com.phoenixpen.android.application.ScreenDimensions
+import com.phoenixpen.android.input.InputProvider
+import com.phoenixpen.android.resources.ResourceProvider
 
 /**
  * A class representing a game scene, that can be rendered to an ASCII glyph screen
+ *
+ * @property resources The resource manager to retrieve game data from
+ * @property input The input manager providing input events
+ * @property dimensions The screen dimensions
  */
-abstract class Scene(protected val application: Application, protected val dimensions: ScreenDimensions)
+abstract class Scene(
+        protected val resources: ResourceProvider,
+        protected val input: InputProvider,
+        protected val dimensions: ScreenDimensions
+)
 {
     /**
      * Render the scene to given ASCII screen.

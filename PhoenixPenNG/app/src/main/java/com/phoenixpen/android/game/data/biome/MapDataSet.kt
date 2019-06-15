@@ -8,6 +8,7 @@ import com.phoenixpen.android.game.data.Material
 import com.phoenixpen.android.game.map.Map
 import com.phoenixpen.android.game.map.MapDimensions
 import com.phoenixpen.android.game.simulation.Simulation
+import com.phoenixpen.android.resources.ResourceProvider
 import kotlinx.serialization.json.Json
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -15,24 +16,24 @@ import java.io.InputStreamReader
 /**
  * A class containing all the data that is needed to create the map terrain.
  *
- * @param context The android app context, used to retrieve the bitmaps resources
+ * @param resources The resource provider to retrieve data from
  * @param mapInfoId The resource id of the JSON document containing general map info and key
  * @param mapTemplateIds All ids of map template layer bitmaps
  */
-class MapDataSet(context: Context, mapInfoId: Int, mapTemplateIds: List<Int>)
+class MapDataSet(resources: ResourceProvider, mapInfoId: String, mapTemplateIds: List<String>)
 {
     /**
      * The map information needed to interpret the map template
      */
     val mapInfo: MapInfo = Json.indented.parse(
             MapInfo.serializer(),
-            BufferedReader(InputStreamReader(context.resources.openRawResource(mapInfoId))).readText()
+            resources.json(mapInfoId)
     )
 
     /**
      * The map template
      */
-    val mapTemplate: BiomeTemplate = BiomeTemplate.fromBitmaps(context, *mapTemplateIds.toIntArray())
+    val mapTemplate: BiomeTemplate = BiomeTemplate.fromBitmaps(resources, *mapTemplateIds.toTypedArray())
 
     /**
      * Actually load the map

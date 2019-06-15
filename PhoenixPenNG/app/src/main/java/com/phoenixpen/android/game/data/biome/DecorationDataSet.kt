@@ -5,6 +5,7 @@ import com.phoenixpen.android.game.ascii.Color
 import com.phoenixpen.android.game.ascii.Position
 import com.phoenixpen.android.game.ascii.Position3D
 import com.phoenixpen.android.game.simulation.Simulation
+import com.phoenixpen.android.resources.ResourceProvider
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.map
 import java.io.BufferedReader
@@ -14,25 +15,25 @@ import java.util.concurrent.ThreadLocalRandom
 /**
  * A simple class holding all the resource IDs needed to construct a decoration data set.
  */
-data class DecorationDataSetIds(val keyId: Int, val templateIds: List<Int>)
+data class DecorationDataSetIds(val keyId: String, val templateIds: List<String>)
 
 /**
  * A class aggregating data on how map decorations should appear in the biome.
  */
-class DecorationDataSet(context: Context, ids: DecorationDataSetIds)
+class DecorationDataSet(resources: ResourceProvider, ids: DecorationDataSetIds)
 {
     /**
      * The decoration key used to translate colours in the biome template into actual tree types
      */
     val decorationKey: TypeKey = Json.indented.parse(
             (Color.serializer()).to(TypeKeyEntry.serializer()).map,
-            BufferedReader(InputStreamReader(context.resources.openRawResource(ids.keyId))).readText()
+            resources.json(ids.keyId)
     )
 
     /**
      * The decoration template
      */
-    val decorationTemplate: BiomeTemplate = BiomeTemplate.fromBitmaps(context, *(ids.templateIds.toIntArray()))
+    val decorationTemplate: BiomeTemplate = BiomeTemplate.fromBitmaps(resources, *(ids.templateIds.toTypedArray()))
 
     /**
      * Actually apply the decoration template to the current simulation state

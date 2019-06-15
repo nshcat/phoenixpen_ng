@@ -1,7 +1,6 @@
 package com.phoenixpen.android.game.data
 
-import android.content.Context
-import android.util.Log
+import com.phoenixpen.android.resources.ResourceProvider
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.list
 import java.io.*
@@ -51,21 +50,19 @@ class TreeTypeManager
      */
     fun lookupTreeSafe(key: String): TreeType
     {
-        if(!this.treeTypes.containsKey(key))
-            Log.w("TreeManager", "Missing treeType \"$key\" replaced with placeholder treeType")
-
         return this.treeTypes[key] ?: TreeType.placeholder
     }
 
     /**
-     * Load all treeType types from given JSON document.
+     * Load all treeType types from given JSON document stored as a resource.
      *
-     * @param stream Stream containing a JSON document.
+     * @param res Resource provider
+     * @param id Resource id
      */
-    fun loadTrees(stream: InputStream)
+    fun loadTrees(res: ResourceProvider, id: String)
     {
         // Read all treeType types contained in the JSON document
-        val treeTypeList = Json.parse(TreeType.serializer().list, BufferedReader(InputStreamReader(stream)).readText())
+        val treeTypeList = Json.parse(TreeType.serializer().list, res.json(id))
 
         // Store them all in the hash map for later retrieval
         for(treeType in treeTypeList)
@@ -76,16 +73,5 @@ class TreeTypeManager
 
             this.treeTypes.put(treeType.identifier, treeType)
         }
-    }
-
-    /**
-     * Load all treeType types from given JSON document stored as a resource.
-     *
-     * @param ctx Android application context
-     * @param id Resource id
-     */
-    fun loadTrees(ctx: Context, id: Int)
-    {
-        this.loadTrees(ctx.resources.openRawResource(id))
     }
 }

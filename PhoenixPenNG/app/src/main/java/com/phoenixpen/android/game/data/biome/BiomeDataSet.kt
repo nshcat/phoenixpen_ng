@@ -1,7 +1,7 @@
 package com.phoenixpen.android.game.data.biome
 
-import android.content.Context
 import com.phoenixpen.android.game.simulation.Simulation
+import com.phoenixpen.android.resources.ResourceProvider
 import java.util.*
 
 /**
@@ -14,8 +14,8 @@ import java.util.*
  * @property decorationIds Resource IDs describing the decorations data set
  */
 class BiomeDataSet(
-        val context: Context,
-        mapInfoId: Int, mapTemplateIds: List<Int>,
+        val resources: ResourceProvider,
+        mapInfoId: String, mapTemplateIds: List<String>,
         val treeIds: Optional<TreeDataSetIds> = Optional.empty(),
         val decorationIds: Optional<DecorationDataSetIds> = Optional.empty()
 )
@@ -23,7 +23,7 @@ class BiomeDataSet(
     /**
      * The map data used to create the map instance
      */
-    val mapDataSet = MapDataSet(context, mapInfoId, mapTemplateIds)
+    val mapDataSet = MapDataSet(this.resources, mapInfoId, mapTemplateIds)
 
     /**
      * Apply this biome data set, making the biome that it describes the current biome
@@ -36,13 +36,13 @@ class BiomeDataSet(
         // Generate trees if requested
         if (treeIds.isPresent)
         {
-            TreeDataSet(this.context, treeIds.get()).apply(simulation)
+            TreeDataSet(this.resources, treeIds.get()).apply(simulation)
         }
 
         // Generate decorations if requested
         if (decorationIds.isPresent)
         {
-            DecorationDataSet(this.context, decorationIds.get()).apply(simulation)
+            DecorationDataSet(this.resources, decorationIds.get()).apply(simulation)
         }
     }
 }

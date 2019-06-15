@@ -5,6 +5,7 @@ import com.phoenixpen.android.game.ascii.Color
 import com.phoenixpen.android.game.ascii.Position
 import com.phoenixpen.android.game.ascii.Position3D
 import com.phoenixpen.android.game.simulation.Simulation
+import com.phoenixpen.android.resources.ResourceProvider
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.map
 import java.io.BufferedReader
@@ -15,25 +16,25 @@ import java.util.concurrent.ThreadLocalRandom
 /**
  * A simple class holding all the resource IDs needed to construct a tree data set.
  */
-data class TreeDataSetIds(val keyId: Int, val templateIds: List<Int>)
+data class TreeDataSetIds(val keyId: String, val templateIds: List<String>)
 
 /**
  * A class aggregating data on how trees should appear in the biome.
  */
-class TreeDataSet(context: Context, ids: TreeDataSetIds)
+class TreeDataSet(resources: ResourceProvider, ids: TreeDataSetIds)
 {
     /**
      * The tree key used to translate colours in the biome template into actual tree types
      */
     val treeKey: TypeKey = Json.indented.parse(
             (Color.serializer()).to(TypeKeyEntry.serializer()).map,
-            BufferedReader(InputStreamReader(context.resources.openRawResource(ids.keyId))).readText()
+            resources.json(ids.keyId)
     )
 
     /**
      * The tree template
      */
-    val treeTemplate: BiomeTemplate = BiomeTemplate.fromBitmaps(context, *(ids.templateIds.toIntArray()))
+    val treeTemplate: BiomeTemplate = BiomeTemplate.fromBitmaps(resources, *(ids.templateIds.toTypedArray()))
 
     /**
      * Actually apply the tree template to the current simulation state

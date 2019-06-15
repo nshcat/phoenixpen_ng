@@ -1,7 +1,6 @@
 package com.phoenixpen.android.game.data
 
-import android.content.Context
-import android.util.Log
+import com.phoenixpen.android.resources.ResourceProvider
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.list
 import java.io.*
@@ -51,21 +50,19 @@ class MapDecorationManager
      */
     fun lookupMapDecorationSafe(key: String): MapDecorationType
     {
-        if(!this.mapDecorations.containsKey(key))
-            Log.w("MapDecorationManager", "Missing map decoration \"$key\" replaced with placeholder map decoration")
-
         return this.mapDecorations[key] ?: MapDecorationType.placeholder
     }
 
     /**
-     * Load all mapDecoration types from given JSON document.
+     * Load all map decoration types from given JSON document stored as a resource.
      *
-     * @param stream Stream containing a JSON document.
+     * @param res Resource provider
+     * @param id Resource id
      */
-    fun loadMapDecorations(stream: InputStream)
+    fun loadMapDecorations(res: ResourceProvider, id: String)
     {
         // Read all mapDecoration types contained in the JSON document
-        val mapDecorationList = Json.parse(MapDecorationType.serializer().list, BufferedReader(InputStreamReader(stream)).readText())
+        val mapDecorationList = Json.parse(MapDecorationType.serializer().list, res.json(id))
 
         // Store them all in the hash map for later retrieval
         for(mapDecoration in mapDecorationList)
@@ -76,16 +73,5 @@ class MapDecorationManager
 
             this.mapDecorations.put(mapDecoration.basicData.identifier, mapDecoration)
         }
-    }
-
-    /**
-     * Load all map decoration types from given JSON document stored as a resource.
-     *
-     * @param ctx Android application context
-     * @param id Resource id
-     */
-    fun loadMapDecorations(ctx: Context, id: Int)
-    {
-        this.loadMapDecorations(ctx.resources.openRawResource(id))
     }
 }

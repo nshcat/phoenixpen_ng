@@ -1,7 +1,6 @@
 package com.phoenixpen.android.game.data
 
-import android.content.Context
-import android.util.Log
+import com.phoenixpen.android.resources.ResourceProvider
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.list
 import java.io.*
@@ -52,21 +51,19 @@ class MaterialManager
      */
     fun lookupMaterialSafe(key: String): MaterialType
     {
-        if(!this.materials.containsKey(key))
-            Log.w("MaterialManager", "Missing material \"$key\" replaced with placeholder material")
-
         return this.materials[key] ?: MaterialType.placeholder
     }
 
     /**
-     * Load all material types from given JSON document.
+     * Load all material types from given JSON document stored as a resource.
      *
-     * @param stream Stream containing a JSON document.
+     * @param res Resource provider
+     * @param id Resource id
      */
-    fun loadMaterials(stream: InputStream)
+    fun loadMaterials(res: ResourceProvider, id: String)
     {
         // Read all material types contained in the JSON document
-        val materialList = Json.parse(MaterialType.serializer().list, BufferedReader(InputStreamReader(stream)).readText())
+        val materialList = Json.parse(MaterialType.serializer().list, res.json(id))
 
         // Store them all in the hash map for later retrieval
         for(material in materialList)
@@ -77,16 +74,5 @@ class MaterialManager
 
             this.materials.put(material.identifier, material)
         }
-    }
-
-    /**
-     * Load all material types from given JSON document stored as a resource.
-     *
-     * @param ctx Android application context
-     * @param id Resource id
-     */
-    fun loadMaterials(ctx: Context, id: Int)
-    {
-        this.loadMaterials(ctx.resources.openRawResource(id))
     }
 }

@@ -1,11 +1,10 @@
 package com.phoenixpen.android.game.data.biome
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import com.phoenixpen.android.application.ScreenDimensions
 import com.phoenixpen.android.game.ascii.Color
 import com.phoenixpen.android.game.ascii.Position
+import com.phoenixpen.android.resources.Bitmap
+import com.phoenixpen.android.resources.ResourceProvider
 
 /**
  * A typealias used to describe the dimensions of a single map template layer
@@ -84,14 +83,8 @@ class BiomeTemplateLayer(val dimensions: LayerDimensions)
             {
                 for(iy in 0 until layer.dimensions.height)
                 {
-                    // Retrieve color
-                    val colorEntry = bitmap.getPixel(ix, iy)
-
-                    val color = Color(
-                            android.graphics.Color.red(colorEntry),
-                            android.graphics.Color.green(colorEntry),
-                            android.graphics.Color.blue(colorEntry)
-                    )
+                    // Retrieve pixel color
+                    val color = bitmap.pixelAt(Position(ix, iy))
 
                     layer.entries[layer.indexFor(Position(ix, iy))] = color
                 }
@@ -103,9 +96,9 @@ class BiomeTemplateLayer(val dimensions: LayerDimensions)
         /**
          * Load from bitmap stored in resources
          */
-        fun fromBitmap(context: Context, id: Int): BiomeTemplateLayer
+        fun fromBitmap(resources: ResourceProvider, id: String): BiomeTemplateLayer
         {
-            return fromBitmap(BitmapFactory.decodeResource(context.resources, id))
+            return fromBitmap(resources.bitmap(id))
         }
     }
 }
@@ -144,7 +137,7 @@ class BiomeTemplate
         /**
          * Create from set of bitmap resources
          */
-        fun fromBitmaps(context: Context, vararg ids: Int): BiomeTemplate
+        fun fromBitmaps(resources: ResourceProvider, vararg ids: String): BiomeTemplate
         {
             if(ids.isEmpty())
                 throw IllegalArgumentException("at least one layer bitmap is required")
@@ -155,7 +148,7 @@ class BiomeTemplate
             // Load all layers
             for(id in ids)
             {
-                template.layers.add(BiomeTemplateLayer.fromBitmap(context, id))
+                template.layers.add(BiomeTemplateLayer.fromBitmap(resources, id))
             }
 
             return template

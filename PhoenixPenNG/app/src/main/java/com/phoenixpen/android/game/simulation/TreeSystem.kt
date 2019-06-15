@@ -6,13 +6,14 @@ import com.phoenixpen.android.game.ascii.Position
 import com.phoenixpen.android.game.ascii.Position3D
 import com.phoenixpen.android.game.ascii.minus
 import com.phoenixpen.android.game.data.*
+import com.phoenixpen.android.resources.ResourceProvider
 
 /**
  * Class managing all the trees in the game world
  *
- * @property context The Android application context
+ * @property resources The resource provider as a source for game data
  */
-class TreeSystem(val context: Context): StructureHolder
+class TreeSystem(val resources: ResourceProvider): StructureHolder
 {
     /**
      * Collection of all trees currently present in the game world
@@ -40,13 +41,13 @@ class TreeSystem(val context: Context): StructureHolder
     init
     {
         // Load tree parts
-        this.treePartManager.loadTreeParts(this.context, R.raw.tree_parts)
+        this.treePartManager.loadTreeParts(this.resources, "tree_parts.json")
 
         // Load tree structures
-        this.treeStructureManager.loadTreeStructures(this.context, R.raw.tree_structures)
+        this.treeStructureManager.loadTreeStructures(this.resources, "tree_structures.json")
 
         // Load tree types
-        this.treeTypeManager.loadTrees(this.context, R.raw.tree_types)
+        this.treeTypeManager.loadTrees(this.resources, "tree_types.json")
     }
 
     /**

@@ -19,7 +19,7 @@ data class TypeKeyEntry(
 )
 
 /**
- * A typealias used to implement the t ypekey, which can be used to look up the colors in the
+ * A typealias used to implement the typekey, which can be used to look up the colors in the
  * biome template layer images
  */
 typealias TypeKey = Map<Color, TypeKeyEntry>

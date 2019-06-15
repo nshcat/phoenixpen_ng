@@ -6,13 +6,14 @@ import com.phoenixpen.android.game.ascii.Position3D
 import com.phoenixpen.android.game.data.MapDecoration
 import com.phoenixpen.android.game.data.MapDecorationManager
 import com.phoenixpen.android.game.data.Structure
+import com.phoenixpen.android.resources.ResourceProvider
 
 /**
  * Class managing all instances of map decorations.
  *
- * @property context The Android application context
+ * @property resources The current resource provider
  */
-class MapDecorationSystem(val context: Context): StructureHolder
+class MapDecorationSystem(val resources: ResourceProvider): StructureHolder
 {
     /**
      * Map decoration type manager
@@ -30,7 +31,7 @@ class MapDecorationSystem(val context: Context): StructureHolder
     init
     {
         // Load all decoration types
-        this.decorationManager.loadMapDecorations(this.context, R.raw.map_decorations)
+        this.decorationManager.loadMapDecorations(this.resources, "map_decorations.json")
     }
 
     /**

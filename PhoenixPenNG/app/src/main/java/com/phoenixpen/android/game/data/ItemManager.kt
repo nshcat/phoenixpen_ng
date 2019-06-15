@@ -1,7 +1,6 @@
 package com.phoenixpen.android.game.data
 
-import android.content.Context
-import android.util.Log
+import com.phoenixpen.android.resources.ResourceProvider
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.list
 import java.io.*
@@ -50,21 +49,19 @@ class ItemManager
      */
     fun lookupItemTypeSafe(key: String): ItemType
     {
-        if(!this.items.containsKey(key))
-            Log.w("ItemManager", "Missing item \"$key\" replaced with placeholder item")
-
         return this.items[key] ?: ItemType.placeholder
     }
 
     /**
-     * Load all item types from given JSON document.
+     * Load all item types from given JSON document stored as a resource.
      *
-     * @param stream Stream containing a JSON document.
+     * @param res Resource provider
+     * @param id Resource id
      */
-    fun loadItems(stream: InputStream)
+    fun loadItems(res: ResourceProvider, id: String)
     {
         // Read all item types contained in the JSON document
-        val itemList = Json.parse(ItemType.serializer().list, BufferedReader(InputStreamReader(stream)).readText())
+        val itemList = Json.parse(ItemType.serializer().list, res.json(id))
 
         // Store them all in the hash map for later retrieval
         for(item in itemList)
@@ -75,16 +72,5 @@ class ItemManager
 
             this.items.put(item.identifier, item)
         }
-    }
-
-    /**
-     * Load all item types from given JSON document stored as a resource.
-     *
-     * @param ctx Android application context
-     * @param id Resource id
-     */
-    fun loadItems(ctx: Context, id: Int)
-    {
-        this.loadItems(ctx.resources.openRawResource(id))
     }
 }
