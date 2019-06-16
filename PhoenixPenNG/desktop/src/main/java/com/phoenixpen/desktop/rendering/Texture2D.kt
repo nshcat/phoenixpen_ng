@@ -82,8 +82,8 @@ class Texture2D(val gl: GL4, parameters: Texture2DParameters): Texture()
             pixels.put(data)
             pixels.flip()
 
-            gl.glTexImage2D(GL4.GL_TEXTURE_2D, 0, GL4.GL_RGB, bitmap.width, bitmap.height,
-                    0, GL4.GL_RGB, GL.GL_UNSIGNED_BYTE, pixels)
+            gl.glTexImage2D(GL4.GL_TEXTURE_2D, 0, GL4.GL_RGBA, bitmap.width, bitmap.height,
+                    0, GL4.GL_RGBA, GL.GL_UNSIGNED_BYTE, pixels)
 
             // Generate all needed mipmap levels for this texture
             gl.glGenerateMipmap(GL4.GL_TEXTURE_2D)
