@@ -64,8 +64,7 @@ void main()
     vec4 clr = calc_pixel();
 
     apply_depth(clr);
-    apply_shadows(clr);
+    //apply_shadows(clr);
 
-
-    fragmentColor = clr;
+	fragmentColor = clr;
 }

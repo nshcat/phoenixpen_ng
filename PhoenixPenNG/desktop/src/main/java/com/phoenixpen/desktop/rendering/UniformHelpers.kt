@@ -158,9 +158,9 @@ private fun checkedUniformLocation(gl: GL4, program: ShaderProgram, name: String
     val location = gl.glGetUniformLocation(program.handle, name)
 
     // Check if location is known
-    if(location == -1)
+    /*if(location == -1)
     {
         throw IllegalArgumentException("unknown uniform location \"$name\"")
-    }
-    else return location
+    }*/
+    /*else*/ return location
 }
