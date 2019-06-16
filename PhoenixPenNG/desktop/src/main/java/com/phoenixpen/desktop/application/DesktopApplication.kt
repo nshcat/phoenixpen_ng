@@ -11,6 +11,11 @@ import java.awt.Dimension
 import java.nio.file.Paths
 import javax.swing.JFrame
 
+import com.sun.jna.Native;
+import com.sun.jna.NativeLong;
+import com.sun.jna.platform.unix.X11;
+
+
 /**
  * The main desktop application class. Manages OpenGL rendering and rendering.
  *
@@ -86,7 +91,12 @@ class DesktopApplication(val dimensions: Dimension): JFrame("phoenixpen_ng"), GL
         this.defaultCloseOperation = EXIT_ON_CLOSE
         isVisible = true
         isResizable = false
+
+        // X11FullscreenHelper.setFullScreenWindow(this, true)
+
         canvas.requestFocusInWindow()
+
+
     }
 
     /**
