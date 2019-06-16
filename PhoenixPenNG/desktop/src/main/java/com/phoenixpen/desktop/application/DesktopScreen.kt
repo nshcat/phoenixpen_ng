@@ -31,12 +31,12 @@ class DesktopScreen(val gl: GL4, val res: DesktopResourceProvider, size: ScreenD
     /**
      * The glyph sheet texture
      */
-    private val glyphTexture = Texture2D.FromImageResource(this.gl, this.res, "text.png")
+    private val glyphTexture = JOGLTexture2D.FromImageResource(this.gl, this.res, "text.png")
 
     /**
      * The shadow texture
      */
-    private val shadowTexture = Texture2D.FromImageResource(this.gl, this.res, "shadows.png")
+    private val shadowTexture = JOGLTexture2D.FromImageResource(this.gl, this.res, "shadows.png")
 
     /**
      * The buffer texture used to hold the screen data. We use a

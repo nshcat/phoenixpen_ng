@@ -118,6 +118,18 @@ class DesktopResourceProvider(private val prefix: Path): ResourceProvider
     }
 
     /**
+     * Retrieve path to texture
+     *
+     * @param id Name of the texture
+     * @return Path to the texture
+     */
+    fun texturePath(id: String): Path
+    {
+        // Build combined path
+        return this.prefix.resolve(Paths.get("textures", id))
+    }
+
+    /**
      * Read whole content of a text file into a string
      *
      * @param path Path of the file to read

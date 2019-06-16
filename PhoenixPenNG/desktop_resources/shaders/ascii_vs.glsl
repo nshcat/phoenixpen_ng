@@ -103,6 +103,8 @@ void emit_shadows(uvec4 low)
 void emit_shadow_coords()
 {
     shadow_coords = shadow_coords_array[gl_VertexID];
+    
+    shadow_coords.y = 1 - shadow_coords.y;
 }
 
 
@@ -181,6 +183,8 @@ void emit_tex_coords(uvec4 high, uvec4 low)
     // x and y direction) multiplied by the size of one glyph in texture space.
     // We will receive one of the four corners of the glyph texture.
     t_tl += texture_offset[gl_VertexID] * t_dimTex;
+    
+    t_tl.y = 1 - t_tl.y;
 
     // Write value to output interface block
     tex_coords = t_tl;
