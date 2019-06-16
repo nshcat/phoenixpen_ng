@@ -4,6 +4,7 @@ import com.phoenixpen.game.ascii.Color
 import com.phoenixpen.game.ascii.Position
 import com.phoenixpen.game.resources.Bitmap
 import com.phoenixpen.game.resources.ResourceProvider
+import java.awt.image.BufferedImage
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -99,6 +100,21 @@ class DesktopResourceProvider(private val prefix: Path): ResourceProvider
 
 
         return bitmap
+    }
+
+    /**
+     * Retrieve buffered image
+     *
+     * @param id Name of the bitmap
+     * @return BufferedImage loaded from file
+     */
+    fun bufferedImage(id: String): BufferedImage
+    {
+        // Build combined path
+        val path = this.prefix.resolve(Paths.get("images", id))
+
+        // Retrieve buffered image
+        return ImageIO.read(Files.newInputStream(path))
     }
 
     /**

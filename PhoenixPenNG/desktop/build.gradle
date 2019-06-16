@@ -8,13 +8,17 @@ repositories {
     mavenCentral()
     maven { url "https://kotlin.bintray.com/kotlinx" }
     maven { url "https://dl.bintray.com/kotlin/kotlin-eap" }
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
 }
 
-
+project.ext.jomlVersion = "1.9.3-SNAPSHOT"
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.11.0"
+    implementation "org.joml:joml:${jomlVersion}"
 
     compile project(':libgame')
     compile "org.jogamp.gluegen:gluegen-rt:2.3.1"
