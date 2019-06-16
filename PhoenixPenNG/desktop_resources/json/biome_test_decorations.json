@@ -1,0 +1,8 @@
+{
+  "#FFFFFF" : {
+    "density" : 1.0,
+    "types" : [
+      { "type": "boulder", "probability": 1.0 }
+    ]
+  }
+}

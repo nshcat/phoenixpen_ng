@@ -1,0 +1,406 @@
+[
+  {
+    "basic_data":
+    {
+      "identifier": "primary_leaf_default",
+      "display_name": "leaves, branches",
+      "description": "branches with leaves",
+      "is_stainable": true
+    },
+    "tile": {
+      "mode": "Varied",
+      "data": [
+        { "tile": { "glyph": 172, "foreground": "#00CC55" }, "probability": 0.2  },
+        { "tile": { "glyph": 172, "foreground": "#05AE4C" }, "probability": 0.2  },
+        { "tile": { "glyph": 172, "foreground": "#049A42" }, "probability": 0.2  },
+        { "tile": { "glyph": 172, "foreground": "#039A56" }, "probability": 0.15 },
+        { "tile": { "glyph": 172, "foreground": "#06AC4B" }, "probability": 0.1  },
+        { "tile": { "glyph": 172, "foreground": "#299D59" }, "probability": 0.06 },
+        { "tile": { "glyph": 172, "foreground": "#00AD47" }, "probability": 0.06 },
+        { "tile": { "glyph": 172, "foreground": "#0C7A39" }, "probability": 0.03 }
+      ]
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "secondary_leaf_default",
+      "display_name": "leaves, twigs",
+      "description": "twigs with leaves",
+      "is_stainable": true
+    },
+    "tile": {
+      "mode": "Varied",
+      "data": [
+        { "tile": { "glyph": 172, "foreground": "#00CC55" }, "probability": 0.2  },
+        { "tile": { "glyph": 172, "foreground": "#05AE4C" }, "probability": 0.2  },
+        { "tile": { "glyph": 172, "foreground": "#049A42" }, "probability": 0.2  },
+        { "tile": { "glyph": 172, "foreground": "#039A56" }, "probability": 0.15 },
+        { "tile": { "glyph": 172, "foreground": "#06AC4B" }, "probability": 0.1  },
+        { "tile": { "glyph": 172, "foreground": "#299D59" }, "probability": 0.06 },
+        { "tile": { "glyph": 172, "foreground": "#00AD47" }, "probability": 0.06 },
+        { "tile": { "glyph": 172, "foreground": "#0C7A39" }, "probability": 0.03 }
+      ]
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "trunk_default",
+      "display_name": "tree trunk",
+      "description": "a thick tree trunk"
+    },
+    "tile":
+    {
+      "data" : {
+        "glyph": 79,
+        "foreground": "#8E6004"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "trunk_cap_default",
+      "display_name": "tree trunk",
+      "description": "a thick tree trunk"
+    },
+    "tile":
+    {
+      "data" : {
+        "glyph": 127,
+        "foreground": "#473002"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "branch_horz_default",
+      "display_name": "tree branch",
+      "description": "a medium sized tree branch"
+    },
+    "tile":
+    {
+      "data" : {
+        "glyph": 196,
+        "foreground": "#473002"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "branch_vert_default",
+      "display_name": "tree branch",
+      "description": "a medium sized tree branch"
+    },
+    "tile":
+    {
+      "data": {
+        "glyph": 179,
+        "foreground": "#473002"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "branch_cross_default",
+      "display_name": "tree branch",
+      "description": "a medium sized tree branch"
+    },
+    "tile":
+    {
+      "data": {
+        "glyph": 182,
+        "foreground": "#473002"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "branch_se_default",
+      "display_name": "tree branch",
+      "description": "a medium sized tree branch"
+    },
+    "tile":
+    {
+      "data": {
+        "glyph": 218,
+        "foreground": "#473002"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "branch_nw_default",
+      "display_name": "tree branch",
+      "description": "a medium sized tree branch"
+    },
+    "tile":
+    {
+      "data": {
+        "glyph": 217,
+        "foreground": "#473002"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "branch_sw_default",
+      "display_name": "tree branch",
+      "description": "a medium sized tree branch"
+    },
+    "tile":
+    {
+      "data": {
+        "glyph": 191,
+        "foreground": "#473002"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "branch_ne_default",
+      "display_name": "tree branch",
+      "description": "a medium sized tree branch"
+    },
+    "tile":
+    {
+      "data": {
+        "glyph": 192,
+        "foreground": "#473002"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "branch_vert_w_default",
+      "display_name": "tree branch",
+      "description": "a medium sized tree branch"
+    },
+    "tile":
+    {
+      "data" : {
+        "glyph": 199,
+        "foreground": "#473002"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "branch_vert_e_default",
+      "display_name": "tree branch",
+      "description": "a medium sized tree branch"
+    },
+    "tile":
+    {
+      "data" : {
+        "glyph": 195,
+        "foreground": "#473002"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "branch_horz_s_default",
+      "display_name": "tree branch",
+      "description": "a medium sized tree branch"
+    },
+    "tile":
+    {
+      "data" : {
+        "glyph": 194,
+        "foreground": "#473002"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "branch_horz_n_default",
+      "display_name": "tree branch",
+      "description": "a medium sized tree branch"
+    },
+    "tile":
+    {
+      "data" : {
+        "glyph": 193,
+        "foreground": "#473002"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "trunk_horz_default",
+      "display_name": "tree trunk",
+      "description": "a thick tree trunk"
+    },
+    "tile":
+    {
+      "data" : {
+        "glyph": 205,
+        "foreground": "#8E6004"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "trunk_vert_default",
+      "display_name": "tree trunk",
+      "description": "a thick tree trunk"
+    },
+    "tile":
+    {
+      "data" : {
+        "glyph": 186,
+        "foreground": "#8E6004"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "trunk_se_default",
+      "display_name": "tree trunk",
+      "description": "a thick tree trunk"
+    },
+    "tile":
+    {
+      "data" : {
+        "glyph": 201,
+        "foreground": "#8E6004"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "trunk_nw_default",
+      "display_name": "tree trunk",
+      "description": "a thick tree trunk"
+    },
+    "tile":
+    {
+      "data" : {
+        "glyph": 188,
+        "foreground": "#8E6004"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "trunk_ne_default",
+      "display_name": "tree trunk",
+      "description": "a thick tree trunk"
+    },
+    "tile":
+    {
+      "data" : {
+        "glyph": 200,
+        "foreground": "#8E6004"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "trunk_sw_default",
+      "display_name": "tree trunk",
+      "description": "a thick tree trunk"
+    },
+    "tile":
+    {
+      "data" : {
+        "glyph": 187,
+        "foreground": "#8E6004"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "trunk_cross_default",
+      "display_name": "tree trunk",
+      "description": "a thick tree trunk"
+    },
+    "tile":
+    {
+      "data" : {
+        "glyph": 206,
+        "foreground": "#8E6004"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "trunk_vert_w_default",
+      "display_name": "tree trunk",
+      "description": "a thick tree trunk"
+    },
+    "tile":
+    {
+      "data" : {
+        "glyph": 185,
+        "foreground": "#8E6004"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "trunk_vert_e_default",
+      "display_name": "tree trunk",
+      "description": "a thick tree trunk"
+    },
+    "tile":
+    {
+      "data" : {
+        "glyph": 204,
+        "foreground": "#8E6004"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "trunk_horz_s_default",
+      "display_name": "tree trunk",
+      "description": "a thick tree trunk"
+    },
+    "tile":
+    {
+      "data" : {
+        "glyph": 203,
+        "foreground": "#8E6004"
+      }
+    }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "trunk_horz_n_default",
+      "display_name": "tree trunk",
+      "description": "a thick tree trunk"
+    },
+    "tile":
+    {
+      "data" : {
+        "glyph": 202,
+        "foreground": "#8E6004"
+      }
+    }
+  }
+]

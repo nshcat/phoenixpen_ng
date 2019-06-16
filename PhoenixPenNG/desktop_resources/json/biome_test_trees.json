@@ -1,0 +1,8 @@
+{
+  "#FFFFFF" : {
+    "density" : 1.0,
+    "types" : [
+      { "type": "test_tree", "probability": 1.0 }
+    ]
+  }
+}

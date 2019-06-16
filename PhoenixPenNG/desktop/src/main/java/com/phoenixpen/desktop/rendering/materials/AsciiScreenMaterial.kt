@@ -67,7 +67,7 @@ class AsciiScreenMaterial(val gl: GL4, res: DesktopResourceProvider):
         // Misc uniforms
         uniformVec4f(gl, this.shaderProgram, "fog_color", this.fogColor)
         uniformInt(gl, this.shaderProgram, "screen_width", this.screenDimensions.width)
-        uniformInt(gl, this.shaderProgram, "screen_height", this.screenDimensions.height)
+        //uniformInt(gl, this.shaderProgram, "screen_height", this.screenDimensions.height)
 
         uniformInt(gl, this.shaderProgram, "sheet_width", this.sheetDimensions.width)
         uniformInt(gl, this.shaderProgram, "sheet_height", this.sheetDimensions.height)

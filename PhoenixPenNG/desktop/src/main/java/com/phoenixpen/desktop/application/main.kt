@@ -5,5 +5,5 @@ import java.awt.Dimension
 
 fun main(args: Array<String>)
 {
-    val application = DesktopApplication(Dimension(400, 300))
+    val application = DesktopApplication(Dimension(542, 542))
 }
