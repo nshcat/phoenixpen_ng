@@ -13,14 +13,10 @@ import java.util.concurrent.ThreadLocalRandom
  *
  * @property tileInstance Current tile state
  * @property type Type class instance describing the properties of this water tile
- * @property bodyType The type of this body of water, e.g. river
- * @property salinity If there is salt in this water tile
  * @param position Position in the game world
  */
 class WaterTile(
         val type: WaterType,
-        val bodyType: WaterBodyType = WaterBodyType.Still,
-        val salinity: WaterSalinity = WaterSalinity.Freshwater,
         position: Position3D,
         private val tileInstance: TileInstance
     ): Structure(type.basicData, position), Updateable
@@ -105,9 +101,9 @@ class WaterTile(
          * @return New water tile instance
          *
          */
-        fun create(type: WaterType, pos: Position3D, bodyType: WaterBodyType, salinity: WaterSalinity, animationOffset: Int = 0): WaterTile
+        fun create(type: WaterType, pos: Position3D, animationOffset: Int = 0): WaterTile
         {
-            return WaterTile(type, bodyType, salinity, pos, type.tileType.createInstance(animationOffset))
+            return WaterTile(type, pos, type.tileType.createInstance(animationOffset))
         }
     }
 }

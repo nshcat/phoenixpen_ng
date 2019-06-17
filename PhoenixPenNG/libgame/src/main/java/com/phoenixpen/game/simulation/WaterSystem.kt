@@ -59,44 +59,13 @@ class WaterSystem(val resources: ResourceProvider): StructureHolder, Updateable
      * @param salinity The salt contents of the water tile
      * @param animOffset Animation offset used to create flowing water effect
      */
-    fun addWaterTile(position: Position3D, type: String, bodyType: WaterBodyType, salinity: WaterSalinity, animOffset: Int = 0)
+    fun addWaterTile(position: Position3D, type: String, animOffset: Int = 0)
     {
         // Try to retrieve the water type
         val waterType = this.waterManager.lookupWaterType(type)
 
         // Create tile and add
-        this.waterTiles.add(WaterTile.create(waterType, position, bodyType, salinity, animOffset))
-    }
-
-    /**
-     * Create a new water tile representing a part of a river
-     *
-     * @param position Position of the river tile in the game world
-     * @param type Water type identifier
-     * @param animOffset Animation offset used to create flowing water effect
-     */
-    fun addRiverTile(position: Position3D, type: String, animOffset: Int)
-    {
-        // Try to retrieve the water type
-        val waterType = this.waterManager.lookupWaterType(type)
-
-        // Create tile and add
-        this.waterTiles.add(WaterTile.create(waterType, position, WaterBodyType.River, WaterSalinity.Freshwater, animOffset))
-    }
-
-    /**
-     * Create a new water tile representing a part of an ocean
-     *
-     * @param position Position of the ocean tile in the game world
-     * @param type Water type identifier
-     */
-    fun addOceanTile(position: Position3D, type: String)
-    {
-        // Try to retrieve the water type
-        val waterType = this.waterManager.lookupWaterType(type)
-
-        // Create tile and add
-        this.waterTiles.add(WaterTile.create(waterType, position, WaterBodyType.Ocean, WaterSalinity.Saltwater))
+        this.waterTiles.add(WaterTile.create(waterType, position, animOffset))
     }
 
     /**

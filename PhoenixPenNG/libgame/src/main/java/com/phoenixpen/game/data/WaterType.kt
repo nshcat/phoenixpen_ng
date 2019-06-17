@@ -52,6 +52,8 @@ enum class WaterSalinity
  *
  * @property basicData Basic structure data
  * @property tileType Water tile information. Flowing water effect is implemented by animation frame offsets
+ * @property bodyType The type of this body of water, e.g. river
+ * @property salinity The salt contents of this water tile
  * @property foamChance The chance that a water tile of this tile will be replaced by a foam effect selected from [foamTiles]
  * @property foamDuration How long a foam tile will stay displayed
  * @property foamTiles A collection of possible foam tiles
@@ -60,6 +62,8 @@ enum class WaterSalinity
 data class WaterType(
         @SerialName("basic_data") val basicData: StructureType,
         @SerialName("tile") @Serializable(with = TileTypeSerializer::class) val tileType: TileType = TileType(),
+        @SerialName("body_type") val bodyType: WaterBodyType = WaterBodyType.Still,
+        val salinity: WaterSalinity = WaterSalinity.Freshwater,
         @SerialName("foam_chance") val foamChance: Double = 0.0,
         @SerialName("foam_duration") val foamDuration: Int = 1,
         @SerialName("foam_tiles") @Serializable(with = WeightedTileListSerializer::class) val foamTiles: WeightedTileList = WeightedTileList(listOf())

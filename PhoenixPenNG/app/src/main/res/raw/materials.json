@@ -7,6 +7,14 @@
     }
   },
   {
+    "identifier": "water",
+    "description": "Base material for water tiles",
+    "pathing_type": "Water",
+    "tile": {
+      "data": { "glyph": 0, "foreground": "#000000", "background": "#0000FF" }
+    }
+  },
+  {
     "identifier": "grass",
     "description": "Test grass",
     "tile": {

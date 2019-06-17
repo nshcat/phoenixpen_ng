@@ -16,12 +16,14 @@ import kotlinx.serialization.Serializable
  *
  * @property identifier The unique identifier of this material type.
  * @property description A human readable description of the material
+ * @property pathingType How this structure interacts with path finding
  * @property tileType Graphical representation of this material
  */
 @Serializable
 data class MaterialType(
         val identifier: String,
         val description: String,
+        @SerialName("pathing_type") val pathingType: PathingType = PathingType.NonRestricted,
         @SerialName("tile") @Serializable(with=TileTypeSerializer::class) val tileType: TileType = TileType()
 )
 {
@@ -34,7 +36,7 @@ data class MaterialType(
          * Placeholder material intended to be used if a material can not be found anymore. Very visible
          * to make debugging easier
          */
-        val placeholder = MaterialType("placeholder", "Placeholder material",
+        val placeholder = MaterialType("placeholder", "Placeholder material", PathingType.NonRestricted,
                 TileType(staticTile = DrawInfo(background = Color.magenta))
         )
 
