@@ -9,5 +9,17 @@
     "tile": {
       "data": { "glyph": 236, "foreground": "#514343", "background": "#5E5E5E" }
     }
+  },
+  {
+    "basic_data":
+    {
+      "identifier": "test_plant",
+      "display_name": "Test plant",
+      "description": "Test plant",
+      "is_stainable": true
+    },
+    "tile": {
+      "data": { "glyph": 231, "foreground": "#00CC55", "background": "#005222" }
+    }
   }
 ]

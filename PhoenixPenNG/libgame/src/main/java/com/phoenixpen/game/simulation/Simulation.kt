@@ -1,5 +1,6 @@
 package com.phoenixpen.game.simulation
 
+import com.phoenixpen.game.ascii.Position3D
 import com.phoenixpen.game.core.Updateable
 import com.phoenixpen.game.data.*
 import com.phoenixpen.game.data.biome.BiomeDataSet
@@ -89,6 +90,8 @@ class Simulation(val resources: ResourceProvider): Updateable
         // Load biome
         biomeDataSet.apply(this)
 
+        this.mapDecorationSystem.addDecoration(Position3D(15, 1, 15), "test_plant")
+
         // Connect map to structure and covering holders
         this.map.registerHolder(this.treeHolder)
         this.map.registerHolder(this.mapDecorationSystem)
@@ -99,7 +102,7 @@ class Simulation(val resources: ResourceProvider): Updateable
 
         // Cover everything in snow
         this.snowSystem = SnowSystem(this)
-        //this.map.registerHolder(this.snowSystem)
+        this.map.registerHolder(this.snowSystem)
     }
 
     /**

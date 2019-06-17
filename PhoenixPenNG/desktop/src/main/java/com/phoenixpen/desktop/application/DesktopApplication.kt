@@ -2,6 +2,7 @@ package com.phoenixpen.desktop.application
 
 import com.jogamp.opengl.*
 import com.jogamp.opengl.awt.GLCanvas
+import com.jogamp.opengl.util.Animator
 import com.phoenixpen.desktop.rendering.*
 import com.phoenixpen.desktop.rendering.materials.AsciiScreenMaterial
 import com.phoenixpen.game.ascii.MainScene
@@ -23,6 +24,34 @@ import com.sun.jna.platform.unix.X11;
  */
 class DesktopApplication(val dimensions: Dimension): JFrame("phoenixpen_ng"), GLEventListener
 {
+    /**
+     * The animator instance that renders our scene
+     */
+    private var animator: Animator
+
+    /**
+     * The last frame time, in milliseconds. This is used to calculate the delta time supplied
+     * to [onFrame].
+     */
+    private var lastFrameTime: Long = 0
+
+    /**
+     * Whether the next frame is the first frame. This is important since division by zero
+     * has to be avoided when calculating the delta time for the call to [onFrame].
+     */
+    private var isFirstFrame: Boolean = true
+
+    /**
+     * West over milliseconds that did not make up a whole simulation tick. Will be used
+     * in next frame.
+     */
+    private var leftoverTime: Int = 0
+
+    /**
+     * How long a single tick is.
+     */
+    private val msPerTick: Int = 50
+
     /**
      * The resource provider for our desktop application
      */
@@ -82,15 +111,22 @@ class DesktopApplication(val dimensions: Dimension): JFrame("phoenixpen_ng"), GL
         val canvas = GLCanvas(capabilities)
         canvas.addGLEventListener(this)
 
+        canvas.addKeyListener(this.inputProvider)
+
         // Add canvas to frame
         this.contentPane.add(canvas)
 
         // Setup window
+        this.addKeyListener(this.inputProvider)
         this.size = this.dimensions
         this.setLocationRelativeTo(null)
         this.defaultCloseOperation = EXIT_ON_CLOSE
         isVisible = true
         isResizable = false
+
+        // Create animator
+        this.animator = Animator(canvas)
+        this.animator.start()
 
         // X11FullscreenHelper.setFullScreenWindow(this, true)
 
@@ -133,6 +169,48 @@ class DesktopApplication(val dimensions: Dimension): JFrame("phoenixpen_ng"), GL
         val height = drawable.surfaceHeight
 
         return ScreenDimensions(width, height)
+    }
+
+    /**
+     * Calculate elapsed ticks since last update based on given elapsed milliseconds
+     */
+    private fun calculateTicks(): Int
+    {
+        // Special logic is required if this is the frame. We cannot calculate a meaningful
+        // delta time
+        if(this.isFirstFrame)
+        {
+            this.isFirstFrame = false
+
+            // Record last frame time anyways for following frames
+            this.lastFrameTime = System.currentTimeMillis()
+
+            // No ticks elapsed in first frame
+            return 0
+        }
+        else
+        {
+            // We do have a last frame time. Retrieve that
+            val lastTime = this.lastFrameTime
+
+            // Determine current time to calculate delta, and at the same time
+            // save it for following frames
+            this.lastFrameTime = System.currentTimeMillis()
+
+            // Calculate delta in milliseconds. The integral time values are in milliseconds
+            val deltaTime = this.lastFrameTime - lastTime
+
+            // Convert to integral millisecond count and add left over time from last frame
+            val milliseconds = (deltaTime + this.leftoverTime).toInt()
+
+            // Calculate number of elapsed ticks
+            val elapsedTicks = milliseconds / this.msPerTick
+
+            // Save new left over time
+            this.leftoverTime = milliseconds % this.msPerTick
+
+            return elapsedTicks
+        }
     }
 
     /**
@@ -180,7 +258,7 @@ class DesktopApplication(val dimensions: Dimension): JFrame("phoenixpen_ng"), GL
     override fun display(drawable: GLAutoDrawable?)
     {
         // Update the scene
-        // this.scene.update(...)
+        this.scene.update(this.calculateTicks())
 
         // Retrieve GL4 context
         val gl = this.retrieveContext(drawable)
@@ -188,39 +266,10 @@ class DesktopApplication(val dimensions: Dimension): JFrame("phoenixpen_ng"), GL
         // Clear the screen
         gl.glClear(GL4.GL_COLOR_BUFFER_BIT or GL4.GL_DEPTH_BUFFER_BIT)
 
-        /*// Begin rendering to texture
-        this.firstPass.beginRender()
-
-            this.screen.clear()
-
-            // Draw current scene to screen
-            this.scene.render(this.screen)
-
-            // Render the ASCII matrix to device screen
-            this.screen.render(this.orthoProjection.toRenderParams())
-
-        // We are done with the first pass
-        this.firstPass.endRender()
-
-        // Now do the second rendering pass where we render to a full screen quad
+        // Render everything to screen
         this.secondPass.beginRender()
 
-            // Use the texture the first pass rendered to. The full screen quad material
-            // expects it to be bound to the first texture unit.
-            this.firstPass.texture.use(TextureUnit.Unit0)
-
-            // Render the fullscreen quad. The material doesnt use any of the rendering parameters,
-            // so we just pass an empty instance here.
-            this.fullscreenQuad.render(RenderParams.empty())
-
-        // Finish rendering
-        this.secondPass.endRender()*/
-
-
-        // Now do the second rendering pass where we render to a full screen quad
-        this.secondPass.beginRender()
-
-            //
+            // Clear the screen
             this.screen.clear()
 
             // Draw current scene to screen

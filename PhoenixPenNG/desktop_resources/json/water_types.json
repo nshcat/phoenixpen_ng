@@ -7,6 +7,7 @@
       "pathing_type": "Water",
       "is_stainable": false
     },
+    "body_type": "River",
     "tile": {
       "mode": "Animated",
       "speed": "4",

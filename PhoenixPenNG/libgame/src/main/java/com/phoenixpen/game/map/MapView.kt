@@ -302,13 +302,22 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var 
                 this.foreground = coveringTile.foreground
 
                 // Leave background as it is if its black
-                if(this.background != Color.black)
+                if (this.background != Color.black)
                     this.background = coveringTile.background
             })
         }
-        else
+        else // Glyph is 0
         {
-            // Otherwise just overwrite the draw info
+            /*// Otherwise just overwrite the draw info
+            var tile = covering.tile()
+
+            // Switch foreground and background
+            val background = tile.background
+            tile.background = tile.foreground
+            tile.foreground = background
+
+            screen.setTile(covering.position.xz() - this.topLeft, tile)*/
+
             screen.setTile(covering.position.xz() - this.topLeft, covering.tile())
         }
 
