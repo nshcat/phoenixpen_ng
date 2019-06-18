@@ -51,7 +51,7 @@ class SnowSystem(val simulation: Simulation): CoveringHolder
                         break
 
                     // If it is ground, create snow and stop further search
-                    if(cell.state == MapCellState.Ground || map.getStructureAtExact(pos).isPresent)
+                    if(cell.state == MapCellState.Ground || map.getStructureAtExact(pos, true).isPresent)
                     {
                         this.coverings.add(Covering.create(snowType, pos))
                         break

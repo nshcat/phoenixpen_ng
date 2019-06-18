@@ -18,6 +18,14 @@ class TreePart(
     : Structure(type.basicData, position)
 {
     /**
+     * Check if this needs to be drawn
+     */
+    override fun shouldDraw(): Boolean
+    {
+        return this.type.tileType.shouldDraw(this.tileInstance)
+    }
+
+    /**
      * The structure is drawn using the draw information supplied in the type class instance.
      */
     override fun tile(fancyMode: Boolean): DrawInfo

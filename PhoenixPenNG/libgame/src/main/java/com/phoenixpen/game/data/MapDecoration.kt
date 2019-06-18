@@ -12,6 +12,14 @@ import com.phoenixpen.game.core.Updateable
 class MapDecoration(val type: MapDecorationType, position: Position3D, val tileInstance: TileInstance): Structure(type.basicData, position), Updateable
 {
     /**
+     * Check whether the tile should be drawn
+     */
+    override fun shouldDraw(): Boolean
+    {
+        return this.type.tile.shouldDraw(this.tileInstance)
+    }
+
+    /**
      * Update tile instance, which might contain an animation
      */
     override fun update(elapsedTicks: Int)

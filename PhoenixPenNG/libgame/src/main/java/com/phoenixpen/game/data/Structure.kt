@@ -20,4 +20,12 @@ abstract class Structure(val baseType: StructureType, val position: Position3D)
      * @return [DrawInfo] describing how to draw this structure.
      */
     abstract fun tile(fancyMode: Boolean = true): DrawInfo
+
+    /**
+     * Check whether this tile should currently be drawn. This is dynamic, since this could depend on
+     * seasonal tiles.
+     *
+     * @return Flag indicating whether this structure should currently be rendered
+     */
+    abstract fun shouldDraw(): Boolean
 }
