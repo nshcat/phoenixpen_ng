@@ -3,7 +3,7 @@
     "identifier": "stone",
     "description": "Test stone",
     "tile": {
-      "data": { "glyph": 0, "foreground": "#000000", "background": "#ADADAD" }
+      "glyph": 0, "foreground": "#000000", "background": "#ADADAD"
     }
   },
   {
@@ -11,7 +11,7 @@
     "description": "Base material for water tiles",
     "pathing_type": "Water",
     "tile": {
-      "data": { "glyph": 0, "foreground": "#000000", "background": "#0000FF" }
+      "glyph": 0, "foreground": "#000000", "background": "#0000FF"
     }
   },
   {
@@ -19,7 +19,7 @@
     "description": "Test grass",
     "tile": {
       "mode": "Varied",
-      "data": [
+      "varied_tiles": [
         { "tile": { "glyph": 0, "foreground": "#000000", "background": "#00662B" }, "probability": 0.2 },
         { "tile": { "glyph": 0, "foreground": "#000000", "background": "#446629" }, "probability": 0.2 },
         { "tile": { "glyph": 0, "foreground": "#000000", "background": "#003E17" }, "probability": 0.2 },

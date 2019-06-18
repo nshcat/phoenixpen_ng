@@ -30,9 +30,7 @@
       "is_stainable": false
     },
     "tile": {
-      "data": {
         "glyph": 247, "foreground": "#0088FF", "background": "#003666"
-      }
     }
   }
 ]

@@ -7,7 +7,7 @@
       "description": "A medium sized boulder"
     },
     "tile": {
-      "data": { "glyph": 236, "foreground": "#514343", "background": "#5E5E5E" }
+      "glyph": 236, "foreground": "#514343", "background": "#5E5E5E"
     }
   },
   {
@@ -19,7 +19,7 @@
       "is_stainable": true
     },
     "tile": {
-      "data": { "glyph": 231, "foreground": "#00CC55", "background": "#005222" }
+      "glyph": 231, "foreground": "#00CC55", "background": "#005222"
     }
   }
 ]

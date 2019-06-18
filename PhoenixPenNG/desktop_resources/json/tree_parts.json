@@ -9,7 +9,7 @@
     },
     "tile": {
       "mode": "Varied",
-      "data": [
+      "varied_tiles": [
         { "tile": { "glyph": 172, "foreground": "#00CC55" }, "probability": 0.2  },
         { "tile": { "glyph": 172, "foreground": "#05AE4C" }, "probability": 0.2  },
         { "tile": { "glyph": 172, "foreground": "#049A42" }, "probability": 0.2  },
@@ -31,7 +31,7 @@
     },
     "tile": {
       "mode": "Varied",
-      "data": [
+      "varied_tiles": [
         { "tile": { "glyph": 59, "foreground": "#00CC55" }, "probability": 0.2  },
         { "tile": { "glyph": 59, "foreground": "#05AE4C" }, "probability": 0.2  },
         { "tile": { "glyph": 59, "foreground": "#049A42" }, "probability": 0.2  },
@@ -52,10 +52,8 @@
     },
     "tile":
     {
-      "data" : {
-        "glyph": 79,
-        "foreground": "#8E6004"
-      }
+      "glyph": 79,
+      "foreground": "#8E6004"
     }
   },
   {
@@ -67,10 +65,8 @@
     },
     "tile":
     {
-      "data" : {
-        "glyph": 127,
-        "foreground": "#473002"
-      }
+      "glyph": 127,
+      "foreground": "#473002"
     }
   },
   {
@@ -82,10 +78,8 @@
     },
     "tile":
     {
-      "data" : {
-        "glyph": 196,
-        "foreground": "#473002"
-      }
+      "glyph": 196,
+      "foreground": "#473002"
     }
   },
   {
@@ -97,10 +91,8 @@
     },
     "tile":
     {
-      "data": {
-        "glyph": 179,
-        "foreground": "#473002"
-      }
+      "glyph": 179,
+      "foreground": "#473002"
     }
   },
   {
@@ -112,10 +104,8 @@
     },
     "tile":
     {
-      "data": {
-        "glyph": 182,
-        "foreground": "#473002"
-      }
+      "glyph": 182,
+      "foreground": "#473002"
     }
   },
   {
@@ -127,10 +117,8 @@
     },
     "tile":
     {
-      "data": {
-        "glyph": 218,
-        "foreground": "#473002"
-      }
+      "glyph": 218,
+      "foreground": "#473002"
     }
   },
   {
@@ -142,10 +130,8 @@
     },
     "tile":
     {
-      "data": {
-        "glyph": 217,
-        "foreground": "#473002"
-      }
+      "glyph": 217,
+      "foreground": "#473002"
     }
   },
   {
@@ -157,10 +143,8 @@
     },
     "tile":
     {
-      "data": {
-        "glyph": 191,
-        "foreground": "#473002"
-      }
+      "glyph": 191,
+      "foreground": "#473002"
     }
   },
   {
@@ -172,10 +156,8 @@
     },
     "tile":
     {
-      "data": {
-        "glyph": 192,
-        "foreground": "#473002"
-      }
+      "glyph": 192,
+      "foreground": "#473002"
     }
   },
   {
@@ -187,10 +169,8 @@
     },
     "tile":
     {
-      "data" : {
-        "glyph": 199,
-        "foreground": "#473002"
-      }
+      "glyph": 199,
+      "foreground": "#473002"
     }
   },
   {
@@ -202,10 +182,8 @@
     },
     "tile":
     {
-      "data" : {
-        "glyph": 195,
-        "foreground": "#473002"
-      }
+      "glyph": 195,
+      "foreground": "#473002"
     }
   },
   {
@@ -217,10 +195,8 @@
     },
     "tile":
     {
-      "data" : {
-        "glyph": 194,
-        "foreground": "#473002"
-      }
+      "glyph": 194,
+      "foreground": "#473002"
     }
   },
   {
@@ -232,10 +208,8 @@
     },
     "tile":
     {
-      "data" : {
-        "glyph": 193,
-        "foreground": "#473002"
-      }
+      "glyph": 193,
+      "foreground": "#473002"
     }
   },
   {
@@ -247,10 +221,8 @@
     },
     "tile":
     {
-      "data" : {
-        "glyph": 205,
-        "foreground": "#8E6004"
-      }
+      "glyph": 205,
+      "foreground": "#8E6004"
     }
   },
   {
@@ -262,10 +234,8 @@
     },
     "tile":
     {
-      "data" : {
-        "glyph": 186,
-        "foreground": "#8E6004"
-      }
+      "glyph": 186,
+      "foreground": "#8E6004"
     }
   },
   {
@@ -277,10 +247,8 @@
     },
     "tile":
     {
-      "data" : {
-        "glyph": 201,
-        "foreground": "#8E6004"
-      }
+      "glyph": 201,
+      "foreground": "#8E6004"
     }
   },
   {
@@ -292,10 +260,8 @@
     },
     "tile":
     {
-      "data" : {
-        "glyph": 188,
-        "foreground": "#8E6004"
-      }
+      "glyph": 188,
+      "foreground": "#8E6004"
     }
   },
   {
@@ -307,10 +273,8 @@
     },
     "tile":
     {
-      "data" : {
-        "glyph": 200,
-        "foreground": "#8E6004"
-      }
+      "glyph": 200,
+      "foreground": "#8E6004"
     }
   },
   {
@@ -322,10 +286,8 @@
     },
     "tile":
     {
-      "data" : {
-        "glyph": 187,
-        "foreground": "#8E6004"
-      }
+      "glyph": 187,
+      "foreground": "#8E6004"
     }
   },
   {
@@ -337,10 +299,8 @@
     },
     "tile":
     {
-      "data" : {
-        "glyph": 206,
-        "foreground": "#8E6004"
-      }
+      "glyph": 206,
+      "foreground": "#8E6004"
     }
   },
   {
@@ -352,10 +312,8 @@
     },
     "tile":
     {
-      "data" : {
-        "glyph": 185,
-        "foreground": "#8E6004"
-      }
+      "glyph": 185,
+      "foreground": "#8E6004"
     }
   },
   {
@@ -367,10 +325,8 @@
     },
     "tile":
     {
-      "data" : {
-        "glyph": 204,
-        "foreground": "#8E6004"
-      }
+      "glyph": 204,
+      "foreground": "#8E6004"
     }
   },
   {
@@ -382,10 +338,8 @@
     },
     "tile":
     {
-      "data" : {
-        "glyph": 203,
-        "foreground": "#8E6004"
-      }
+      "glyph": 203,
+      "foreground": "#8E6004"
     }
   },
   {
@@ -397,10 +351,8 @@
     },
     "tile":
     {
-      "data" : {
-        "glyph": 202,
-        "foreground": "#8E6004"
-      }
+      "glyph": 202,
+      "foreground": "#8E6004"
     }
   }
 ]

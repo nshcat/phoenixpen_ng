@@ -266,22 +266,17 @@ class TileTypeSerializer : KSerializer<TileType>
                 }
                 TileTypeMode.Static ->
                 {
-                    // The data entry definitly has to exist.
-                    if(!root.containsKey("data"))
-                        throw RuntimeException("missing \"data\" entry")
-
-                    // Interpret data entry as draw info
-                    val entry = root.getObject("data")
-                    TileType(mode, staticTile = Json.parse(DrawInfo.serializer(), entry.toString()))
+                    // Interpret this same entry as a DrawInfo. This removes one layer of nesting.
+                    TileType(mode, staticTile = Json.nonstrict.parse(DrawInfo.serializer(), root.toString()))
                 }
                 TileTypeMode.Varied ->
                 {
-                    // The data entry definitly has to exist.
-                    if(!root.containsKey("data"))
-                        throw RuntimeException("missing \"data\" entry")
+                    // The data entry definitely has to exist.
+                    if(!root.containsKey("varied_tiles"))
+                        throw RuntimeException("missing \"varied_tiles\" entry")
 
                     // Interpret data entry as array
-                    val entry = root.getArray("data")
+                    val entry = root.getArray("varied_tiles")
                     TileType(mode, variedTiles = Json.parse(WeightedTileListSerializer(), entry.toString()))
                 }
                 TileTypeMode.Animated ->

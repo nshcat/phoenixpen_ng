@@ -6,7 +6,7 @@
     "draw_mode": "Staining",
     "tile": {
       "mode": "Varied",
-      "data": [
+      "varied_tiles": [
         { "tile": { "glyph": 0, "foreground": "#FFFFFF", "background": "#F0F0F0" }, "probability": 0.6 },
         { "tile": { "glyph": 0, "foreground": "#F0F0F0", "background": "#E6E6E6" }, "probability": 0.2 },
         { "tile": { "glyph": 0, "foreground": "#E6E6E6", "background": "#D8D8D8" }, "probability": 0.2 }
