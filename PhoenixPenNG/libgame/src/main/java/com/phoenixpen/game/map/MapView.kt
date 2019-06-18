@@ -56,7 +56,7 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var 
         for(iy in mapPosition.y downTo 0)
         {
             // Try to retrieve structures at this position
-            val structures = this.simulation.map.getStructuresAtExact(Position3D(mapPosition.x, iy, mapPosition.z))
+            val structures = this.simulation.map.getStructuresAtExact(Position3D(mapPosition.x, iy, mapPosition.z), true)
 
             // If we found any structures, return the first one found.
             if(structures.isPresent && structures.get().isNotEmpty())
@@ -211,7 +211,7 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var 
                 val newPos = Position3D(pos.x + dir.x, dy, pos.z + dir.z)
 
                 if (this.simulation.map.isInBounds(newPos))
-                    if (!this.simulation.map.cellAt(newPos).isTransparent() || this.simulation.map.getStructureAtExact(newPos).isPresent)
+                    if (!this.simulation.map.cellAt(newPos).isTransparent() || this.simulation.map.getStructureAtExact(newPos, true).isPresent)
                         if(!directions.any{ x -> blockingDirections[i].has(x) })
                             directions.add(directionValues[i])
             }

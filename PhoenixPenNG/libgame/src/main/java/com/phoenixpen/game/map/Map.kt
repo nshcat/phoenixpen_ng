@@ -137,22 +137,43 @@ class Map(val dimensions: MapDimensions): Updateable
      * Retrieve all structures present at a given map position, but NOT below.
      *
      * @param mapPosition Position to check for structures at
+     * @param ignoreInvisible Whether structures that are currently not drawn should be ignored
      * @return Structures found at the given position
      */
-    fun getStructuresAtExact(mapPosition: Position3D): Optional<List<Structure>>
+    fun getStructuresAtExact(mapPosition: Position3D, ignoreInvisible: Boolean): Optional<List<Structure>>
     {
-        return Optional.ofNullable(this.structureMap[mapPosition])
+        if(!ignoreInvisible)
+            return Optional.ofNullable(this.structureMap[mapPosition])
+        else
+        {
+            // Retrieve the entry for this position
+            val entry = this.structureMap[mapPosition]
+
+            // Entry might be null
+            if(entry != null)
+            {
+                // Otherwise filter for structures that are currently not invisible
+                val structures = entry.filter { x -> x.shouldDraw() }
+
+                if(structures.isEmpty())
+                    return Optional.empty()
+                else
+                    return Optional.of(structures.toList())
+            }
+            else return Optional.empty()
+        }
     }
 
     /**
      * Retrieve first structure present at a given map position, but NOT below.
      *
      * @param mapPosition Position to check for structures at
+     * @param ignoreInvisible Whether to ignore invisible structures
      * @return Structure found at the given position
      */
-    fun getStructureAtExact(mapPosition: Position3D): Optional<Structure>
+    fun getStructureAtExact(mapPosition: Position3D, ignoreInvisible: Boolean): Optional<Structure>
     {
-        val result = this.getStructuresAtExact(mapPosition)
+        val result = this.getStructuresAtExact(mapPosition, ignoreInvisible)
 
         if(result.isPresent && result.get().isNotEmpty())
             return Optional.of(result.get().first())

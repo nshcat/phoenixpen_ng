@@ -68,6 +68,14 @@ class WaterTile(
     }
 
     /**
+     * Check if this tile should be drawn
+     */
+    override fun shouldDraw(): Boolean
+    {
+        return (this.foamTile.isPresent) || this.type.tileType.shouldDraw(this.tileInstance)
+    }
+
+    /**
      * Update internal logic based on given number of elapsed ticks since last update
      */
     override fun update(elapsedTicks: Int)
