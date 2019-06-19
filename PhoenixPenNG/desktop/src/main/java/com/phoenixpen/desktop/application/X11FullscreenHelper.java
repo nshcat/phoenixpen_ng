@@ -78,27 +78,9 @@ public class X11FullscreenHelper {
             X11.XSetWindowAttributes attr = new X11.XSetWindowAttributes();
             attr.override_redirect = true;
             x.XChangeWindowAttributes(display, window, new NativeLong(X11.CWOverrideRedirect), attr);
-            
 
+            X11Wrapper.raiseWindow(Native.getWindowID(w));
 
-            //setWindowTypeToDesktop(display, window);
-
-            // Send the message
-
-            /*int result = sendClientMessage(
-                    display,
-                    Native.getWindowID(w),
-                    "_NET_WM_STATE",
-                    new NativeLong[]{
-                            new NativeLong(fullScreen ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE),
-                            x.XInternAtom(display, "_NET_WM_STATE_HIDDEN", false),
-                            x.XInternAtom(display, "_NET_WM_STATE_ABOVE", false),
-                            new NativeLong(0L),
-                            new NativeLong(0L)
-                    }
-            );
-            isFullScreenMode = (result != 0) && fullScreen;
-            return (result != 0);*/
             return true;
         }
         finally {

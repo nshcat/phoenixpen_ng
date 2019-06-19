@@ -124,11 +124,15 @@ class DesktopApplication(val dimensions: Dimension): JFrame("phoenixpen_ng"), GL
         isVisible = true
         isResizable = false
 
+        println("mrow")
+
+        X11FullscreenHelper.setFullScreenWindow(this, true)
+
         // Create animator
         this.animator = Animator(canvas)
         this.animator.start()
 
-        // X11FullscreenHelper.setFullScreenWindow(this, true)
+
 
         canvas.requestFocusInWindow()
 
