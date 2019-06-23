@@ -11,6 +11,8 @@ import kotlinx.serialization.Serializable
  * @property description Description for this tree type
  * @property placeholderDefinition Definition for the tree structure placeholder types
  * @property structureTypes All structure templates that can be used for this tree
+ * @property bloomCoveringType Covering type identifier to use for blooming leaves
+ * @property blooms Whether this tree blooms in mid spring
  */
 @Serializable
 data class TreeType(
@@ -18,7 +20,9 @@ data class TreeType(
         @SerialName("display_name") val displayName: String,
         val description: String = "",
         @SerialName("parts") val placeholderDefinition: PlaceholderDefinition,
-        @SerialName("structure_types") val structureTypes: List<String>
+        @SerialName("structure_types") val structureTypes: List<String>,
+        val blooms: Boolean = false,
+        @SerialName("bloom_covering") val bloomCoveringType: String = ""
         )
 {
     companion object
