@@ -4,7 +4,6 @@ import com.jogamp.opengl.*
 import com.jogamp.opengl.awt.GLCanvas
 import com.jogamp.opengl.util.Animator
 import com.phoenixpen.desktop.rendering.*
-import com.phoenixpen.desktop.rendering.materials.AsciiScreenMaterial
 import com.phoenixpen.game.ascii.MainScene
 import com.phoenixpen.game.ascii.Scene
 import com.phoenixpen.game.ascii.ScreenDimensions
@@ -12,17 +11,13 @@ import java.awt.Dimension
 import java.nio.file.Paths
 import javax.swing.JFrame
 
-import com.sun.jna.Native;
-import com.sun.jna.NativeLong;
-import com.sun.jna.platform.unix.X11;
-
 
 /**
  * The main desktop application class. Manages OpenGL rendering and rendering.
  *
  * @property dimensions The window dimensions
  */
-class DesktopApplication(val dimensions: Dimension): JFrame("phoenixpen_ng"), GLEventListener
+class DesktopApplication(val dimensions: Dimension, desktopMode: Boolean = false): JFrame("phoenixpen_ng"), GLEventListener
 {
     /**
      * The animator instance that renders our scene
@@ -124,7 +119,11 @@ class DesktopApplication(val dimensions: Dimension): JFrame("phoenixpen_ng"), GL
         isVisible = true
         isResizable = false
 
-        //X11FullscreenHelper.setFullScreenWindow(this, true)
+        // If desktop mode was requested, use XLib to move window to the background
+        if(desktopMode)
+        {
+            X11DesktopModeHelper.setToDesktopMode(this)
+        }
 
         // Create animator
         this.animator = Animator(canvas)

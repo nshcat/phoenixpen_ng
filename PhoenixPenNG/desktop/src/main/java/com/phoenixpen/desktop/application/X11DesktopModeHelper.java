@@ -7,16 +7,7 @@ import com.sun.jna.ptr.IntByReference;
 
 import java.awt.*;
 
-/**
- * Author: Vladimir Kravets
- * E-Mail: vova.kravets@gmail.com
- * Date: 4/10/13
- * Time: 12:19 AM
- * based on code from VLCJ
- * http://code.google.com/p/vlcj/source/browse/trunk/vlcj/src/main/java/uk/co/caprica/vlcj/runtime/x/LibXUtil.java
- */
-
-public class X11FullscreenHelper {
+public class X11DesktopModeHelper {
 
     private static boolean isFullScreenMode = false;
 
@@ -48,24 +39,8 @@ public class X11FullscreenHelper {
         changeAtom(d, w, "_NET_WM_WINDOW_TYPE", "_NET_WM_WINDOW_TYPE_DESKTOP", X11.PropModeReplace);
     }
 
-
-    /**
-     * Ask the window manager to make a window full-screen.
-     * <p>
-     * This method sends a low-level event to an X window to request that the
-     * window be made 'real' full-screen - i.e. the window will be sized to fill
-     * the entire screen bounds, and will appear <em>above</em> any window
-     * manager screen furniture such as panels and menus.
-     * <p>
-     * This method should only be called on platforms where X is supported.
-     * <p>
-     * The implementation makes use of the JNA X11 platform binding.
-     *
-     * @param w window to make full-screen
-     * @param fullScreen <code>true</code> to make the window full-screen; <code>false</code> to restore the window to it's original size and position
-     * @return <code>true</code> if the message was successfully sent to the window; <code>false</code> otherwise
-     */
-    public static boolean setFullScreenWindow(Window w, boolean fullScreen) {
+    public static boolean setToDesktopMode(Window w)
+    {
         // Use the JNA platform X11 binding
         X11 x = X11.INSTANCE;
         X11.Display display = null;
@@ -91,16 +66,6 @@ public class X11FullscreenHelper {
         }
     }
 
-    /**
-     * Helper method to send a client message to an X window.
-     *
-     * @param display display
-     * @param wid native window identifier
-     * @param msg type of message to send
-     * @param data0 message data
-     * @param data1 message data
-     * @return <code>1</code> if the message was successfully sent to the window; <code>0</code> otherwise
-     */
     private static int sendClientMessage(X11.Display display, long wid, String msg, NativeLong[] data) {
         // Use the JNA platform X11 binding
         assert (data.length == 5);
@@ -128,14 +93,5 @@ public class X11FullscreenHelper {
         // Finally, return the result of sending the event
         return result;
     }
-
-    public static boolean isInFullscreen() {
-        // TODO: to get window attribute and check if _NET_WM_STATE_FULLSCREEN set on window
-        return isFullScreenMode;
-    }
-
-    // X window message definitions
-    private static final int _NET_WM_STATE_REMOVE = 0;
-    private static final int _NET_WM_STATE_ADD    = 1;
 
 }
