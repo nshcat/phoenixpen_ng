@@ -12,7 +12,7 @@ extern "C" {
  * Method:    raiseWindow
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_com_phoenixpen_desktop_application_X11Wrapper_raiseWindow
+JNIEXPORT void JNICALL Java_com_phoenixpen_desktop_application_X11Wrapper_enableDesktopMode
   (JNIEnv *, jobject, jlong);
 
 #ifdef __cplusplus

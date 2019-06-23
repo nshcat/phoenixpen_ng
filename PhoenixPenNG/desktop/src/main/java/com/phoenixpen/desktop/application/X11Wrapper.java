@@ -18,5 +18,5 @@ public class X11Wrapper
         }
     }
 
-    native static void raiseWindow(long window);
+    native static void enableDesktopMode(long window);
 }

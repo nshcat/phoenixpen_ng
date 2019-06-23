@@ -79,7 +79,7 @@ public class X11FullscreenHelper {
             attr.override_redirect = true;
             x.XChangeWindowAttributes(display, window, new NativeLong(X11.CWOverrideRedirect), attr);
 
-            X11Wrapper.raiseWindow(Native.getWindowID(w));
+            X11Wrapper.enableDesktopMode(Native.getWindowID(w));
 
             return true;
         }
