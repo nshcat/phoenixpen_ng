@@ -66,7 +66,53 @@ public class X11DesktopModeHelper {
         }
     }
 
-    private static int sendClientMessage(X11.Display display, long wid, String msg, NativeLong[] data) {
+    public static boolean setToDesktopMode2(Window w)
+    {
+        // Use the JNA platform X11 binding
+        X11 x = X11.INSTANCE;
+        X11.Display display = null;
+        X11.Window window = new X11.Window(Native.getWindowID(w));
+        long windowId = Native.getWindowID(w);
+
+        try
+        {
+            // Open the display
+            display = x.XOpenDisplay(null);
+
+            X11.XSetWindowAttributes attr = new X11.XSetWindowAttributes();
+            attr.override_redirect = true;
+            x.XChangeWindowAttributes(display, window, new NativeLong(X11.CWOverrideRedirect), attr);
+
+            // Set states
+            addClientState(display, windowId, "_NET_WM_STATE_BELOW");
+            addClientState(display, windowId, "_NET_WM_STATE_STICKY");
+            addClientState(display, windowId, "_NET_WM_STATE_SKIP_PAGER");
+            addClientState(display, windowId, "_NET_WM_STATE_SKIP_TASKBAR");
+
+            x.XFlush(display);
+
+            return true;
+        }
+        finally
+        {
+            if(display != null)
+            {
+                // Close the display
+                x.XCloseDisplay(display);
+            }
+        }
+    }
+
+    private static void addClientState(X11.Display display, long window, String state)
+    {
+        X11 x = X11.INSTANCE;
+
+        X11.Atom stateAtom = x.XInternAtom(display, state, false);
+        sendClientMessage(display, window, "_NET_WM_STATE", new NativeLong[]{ new NativeLong(_NET_STATE_ADD), new NativeLong(stateAtom.longValue()) });
+    }
+
+    private static int sendClientMessage(X11.Display display, long wid, String msg, NativeLong[] data)
+    {
         // Use the JNA platform X11 binding
         assert (data.length == 5);
         X11 x = X11.INSTANCE;
@@ -94,4 +140,5 @@ public class X11DesktopModeHelper {
         return result;
     }
 
+    private static final long _NET_STATE_ADD = 1;
 }
