@@ -2,12 +2,14 @@ package com.phoenixpen.game.data.biome
 
 import com.phoenixpen.game.simulation.Simulation
 import com.phoenixpen.game.resources.ResourceProvider
+import kotlinx.serialization.json.Json
 import java.util.*
 
 /**
  * A class containing all data required to setup a biome scene in the current simulation instance
  *
- * @property context The Android application context. Used to extract resources.
+ * @property resources Resource manager used to retrieve biome resources
+ * @property biomeConfigId The resource ID pointing to a JSON document containing biome configuration info
  * @param mapInfoId The resource ID pointing to a JSON document containing the map information
  * @param mapTemplateIds Resource IDs describing the different map template layers
  * @property treeIds Resource IDs describing the tree data set
@@ -15,6 +17,7 @@ import java.util.*
  */
 class BiomeDataSet(
         val resources: ResourceProvider,
+        val biomeConfigId: Optional<String>,
         mapInfoId: String, mapTemplateIds: List<String>,
         val treeIds: Optional<TreeDataSetIds> = Optional.empty(),
         val decorationIds: Optional<DecorationDataSetIds> = Optional.empty()
@@ -30,6 +33,10 @@ class BiomeDataSet(
      */
     fun apply(simulation: Simulation)
     {
+        // Retrieve biome config
+        if(this.biomeConfigId.isPresent)
+            simulation.biomeConfiguration = Json.parse(BiomeConfiguration.serializer(), this.resources.json(this.biomeConfigId.get()))
+
         // Generate map
         simulation.map = this.mapDataSet.load(simulation)
 

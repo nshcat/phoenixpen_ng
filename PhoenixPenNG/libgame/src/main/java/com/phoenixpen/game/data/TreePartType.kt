@@ -13,12 +13,16 @@ import kotlinx.serialization.Serializable
  * @property basicData Basic structure information, like identifier and description
  * @property tileType Graphical representation of this tree part
  * @property isLeaves Whether this tree part is a type of leaf, like primary or secondary leaves
+ * @property dropCoveringType The covering type identifier to use when dropping leaves
+ * @property dropsLeaves Whether this tree part drops leaves
  */
 @Serializable
 data class TreePartType(
         @SerialName("basic_data") val basicData: StructureType,
         @SerialName("tile") @Serializable(with=TileTypeSerializer::class) val tileType: TileType = TileType(),
-        @SerialName("is_leaves") val isLeaves: Boolean = false
+        @SerialName("is_leaves") val isLeaves: Boolean = false,
+        @SerialName("drops_leaves") val dropsLeaves: Boolean = false,
+        @SerialName("dropped_leaves") val dropCoveringType: String = ""
 )
 {
     companion object

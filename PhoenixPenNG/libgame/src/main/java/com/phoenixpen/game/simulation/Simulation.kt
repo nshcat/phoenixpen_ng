@@ -3,6 +3,7 @@ package com.phoenixpen.game.simulation
 import com.phoenixpen.game.ascii.Position3D
 import com.phoenixpen.game.core.Updateable
 import com.phoenixpen.game.data.*
+import com.phoenixpen.game.data.biome.BiomeConfiguration
 import com.phoenixpen.game.data.biome.BiomeDataSet
 import com.phoenixpen.game.data.biome.TreeDataSetIds
 import com.phoenixpen.game.logging.GlobalLogger
@@ -58,6 +59,11 @@ class Simulation(val resources: ResourceProvider): Updateable
     val waterSystem: WaterSystem
 
     /**
+     * Information about the current biome
+     */
+    var biomeConfiguration = BiomeConfiguration()
+
+    /**
      * Simulation state initialization procedure
      */
     init
@@ -82,7 +88,7 @@ class Simulation(val resources: ResourceProvider): Updateable
 
         // Create biome data set
         val biomeDataSet = BiomeDataSet(
-                this.resources,
+                this.resources, Optional.empty(),
                 "biome_test_mapinfo.json", listOf("biome_test_layer0.bmp", "biome_test_layer1.bmp"),
                 Optional.of(TreeDataSetIds("biome_test_trees.json", listOf("biome_test_trees_layer0.bmp")))
         )
