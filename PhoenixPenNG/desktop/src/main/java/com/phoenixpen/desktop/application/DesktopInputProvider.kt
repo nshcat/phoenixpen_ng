@@ -53,8 +53,7 @@ class DesktopInputProvider: InputProvider, KeyAdapter()
             // Retrieve key code
             val keyCode = event.keyCode
 
-            println(keyCode)
-
+            // Convert key code to input events
             when(keyCode)
             {
                 KeyEvent.VK_PAGE_UP -> this.queueEvent(MapViewMoveEvent(Direction.Up))
