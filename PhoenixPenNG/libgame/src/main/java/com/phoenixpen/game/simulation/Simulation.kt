@@ -70,6 +70,11 @@ class Simulation(val resources: ResourceProvider): Updateable
     val seasonConfiguration: SeasonConfiguration
 
     /**
+     * The system that manages seasons in the game
+     */
+    val seasonSystem: SeasonSystem
+
+    /**
      * Simulation state initialization procedure
      */
     init
@@ -91,6 +96,9 @@ class Simulation(val resources: ResourceProvider): Updateable
 
         // Initialize map decoration system
         this.mapDecorationSystem = MapDecorationSystem(this.resources)
+
+        // Initialize season system
+        this.seasonSystem = SeasonSystem(this)
 
         // Initialize water system
         this.waterSystem = WaterSystem(this.resources)
@@ -130,6 +138,9 @@ class Simulation(val resources: ResourceProvider): Updateable
         // Update map (acceleration structures inside map class)
         // THIS HAS TO BE DONE FIRST
         this.map.update(elapsedTicks)
+
+        // Update season system
+        this.seasonSystem.update(elapsedTicks)
 
         // Update water system
         this.waterSystem.update(elapsedTicks)

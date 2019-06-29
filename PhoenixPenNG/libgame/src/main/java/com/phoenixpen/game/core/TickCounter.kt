@@ -38,6 +38,21 @@ class TickCounter(val period: Int, initial: Int = 0)
     }
 
     /**
+     * Retrieve the percentage progress of the tick counter towards the next full period.
+     * Example: If the period is 100 and the current counter value is 50, this will return 0.5.
+     *
+     * @return Current percentage progress of the tick counter
+     */
+    fun percentage(): Double
+    {
+        // If the period is zero, this will cause a divide by zero exception.
+        if(this.isEmpty())
+            throw IllegalStateException("TickCounter::percentage is only defined for non-empty tick counters")
+
+        return this.counter.toDouble() / this.period.toDouble()
+    }
+
+    /**
      * Check whether this tick counter is empty, which means it does nothing. This is the case
      * if the period is 0.
      */
