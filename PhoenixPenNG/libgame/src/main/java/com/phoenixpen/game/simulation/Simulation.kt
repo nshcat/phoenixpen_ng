@@ -9,6 +9,7 @@ import com.phoenixpen.game.data.biome.TreeDataSetIds
 import com.phoenixpen.game.logging.GlobalLogger
 import com.phoenixpen.game.map.Map
 import com.phoenixpen.game.resources.ResourceProvider
+import kotlinx.serialization.json.Json
 import java.util.*
 
 /**
@@ -64,11 +65,19 @@ class Simulation(val resources: ResourceProvider): Updateable
     var biomeConfiguration = BiomeConfiguration()
 
     /**
+     * Information about the seasons
+     */
+    val seasonConfiguration: SeasonConfiguration
+
+    /**
      * Simulation state initialization procedure
      */
     init
     {
         GlobalLogger.d("Simulation", "Initializing simulation")
+
+        // Load season information
+        this.seasonConfiguration = Json.parse(SeasonConfiguration.serializer(), this.resources.json("season_config.json"))
 
         // The material manager needs to be initialized and materials loaded before
         // the map can be loaded
