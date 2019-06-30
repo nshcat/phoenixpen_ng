@@ -8,10 +8,8 @@ import com.phoenixpen.game.logging.GlobalLogger
 
 /**
  * A system class managing the passing of seasons in the game simulation
- *
- * @property simulation The current simulation instance
  */
-class SeasonSystem(val simulation: Simulation): Updateable
+class SeasonSystem(simulation: Simulation): System(simulation)
 {
     /**
      * The main tick counter used to track the progress of the currently active season
