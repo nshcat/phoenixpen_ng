@@ -144,5 +144,8 @@ class Simulation(val resources: ResourceProvider): Updateable
 
         // Update water system
         this.waterSystem.update(elapsedTicks)
+
+        // Update snow system
+        this.snowSystem.update(elapsedTicks)
     }
 }
