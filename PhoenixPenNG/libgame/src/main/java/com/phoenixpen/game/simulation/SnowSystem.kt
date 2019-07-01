@@ -7,7 +7,6 @@ import com.phoenixpen.game.data.Covering
 import com.phoenixpen.game.logging.GlobalLogger
 import com.phoenixpen.game.map.MapCellState
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.max
 import kotlin.math.min
 
@@ -50,7 +49,7 @@ class SnowSystem(simulation: Simulation): System(simulation), CoveringHolder
     /**
      * All coverings managed by this system
      */
-    private val coverings = LinkedList<Covering>()
+    private var coverings = LinkedList<Covering>()
 
     /**
      * A tick counter used to both create and thaw snow
@@ -260,6 +259,7 @@ class SnowSystem(simulation: Simulation): System(simulation), CoveringHolder
             if(this.coverings.isEmpty())
             {
                 this.currentState = SystemState.Idle
+                this.coverings.clear()
 
                 // No more work to do
                 return

@@ -7,6 +7,7 @@ import com.phoenixpen.game.core.TickCounter
 import com.phoenixpen.game.data.Covering
 import com.phoenixpen.game.data.CoveringDrawMode
 import com.phoenixpen.game.data.Structure
+import com.phoenixpen.game.logging.GlobalLogger
 import java.lang.Integer.min
 import java.util.*
 import kotlin.math.max
@@ -297,8 +298,12 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var 
             // Retrieve covering tile to extract data from
             val coveringTile = covering.tile()
 
+            // Make a copy of the underlying draw info in order to not change the structure or map tiles
+            // tile
+            val underlyingCopy = underlying.copy()
+
             // Modify tile graphical representation
-            screen.setTile(covering.position.xz() - this.topLeft, underlying.apply {
+            screen.setTile(covering.position.xz() - this.topLeft, underlyingCopy.apply {
                 this.foreground = coveringTile.foreground
 
                 // Leave background as it is if its black
