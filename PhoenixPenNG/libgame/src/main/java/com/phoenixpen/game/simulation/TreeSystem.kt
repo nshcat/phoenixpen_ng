@@ -4,7 +4,7 @@ import com.phoenixpen.game.ascii.*
 import com.phoenixpen.game.data.*
 import com.phoenixpen.game.logging.GlobalLogger
 import com.phoenixpen.game.map.MapCellState
-import com.phoenixpen.game.resources.ResourceProvider
+import com.sun.xml.internal.bind.util.Which.which
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -31,6 +31,12 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
         Summer,
 
         /**
+         * Leaves are changing in a normal way. This state is used between each season, except
+         * between autumn and winter.
+         */
+        ChangingLeaves,
+
+        /**
          * It is autumn, but the trees are not yet dropping their leaves
          */
         Autumn,
@@ -46,10 +52,20 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
         AutumnDroppedLeaves,
 
         /**
+         * The system is removing all dropped leaves
+         */
+        RemovingDroppedLeaves,
+
+        /**
          * When entering winter, all dropped leaves are removed
          */
         Winter
     }
+
+    /**
+     * The current season
+     */
+    private var currentSeason = Season.Spring
 
     /**
      * The current state this simulation system is in
@@ -64,7 +80,7 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
     /**
      * Collection of all leaf coverings
      */
-    private val coverings = ArrayList<Covering>()
+    private val coverings = LinkedList<Covering>()
 
     /**
      * Class that manages all the tree part type classes
@@ -89,7 +105,7 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
     /**
      * A collection containing all the leaf parts that need to still drop their leaves
      */
-    private val leavesToDrop = LinkedList<TreePart>()
+    private val leavesToModify = LinkedList<TreePart>()
 
     /**
      * Animation used to make changing leaves more appealing
@@ -233,16 +249,57 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
         // Switch over current state
         when(this.currentState)
         {
+            TreeSystemState.ChangingLeaves ->
+            {
+                // Check if we are done
+                if(!this.modificationAnim.isActive)
+                {
+                    // Determine which state to switch to
+                    this.currentState = when(this.currentSeason)
+                    {
+                        Season.Spring -> TreeSystemState.Spring
+                        Season.Summer -> TreeSystemState.Summer
+                        Season.Autumn -> TreeSystemState.Autumn
+                        else -> throw IllegalStateException("ChangingLeaves state cant be used between autumn and winter")
+                    }
+                }
+                else
+                {
+                    // Otherwise perform animation
+                    val amount = this.modificationAnim.update(elapsedTicks)
+
+                    val partsToModify = this.leavesToModify.take(amount)
+
+                    for(part in partsToModify)
+                    {
+                        if(part.tileInstance.tileMode == TileTypeMode.Seasonal)
+                            part.tileInstance.setSeason(this.currentSeason)
+                    }
+
+                    // Remove modified leaves
+                    for(ix in 1 .. amount)
+                        this.leavesToModify.removeFirst()
+                }
+            }
             TreeSystemState.Spring ->
             {
                 // Check if its summer yet
                 if(this.simulation.seasonSystem.currentSeason == Season.Summer)
                 {
-                    // Advance state to summer
-                    this.currentState = TreeSystemState.Summer
+                    // Set current season to summer
+                    this.currentSeason = Season.Summer
 
-                    // Switch all leaves to summer mode
-                    this.setLeafSeason(Season.Summer)
+                    // Advance state to changing leaves
+                    this.currentState = TreeSystemState.ChangingLeaves
+
+                    // Prepare animation
+                    this.leavesToModify.clear()
+                    for(part in this.leafStructures)
+                        this.leavesToModify.add(part)
+
+                    this.leavesToModify.shuffle()
+
+                    this.modificationAnim.reset(this.leavesToModify.size)
                 }
             }
             TreeSystemState.Summer ->
@@ -250,11 +307,20 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
                 // Check if its autumn yet
                 if(this.simulation.seasonSystem.currentSeason == Season.Autumn)
                 {
-                    // Advance state to summer
-                    this.currentState = TreeSystemState.Autumn
+                    // Advance season to autumn
+                    this.currentSeason = Season.Autumn
 
-                    // Switch all leaves to autumn versions
-                    this.setLeafSeason(Season.Autumn)
+                    // Advance state to changing leaves
+                    this.currentState = TreeSystemState.ChangingLeaves
+
+                    // Prepare animation
+                    this.leavesToModify.clear()
+                    for(part in this.leafStructures)
+                        this.leavesToModify.add(part)
+
+                    this.leavesToModify.shuffle()
+
+                    this.modificationAnim.reset(this.leavesToModify.size)
                 }
             }
             TreeSystemState.Autumn ->
@@ -267,20 +333,20 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
                     this.currentState = TreeSystemState.AutumnDroppingLeaves
 
                     // Collect all tree parts that need to drop leaves
-                    this.leavesToDrop.clear()
+                    this.leavesToModify.clear()
                     for(part in this.leafStructures)
                     {
                         if(part.type.dropsLeaves)
                         {
-                            this.leavesToDrop.add(part)
+                            this.leavesToModify.add(part)
                         }
                     }
 
                     // Shuffle for nice random effect
-                    this.leavesToDrop.shuffle()
+                    this.leavesToModify.shuffle()
 
                     // Reset animation
-                    this.modificationAnim.reset(this.leavesToDrop.size)
+                    this.modificationAnim.reset(this.leavesToModify.size)
                 }
             }
             TreeSystemState.AutumnDroppingLeaves ->
@@ -297,7 +363,7 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
                     val amount = this.modificationAnim.update(elapsedTicks)
 
                     // Retrieve those structures
-                    val parts = this.leavesToDrop.take(amount)
+                    val parts = this.leavesToModify.take(amount)
 
                     // Drop the leaves
                     for(part in parts)
@@ -305,7 +371,7 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
 
                     // Remove from collection
                     for(i in 1 .. amount)
-                        this.leavesToDrop.removeFirst()
+                        this.leavesToModify.removeFirst()
                 }
             }
             TreeSystemState.AutumnDroppedLeaves ->
@@ -313,14 +379,29 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
                 // Wait for winter
                 if(this.simulation.seasonSystem.currentSeason == Season.Winter)
                 {
-                    // Advance state to summer
-                    this.currentState = TreeSystemState.Winter
+                    // Begin removing dropped leaves
+                    this.currentState = TreeSystemState.RemovingDroppedLeaves
 
-                    // Remove all dropped leaves
-                    this.coverings.clear()
+                    // Set up animation
+                    this.coverings.shuffle()
+
+                    this.modificationAnim.reset(this.coverings.size)
 
                     // Make sure all leaves are in winter mode
                     this.setLeafSeason(Season.Winter)
+                }
+            }
+            TreeSystemState.RemovingDroppedLeaves ->
+            {
+                // Are we done?
+                if(!this.modificationAnim.isActive)
+                    this.currentState = TreeSystemState.Winter
+                else
+                {
+                    val amount = this.modificationAnim.update(elapsedTicks)
+
+                    for(ix in 1 .. amount)
+                        this.coverings.removeFirst()
                 }
             }
             TreeSystemState.Winter ->
@@ -328,11 +409,20 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
                 // Wait for spring
                 if(this.simulation.seasonSystem.currentSeason == Season.Spring)
                 {
-                    // Advance state to summer
-                    this.currentState = TreeSystemState.Spring
+                    // Advance season to spring
+                    this.currentSeason = Season.Spring
 
-                    // Make sure all leaves are in winter mode
-                    this.setLeafSeason(Season.Spring)
+                    // Advance state to changing leaves
+                    this.currentState = TreeSystemState.ChangingLeaves
+
+                    // Prepare animation
+                    this.leavesToModify.clear()
+                    for(part in this.leafStructures)
+                        this.leavesToModify.add(part)
+
+                    this.leavesToModify.shuffle()
+
+                    this.modificationAnim.reset(this.leavesToModify.size)
                 }
             }
         }
