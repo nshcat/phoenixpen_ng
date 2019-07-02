@@ -381,6 +381,10 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
             // Check if its ground
             if(mapCell.state == MapCellState.Ground)
             {
+                // Is there a structure on the ground?
+                if(map.getStructureAtExact(position, true).isPresent)
+                    break
+
                 // Spawn covering
                 this.coverings.add(Covering.create(coveringType, position))
 
