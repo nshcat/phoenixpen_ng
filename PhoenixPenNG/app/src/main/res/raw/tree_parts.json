@@ -7,17 +7,53 @@
       "description": "branches with leaves",
       "is_stainable": true
     },
+    "is_leaves": true,
+    "drops_leaves": true,
+    "dropped_leaves": "default_dropped_leaves",
     "tile": {
-      "mode": "Varied",
-      "varied_tiles": [
-        { "tile": { "glyph": 172, "foreground": "#00CC55" }, "probability": 0.2  },
-        { "tile": { "glyph": 172, "foreground": "#05AE4C" }, "probability": 0.2  },
-        { "tile": { "glyph": 172, "foreground": "#049A42" }, "probability": 0.2  },
-        { "tile": { "glyph": 172, "foreground": "#039A56" }, "probability": 0.15 },
-        { "tile": { "glyph": 172, "foreground": "#06AC4B" }, "probability": 0.1  },
-        { "tile": { "glyph": 172, "foreground": "#299D59" }, "probability": 0.06 },
-        { "tile": { "glyph": 172, "foreground": "#00AD47" }, "probability": 0.06 },
-        { "tile": { "glyph": 172, "foreground": "#0C7A39" }, "probability": 0.03 }
+      "mode": "Seasonal",
+      "seasonal_tiles": [
+        {
+          "mode": "Varied",
+          "varied_tiles": [
+            { "tile": { "glyph": 172, "foreground": "#00CC55" }, "probability": 0.2  },
+            { "tile": { "glyph": 172, "foreground": "#05AE4C" }, "probability": 0.2  },
+            { "tile": { "glyph": 172, "foreground": "#049A42" }, "probability": 0.2  },
+            { "tile": { "glyph": 172, "foreground": "#039A56" }, "probability": 0.15 },
+            { "tile": { "glyph": 172, "foreground": "#06AC4B" }, "probability": 0.1  },
+            { "tile": { "glyph": 172, "foreground": "#299D59" }, "probability": 0.06 },
+            { "tile": { "glyph": 172, "foreground": "#00AD47" }, "probability": 0.06 },
+            { "tile": { "glyph": 172, "foreground": "#0C7A39" }, "probability": 0.03 }
+          ]
+        },
+        {
+          "mode": "Varied",
+          "varied_tiles": [
+            { "tile": { "glyph": 172, "foreground": "#00CC55" }, "probability": 0.2  },
+            { "tile": { "glyph": 172, "foreground": "#05AE4C" }, "probability": 0.2  },
+            { "tile": { "glyph": 172, "foreground": "#049A42" }, "probability": 0.2  },
+            { "tile": { "glyph": 172, "foreground": "#039A56" }, "probability": 0.15 },
+            { "tile": { "glyph": 172, "foreground": "#06AC4B" }, "probability": 0.1  },
+            { "tile": { "glyph": 172, "foreground": "#299D59" }, "probability": 0.06 },
+            { "tile": { "glyph": 172, "foreground": "#00AD47" }, "probability": 0.06 },
+            { "tile": { "glyph": 172, "foreground": "#0C7A39" }, "probability": 0.03 }
+          ]
+        },
+        {
+          "mode": "Varied",
+          "varied_tiles": [
+            { "tile": { "glyph": 172, "foreground": "#602610" }, "probability": 0.25 },
+            { "tile": { "glyph": 172, "foreground": "#8E3627" }, "probability": 0.25 },
+            { "tile": { "glyph": 172, "foreground": "#BF4630" }, "probability": 0.25 },
+            { "tile": { "glyph": 172, "foreground": "#EA5D32" }, "probability": 0.15 },
+            { "tile": { "glyph": 172, "foreground": "#F1B941" }, "probability": 0.05 },
+            { "tile": { "glyph": 172, "foreground": "#FBB941" }, "probability": 0.05 }
+          ]
+        },
+        {
+          "glpyh": 172,
+          "foreground": "#8E6004"
+        }
       ]
     }
   },
@@ -29,17 +65,52 @@
       "description": "twigs with leaves",
       "is_stainable": true
     },
+    "is_leaves": true,
+    "drops_leaves": true,
+    "dropped_leaves": "default_dropped_leaves",
     "tile": {
-      "mode": "Varied",
-      "varied_tiles": [
-        { "tile": { "glyph": 59, "foreground": "#00CC55" }, "probability": 0.2  },
-        { "tile": { "glyph": 59, "foreground": "#05AE4C" }, "probability": 0.2  },
-        { "tile": { "glyph": 59, "foreground": "#049A42" }, "probability": 0.2  },
-        { "tile": { "glyph": 59, "foreground": "#039A56" }, "probability": 0.15 },
-        { "tile": { "glyph": 59, "foreground": "#06AC4B" }, "probability": 0.1  },
-        { "tile": { "glyph": 59, "foreground": "#299D59" }, "probability": 0.06 },
-        { "tile": { "glyph": 59, "foreground": "#00AD47" }, "probability": 0.06 },
-        { "tile": { "glyph": 59, "foreground": "#0C7A39" }, "probability": 0.03 }
+      "mode": "Seasonal",
+      "seasonal_tiles": [
+        {
+          "mode": "Varied",
+          "varied_tiles": [
+            { "tile": { "glyph": 59, "foreground": "#00CC55" }, "probability": 0.2  },
+            { "tile": { "glyph": 59, "foreground": "#05AE4C" }, "probability": 0.2  },
+            { "tile": { "glyph": 59, "foreground": "#049A42" }, "probability": 0.2  },
+            { "tile": { "glyph": 59, "foreground": "#039A56" }, "probability": 0.15 },
+            { "tile": { "glyph": 59, "foreground": "#06AC4B" }, "probability": 0.1  },
+            { "tile": { "glyph": 59, "foreground": "#299D59" }, "probability": 0.06 },
+            { "tile": { "glyph": 59, "foreground": "#00AD47" }, "probability": 0.06 },
+            { "tile": { "glyph": 59, "foreground": "#0C7A39" }, "probability": 0.03 }
+          ]
+        },
+        {
+          "mode": "Varied",
+          "varied_tiles": [
+            { "tile": { "glyph": 59, "foreground": "#00CC55" }, "probability": 0.2  },
+            { "tile": { "glyph": 59, "foreground": "#05AE4C" }, "probability": 0.2  },
+            { "tile": { "glyph": 59, "foreground": "#049A42" }, "probability": 0.2  },
+            { "tile": { "glyph": 59, "foreground": "#039A56" }, "probability": 0.15 },
+            { "tile": { "glyph": 59, "foreground": "#06AC4B" }, "probability": 0.1  },
+            { "tile": { "glyph": 59, "foreground": "#299D59" }, "probability": 0.06 },
+            { "tile": { "glyph": 59, "foreground": "#00AD47" }, "probability": 0.06 },
+            { "tile": { "glyph": 59, "foreground": "#0C7A39" }, "probability": 0.03 }
+          ]
+        },
+        {
+          "mode": "Varied",
+          "varied_tiles": [
+            { "tile": { "glyph": 59, "foreground": "#602610" }, "probability": 0.25 },
+            { "tile": { "glyph": 59, "foreground": "#8E3627" }, "probability": 0.25 },
+            { "tile": { "glyph": 59, "foreground": "#BF4630" }, "probability": 0.25 },
+            { "tile": { "glyph": 59, "foreground": "#EA5D32" }, "probability": 0.15 },
+            { "tile": { "glyph": 59, "foreground": "#F1B941" }, "probability": 0.05 },
+            { "tile": { "glyph": 59, "foreground": "#FBB941" }, "probability": 0.05 }
+          ]
+        },
+        {
+          "mode": "NoDraw"
+        }
       ]
     }
   },

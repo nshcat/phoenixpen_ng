@@ -3,34 +3,98 @@ package com.phoenixpen.game.simulation
 import com.phoenixpen.game.ascii.*
 import com.phoenixpen.game.data.*
 import com.phoenixpen.game.logging.GlobalLogger
+import com.phoenixpen.game.map.MapCellState
 import com.phoenixpen.game.resources.ResourceProvider
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Class managing all the trees in the game world
  *
- * @property resources The resource provider as a source for game data
+ * @property simulation Game simulation instance
  */
-class TreeSystem(val resources: ResourceProvider): StructureHolder
+class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, CoveringHolder
 {
+    /**
+     * Enumeration describing the different states the tree simulation can be in
+     */
+    enum class TreeSystemState
+    {
+        /**
+         * It is spring
+         */
+        Spring,
+
+        /**
+         * It is summer
+         */
+        Summer,
+
+        /**
+         * It is autumn, but the trees are not yet dropping their leaves
+         */
+        Autumn,
+
+        /**
+         * Trees are in the progress of dropping their leaves
+         */
+        AutumnDroppingLeaves,
+
+        /**
+         * All leaves have been dropped and are present as a covering on the ground.
+         */
+        AutumnDroppedLeaves,
+
+        /**
+         * When entering winter, all dropped leaves are removed
+         */
+        Winter
+    }
+
+    /**
+     * The current state this simulation system is in
+     */
+    private var currentState: TreeSystemState = TreeSystemState.Spring
+
     /**
      * Collection of all trees currently present in the game world
      */
-    val trees = ArrayList<Tree>()
+    private val trees = ArrayList<Tree>()
+
+    /**
+     * Collection of all leaf coverings
+     */
+    private val coverings = ArrayList<Covering>()
 
     /**
      * Class that manages all the tree part type classes
      */
-    val treePartManager = TreePartManager()
+    private val treePartManager = TreePartManager()
 
     /**
      * Manager for tree structure types
      */
-    val treeStructureManager = TreeStructureManager()
+    private val treeStructureManager = TreeStructureManager()
 
     /**
      * Manager for all tree type classes
      */
-    val treeTypeManager = TreeTypeManager()
+    private val treeTypeManager = TreeTypeManager()
+
+    /**
+     * A collection of all structures that are part of a tree and are leaves
+     */
+    private val leafStructures = ArrayList<TreePart>()
+
+    /**
+     * A collection containing all the leaf parts that need to still drop their leaves
+     */
+    private val leavesToDrop = LinkedList<TreePart>()
+
+    /**
+     * Animation used to make changing leaves more appealing
+     */
+    private val modificationAnim = ModificationAnimation(0.05, 1)
 
     /**
      * Initialize all the type class managers present in this system
@@ -117,8 +181,15 @@ class TreeSystem(val resources: ResourceProvider): StructureHolder
                         // Generate actual structure
                         val pos = Position3D(topLeft.x + ix, topLeft.y + dy, topLeft.z + iz)
 
+                        // Create tree part
+                        val part = TreePart.create(treePartType, pos)
+
                         // Save in tree object
-                        tree.structures.add(TreePart.create(treePartType, pos))
+                        tree.structures.add(part)
+
+                        // If it is leaves, store it in the appropiate collection for later use
+                        if(treePartType.isLeaves)
+                            this.leafStructures.add(part)
                     }
                 }
             }
@@ -126,5 +197,195 @@ class TreeSystem(val resources: ResourceProvider): StructureHolder
 
         // Tree is generated
         this.trees.add(tree)
+    }
+
+    /**
+     * Retrieve all coverings managed by this system
+     *
+     * @return Collection of all covering instances managed by this system
+     */
+    override fun coverings(): Collection<Covering>
+    {
+        return this.coverings
+    }
+
+    /**
+     * Sets the season property for all known leaf structures to the given season
+     *
+     * @param season The new season value to use
+     */
+    private fun setLeafSeason(season: Season)
+    {
+        for(part in this.leafStructures)
+        {
+            if(part.type.tileType.mode == TileTypeMode.Seasonal)
+                part.tileInstance.setSeason(season)
+        }
+    }
+
+    /**
+     * Update the simulation state of the tree system based on given number of elapsed ticks
+     *
+     * @param elapsedTicks Ticks elapsed since last update
+     */
+    override fun update(elapsedTicks: Int)
+    {
+        // Switch over current state
+        when(this.currentState)
+        {
+            TreeSystemState.Spring ->
+            {
+                // Check if its summer yet
+                if(this.simulation.seasonSystem.currentSeason == Season.Summer)
+                {
+                    // Advance state to summer
+                    this.currentState = TreeSystemState.Summer
+
+                    // Switch all leaves to summer mode
+                    this.setLeafSeason(Season.Summer)
+                }
+            }
+            TreeSystemState.Summer ->
+            {
+                // Check if its autumn yet
+                if(this.simulation.seasonSystem.currentSeason == Season.Autumn)
+                {
+                    // Advance state to summer
+                    this.currentState = TreeSystemState.Autumn
+
+                    // Switch all leaves to autumn versions
+                    this.setLeafSeason(Season.Autumn)
+                }
+            }
+            TreeSystemState.Autumn ->
+            {
+                // We do nothing in autumn, until the given point in time is reached where we
+                // are supposed to start dropping the leaves.
+                if(this.simulation.seasonSystem.seasonProgress() >= this.simulation.seasonConfiguration.leafDropStart)
+                {
+                    // Switch to leaf dropping state
+                    this.currentState = TreeSystemState.AutumnDroppingLeaves
+
+                    // Collect all tree parts that need to drop leaves
+                    this.leavesToDrop.clear()
+                    for(part in this.leafStructures)
+                    {
+                        if(part.type.dropsLeaves)
+                        {
+                            this.leavesToDrop.add(part)
+                        }
+                    }
+
+                    // Shuffle for nice random effect
+                    this.leavesToDrop.shuffle()
+
+                    // Reset animation
+                    this.modificationAnim.reset(this.leavesToDrop.size)
+                }
+            }
+            TreeSystemState.AutumnDroppingLeaves ->
+            {
+                // Check if we are done with dropping leaves
+                if(!this.modificationAnim.isActive)
+                {
+                    // Switch to next state
+                    this.currentState = TreeSystemState.AutumnDroppedLeaves
+                }
+                else
+                {
+                    // Retrieve amount of leave structures to drop
+                    val amount = this.modificationAnim.update(elapsedTicks)
+
+                    // Retrieve those structures
+                    val parts = this.leavesToDrop.take(amount)
+
+                    // Drop the leaves
+                    for(part in parts)
+                        this.dropLeaves(part)
+
+                    // Remove from collection
+                    for(i in 1 .. amount)
+                        this.leavesToDrop.removeFirst()
+                }
+            }
+            TreeSystemState.AutumnDroppedLeaves ->
+            {
+                // Wait for winter
+                if(this.simulation.seasonSystem.currentSeason == Season.Winter)
+                {
+                    // Advance state to summer
+                    this.currentState = TreeSystemState.Winter
+
+                    // Remove all dropped leaves
+                    this.coverings.clear()
+
+                    // Make sure all leaves are in winter mode
+                    this.setLeafSeason(Season.Winter)
+                }
+            }
+            TreeSystemState.Winter ->
+            {
+                // Wait for spring
+                if(this.simulation.seasonSystem.currentSeason == Season.Spring)
+                {
+                    // Advance state to summer
+                    this.currentState = TreeSystemState.Spring
+
+                    // Make sure all leaves are in winter mode
+                    this.setLeafSeason(Season.Spring)
+                }
+            }
+        }
+    }
+
+    /**
+     * Try to drop the leaves for given tree part
+     *
+     * @param part Tree part to drop leaves for
+     */
+    private fun dropLeaves(part: TreePart)
+    {
+        // Retrieve covering type to use for dropped leaves
+        val coveringTypeId = part.type.dropCoveringType
+
+        // Check if it was given
+        if(coveringTypeId.isEmpty())
+        {
+            GlobalLogger.e("TreeSystem", "Tree part type \"${part.type.basicData.identifier}\" is marked as dropping leaves but has no covering type assigned")
+            return
+        }
+
+        // Otherwise retrieve the actual covering type
+        val coveringType = this.simulation.coveringManager.lookupCovering(coveringTypeId)
+
+        // Retrieve map instance
+        val map = this.simulation.map
+
+        // It could be that the given tree part is outside of map bounds. Check for that
+        if(!map.isInBounds(part.position))
+            return
+
+        // Set season to winter which most often represent dropped leaves
+        if(part.tileInstance.tileMode == TileTypeMode.Seasonal)
+            part.tileInstance.setSeason(Season.Winter)
+
+        // "Raycast" downwards to find ground
+        for(iy in part.position.y downTo 0)
+        {
+            // Calculate position
+            val position = Position3D(part.position.x, iy, part.position.z)
+
+            // Retrieve map cell
+            val mapCell = map.cellAt(position)
+
+            // Check if its ground
+            if(mapCell.state == MapCellState.Ground)
+            {
+                // Spawn covering
+                this.coverings.add(Covering.create(coveringType, position))
+
+                break
+            }
+        }
     }
 }

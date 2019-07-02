@@ -52,29 +52,14 @@ class SnowSystem(simulation: Simulation): System(simulation), CoveringHolder
     private var coverings = LinkedList<Covering>()
 
     /**
-     * A tick counter used to both create and thaw snow
+     * Modification animation used to animate snow spawning and thawing
      */
-    private var modificationCounter: Optional<TickCounter> = Optional.empty()
-
-    /**
-     * The period between each covering modification step
-     */
-    private val modificationPeriod = 1
-
-    /**
-     * The percentage of tiles to modify in each modification step
-     */
-    private val modificationsPerStepPercent = 0.08
+    private val modificationAnim = ModificationAnimation(0.08, 1)
 
     /**
      * The current state the system is in
      */
     private var currentState: SystemState = SystemState.Idle
-
-    /**
-     * The number of modifications to do in each modification step
-     */
-    private var modificationsPerStep: Int = 0
 
     /**
      * Spawn snow tile in given map column
@@ -141,18 +126,14 @@ class SnowSystem(simulation: Simulation): System(simulation), CoveringHolder
                     // We dont do any snow spawning in here, that is done in the next update step.
                     this.currentState = SystemState.SpawningSnow
 
-                    // We also need to initialize the tick counter
-                    this.modificationCounter = Optional.of(TickCounter(this.modificationPeriod))
-
-                    // And we need to put all map columns into the buffer
-
                     // Clear buffer to be safe
                     this.mapColumns.clear()
 
                     // Retrieve current map dimensions
                     val mapDimensions = this.simulation.map.dimensions
 
-                    // Iterate over all (x,z) coordinate pairs within the map dimensions
+                    // Iterate over all (x,z) coordinate pairs within the map dimensions and
+                    // store all map columns in buffer
                     for(ix in 0 until mapDimensions.width)
                     {
                         for(iz in 0 until mapDimensions.depth)
@@ -164,8 +145,8 @@ class SnowSystem(simulation: Simulation): System(simulation), CoveringHolder
                     // Shufle columns in order to make snow spread appear organic
                     this.mapColumns.shuffle()
 
-                    // Determine number of modifications per step
-                    this.modificationsPerStep = max(1, (this.modificationsPerStepPercent * this.mapColumns.size).toInt())
+                    // Reset modification animation
+                    this.modificationAnim.reset(this.mapColumns.size)
 
                     GlobalLogger.d("SnowSystem", "Switched to snow spawning state")
                 }
@@ -179,14 +160,11 @@ class SnowSystem(simulation: Simulation): System(simulation), CoveringHolder
                     // Switch to snow thawing mode
                     this.currentState = SystemState.ThawingSnow
 
-                    // We also need to initialize the tick counter
-                    this.modificationCounter = Optional.of(TickCounter(this.modificationPeriod))
-
                     // Randomly shuffle covering collection in order to make snow disappear "organically"
                     this.coverings.shuffle()
 
-                    // Determine number of modifications per step
-                    this.modificationsPerStep = max(1, (this.modificationsPerStepPercent * this.coverings.size).toInt())
+                    // Reset modification animation
+                    this.modificationAnim.reset(this.coverings.size)
 
                     GlobalLogger.d("SnowSystem", "Switched to snow thawing state")
                 }
@@ -212,34 +190,24 @@ class SnowSystem(simulation: Simulation): System(simulation), CoveringHolder
      */
     private fun spawnSnowStep(elapsedTicks: Int)
     {
-        // Retrieve number of elapsed snow spawning steps
-        val steps = this.modificationCounter.get().update(elapsedTicks)
-
-        GlobalLogger.d("SnowSystem", "Spawning ${this.modificationsPerStep} snow tiles")
-
-        // Perform steps
-        for(i in 1 .. steps)
+        // If the animation is finished, we have to switch states
+        if(!this.modificationAnim.isActive)
         {
-            // If all columns have been covered in snow, switch states
-            if(this.mapColumns.isEmpty())
-            {
-                this.currentState = SystemState.IdleWinter
-
-                // No more work to do
-                return
-            }
-
-            // Otherwise there are still columns left
-            val columns = this.mapColumns.take(this.modificationsPerStep)
+            this.currentState = SystemState.IdleWinter
+        }
+        else
+        {
+            // Otherwise retrieve number of map columns to spawn snow on
+            val steps = this.modificationAnim.update(elapsedTicks)
 
             // Spawn snow on those columns
-            for(column in columns)
+            for(column in this.mapColumns.take(steps))
             {
                 this.spawnSnowTile(column)
             }
 
             // Remove columns from list
-            for(i in 1 .. columns.size)
+            for(i in 1 .. steps)
                 this.mapColumns.removeFirst()
         }
     }
@@ -249,24 +217,18 @@ class SnowSystem(simulation: Simulation): System(simulation), CoveringHolder
      */
     private fun thawSnowStep(elapsedTicks: Int)
     {
-        // Retrieve number of elapsed snow thawing steps
-        val steps = this.modificationCounter.get().update(elapsedTicks)
-
-        // Perform steps
-        for(i in 1 .. steps)
+        // If the animation is finished, we have to switch states
+        if(!this.modificationAnim.isActive)
         {
-            // If all snow tiles have been removed
-            if(this.coverings.isEmpty())
-            {
-                this.currentState = SystemState.Idle
-                this.coverings.clear()
+            this.currentState = SystemState.Idle
+        }
+        else
+        {
+            // Otherwise retrieve number of coverings to remove
+            val steps = this.modificationAnim.update(elapsedTicks)
 
-                // No more work to do
-                return
-            }
-
-            // Otherwise remove up to N snow coverings
-            for(i in 1 .. min(this.coverings.size, this.modificationsPerStep))
+            // Remove snow coverings
+            for(i in 1 .. steps)
                 this.coverings.removeFirst()
         }
     }

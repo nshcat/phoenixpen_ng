@@ -47,7 +47,7 @@ class Simulation(val resources: ResourceProvider): Updateable
     /**
      * Tree system
      */
-    val treeHolder = TreeSystem(this.resources)
+    val treeHolder = TreeSystem(this)
 
     /**
      * Snow system
@@ -116,7 +116,7 @@ class Simulation(val resources: ResourceProvider): Updateable
         this.mapDecorationSystem.addDecoration(Position3D(15, 1, 15), "test_plant")
 
         // Connect map to structure and covering holders
-        this.map.registerHolder(this.treeHolder)
+        this.map.registerHolder(this.treeHolder as StructureHolder)
         this.map.registerHolder(this.mapDecorationSystem)
         this.map.registerHolder(this.waterSystem)
 
@@ -126,6 +126,7 @@ class Simulation(val resources: ResourceProvider): Updateable
         // Cover everything in snow
         this.snowSystem = SnowSystem(this)
         this.map.registerHolder(this.snowSystem)
+        this.map.registerHolder(this.treeHolder as CoveringHolder)
     }
 
     /**
@@ -147,5 +148,8 @@ class Simulation(val resources: ResourceProvider): Updateable
 
         // Update snow system
         this.snowSystem.update(elapsedTicks)
+
+        // Update tree system
+        this.treeHolder.update(elapsedTicks)
     }
 }

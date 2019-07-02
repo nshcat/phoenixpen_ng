@@ -212,7 +212,7 @@ class TileType(
             val activeInstance = instance.instanceForSeason()
 
             // If its nodraw we are out of luck
-            return activeInstance.tileMode == TileTypeMode.NoDraw
+            return activeInstance.tileMode != TileTypeMode.NoDraw
         }
         else
         {
