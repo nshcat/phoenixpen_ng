@@ -51,8 +51,7 @@
           ]
         },
         {
-          "glpyh": 172,
-          "foreground": "#8E6004"
+          "mode": "NoDraw"
         }
       ]
     }
