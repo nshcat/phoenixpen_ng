@@ -32,12 +32,7 @@ enum class TileTypeMode
     /**
      * Tile is not drawn. Causes the game object to be completely transparent
      */
-    NoDraw,
-
-    /**
-     * A tile that has possibly different tiles for the four seasons
-     */
-    Seasonal
+    NoDraw
 }
 
 /**
@@ -46,18 +41,14 @@ enum class TileTypeMode
  * are activated.
  *
  * @property tileMode The mode this tile is in
- * @property currentSeason The current season associated with this tile. This is done so that tiles can be subjected to
  * seasonal changes independently from each other
  * @property tileIndex Index used to store which varied entry was selected for this tile
  * @property animIdx Index used to store the animation state of an animated tile
- * @property seasonalInstances Tile instances of the various seasonal tiles, if needed
  */
 data class TileInstance(
         val tileMode: TileTypeMode = TileTypeMode.Static,
         val tileIndex: Int = -1,
-        val animIdx: TickCounter = TickCounter(0),
-        var currentSeason: Season = Season.Spring,
-        val seasonalInstances: List<TileInstance> = listOf()
+        val animIdx: TickCounter = TickCounter(0)
         ): Updateable
 {
     /**
@@ -67,57 +58,10 @@ data class TileInstance(
      */
     override fun update(elapsedTicks: Int)
     {
-        // If we are in seasonal mode, update all seasonal tile instances
-        if(this.tileMode == TileTypeMode.Seasonal)
-        {
-            for (instance in this.seasonalInstances)
-                instance.update(elapsedTicks)
-        }
-        // We only need to do updates here if the mode is "animated"
-        else if(this.tileMode == TileTypeMode.Animated && this.animIdx.isNotEmpty())
+        if(this.tileMode == TileTypeMode.Animated && this.animIdx.isNotEmpty())
         {
             this.animIdx.update(elapsedTicks)
         }
-    }
-
-    /**
-     * Advance stored information to next season.
-     */
-    fun nextSeason()
-    {
-        if(this.tileMode == TileTypeMode.Seasonal)
-            this.currentSeason.nextSeason()
-        else
-            throw IllegalStateException("Tile not in seasonal mode")
-    }
-
-    /**
-     * Replace the stored season information with the given value
-     *
-     * @param season New season value
-     */
-    fun setSeason(season: Season)
-    {
-        if(this.tileMode == TileTypeMode.Seasonal)
-            this.currentSeason = season
-        else
-            throw IllegalStateException("Tile not in seasonal mode")
-    }
-
-    /**
-     * For seasonal tile types, retrieve currently relevant tile instance based on [currentSeason]
-     *
-     * @return Currently relevant tile instance
-     */
-    fun instanceForSeason(): TileInstance
-    {
-        if(this.tileMode != TileTypeMode.Seasonal)
-            throw IllegalStateException("instanceForSeason only works in seasonal mode")
-
-        if(this.seasonalInstances.size != 4)
-            throw IllegalStateException("Invalid number of seasonal tile instances")
-
-        return this.seasonalInstances[this.currentSeason.index]
     }
 }
 
@@ -131,15 +75,13 @@ data class TileInstance(
  * @property staticTile The static tile info, if used
  * @property variedTiles The varied tile info, if used
  * @property animatedTile The tile animation, if used
- * @property seasonalTiles Seasonal tiles for each season of the year
  */
 @Serializable
 class TileType(
         val mode: TileTypeMode = TileTypeMode.Static,
         val staticTile: DrawInfo = DrawInfo(),
         val variedTiles: WeightedTileList = WeightedTileList(listOf()),
-        val animatedTile: Animation = Animation.empty(),
-        val seasonalTiles: List<TileType> = listOf()
+        val animatedTile: Animation = Animation.empty()
 )
 {
 
@@ -158,19 +100,6 @@ class TileType(
             TileTypeMode.NoDraw, TileTypeMode.Static  -> TileInstance(this.mode)
             TileTypeMode.Varied -> TileInstance(this.mode, this.variedTiles.drawIndex())
             TileTypeMode.Animated -> TileInstance(this.mode, animIdx = TickCounter(period = this.animatedTile.speed, initial = animOffset))
-            TileTypeMode.Seasonal -> {
-                // Create tile instance for all seasonal types
-                val seasonalInstances = ArrayList<TileInstance>()
-                for(seasonalTile in this.seasonalTiles)
-                    seasonalInstances.add(seasonalTile.createInstance(animOffset = animOffset))
-
-                // Check that none of them are, recursively, also seasonal entries
-                if(seasonalInstances.any { x -> x.tileMode == TileTypeMode.Seasonal })
-                    throw IllegalStateException("Seasonal tile type that contain other seasonal tile types are not allowed")
-
-                // Create tile instance for the parent tile type
-                TileInstance(this.mode, seasonalInstances = seasonalInstances)
-            }
         }
     }
 
@@ -185,7 +114,6 @@ class TileType(
         return when(this.mode)
         {
             TileTypeMode.NoDraw -> throw IllegalStateException("Can't retrieve tile for NoDraw object!")
-            TileTypeMode.Seasonal -> this.seasonalTiles[instance.currentSeason.index].tile(instance.instanceForSeason())
             TileTypeMode.Static -> this.staticTile
             TileTypeMode.Varied -> this.variedTiles.elementAt(instance.tileIndex)
             TileTypeMode.Animated -> this.animatedTile.frameAtRaw(instance.animIdx.totalPeriods)
@@ -200,26 +128,7 @@ class TileType(
      */
     fun shouldDraw(instance: TileInstance): Boolean
     {
-        // If the current tile is a no draw tile by itself, we should not draw
-        if(instance.tileMode == TileTypeMode.NoDraw)
-        {
-            return false
-        }
-        // If the tile mode is seasonal, then the currently active seasonal tile might be NoDraw
-        else if(instance.tileMode == TileTypeMode.Seasonal)
-        {
-            // Retrieve currently active tile instance
-            val activeInstance = instance.instanceForSeason()
-
-            // If its nodraw we are out of luck
-            return activeInstance.tileMode != TileTypeMode.NoDraw
-        }
-        else
-        {
-            // Otherwise there will always be something to draw
-            return true
-        }
-
+        return instance.tileMode != TileTypeMode.NoDraw
     }
 }
 
@@ -286,21 +195,6 @@ class TileTypeSerializer : KSerializer<TileType>
                     val frames = Json.parse(DrawInfo.serializer().list, frameEntry.toString())
                     val speed = root.getPrimitive("speed").int
                     TileType(mode, animatedTile = Animation(speed, frames))
-                }
-                TileTypeMode.Seasonal ->
-                {
-                    // The seasonal tiles entry has to exist
-                    if(!root.containsKey("seasonal_tiles"))
-                        throw RuntimeException("missing \"seasonal_tiles\" entry")
-
-                    // Retrieve seasonal infos
-                    val frameEntry = root.getArray("seasonal_tiles")
-
-                    // Deserialize TileTypes
-                    val seasonalTypes = Json.parse(TileTypeSerializer().list, frameEntry.toString())
-
-                    // Construct tile type instance
-                    TileType(mode, seasonalTiles = seasonalTypes)
                 }
             }
         }
