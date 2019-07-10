@@ -245,6 +245,11 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
      */
     override fun update(elapsedTicks: Int)
     {
+        // Update all tree parts
+        for(tree in this.trees)
+            for(part in tree.structures)
+                part.update(elapsedTicks)
+
         // Switch over current state
         when(this.currentState)
         {
