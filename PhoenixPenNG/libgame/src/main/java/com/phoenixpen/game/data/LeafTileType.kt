@@ -3,6 +3,7 @@ package com.phoenixpen.game.data
 import com.phoenixpen.game.ascii.DrawInfo
 import com.phoenixpen.game.ascii.TileInstance
 import com.phoenixpen.game.ascii.TileType
+import com.phoenixpen.game.ascii.TileTypeSerializer
 import com.phoenixpen.game.core.Updateable
 import com.phoenixpen.game.simulation.LeafState
 import kotlinx.serialization.SerialName
@@ -56,9 +57,9 @@ data class LeafTileInstance(
  */
 @Serializable
 class LeafTileType(
-        @SerialName("normal") val normalTile: TileType = TileType(),
-        @SerialName("autumnal") val autumnalTile: TileType = TileType(),
-        @SerialName("dropped") val droppedTile: TileType = TileType()
+        @Serializable(with = TileTypeSerializer::class) @SerialName("normal") val normalTile: TileType = TileType(),
+        @Serializable(with = TileTypeSerializer::class) @SerialName("autumnal") val autumnalTile: TileType = TileType(),
+        @Serializable(with = TileTypeSerializer::class) @SerialName("dropped") val droppedTile: TileType = TileType()
 )
 {
     /**

@@ -29,5 +29,22 @@
         { "tile": { "glyph": 96, "foreground": "#FBB941" }, "probability": 0.05 }
       ]
     }
+  },
+  {
+    "identifier": "default_dropped_leaves_old",
+    "display_name": "a pile of dropped leaves",
+    "description": "a pile of dropped leaves",
+    "draw_mode": "Staining",
+    "tile": {
+      "mode": "Varied",
+      "varied_tiles": [
+        { "tile": { "glyph": 0, "background": "#602610" }, "probability": 0.25 },
+        { "tile": { "glyph": 0, "background": "#8E3627" }, "probability": 0.25 },
+        { "tile": { "glyph": 0, "background": "#BF4630" }, "probability": 0.25 },
+        { "tile": { "glyph": 0, "background": "#EA5D32" }, "probability": 0.15 },
+        { "tile": { "glyph": 0, "background": "#F1B941" }, "probability": 0.05 },
+        { "tile": { "glyph": 0, "background": "#FBB941" }, "probability": 0.05 }
+      ]
+    }
   }
 ]

@@ -67,6 +67,12 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
     private var currentSeason = Season.Spring
 
     /**
+     * The currently "active" leaf state. This means this is the leaf state all leaves get assigned
+     * to while in [TreeSystemState.ChangingLeaves] state.
+     */
+    private var currentLeafState = LeafState.Normal
+
+    /**
      * The current state this simulation system is in
      */
     private var currentState: TreeSystemState = TreeSystemState.Spring
@@ -225,20 +231,6 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
     }
 
     /**
-     * Sets the season property for all known leaf structures to the given season
-     *
-     * @param season The new season value to use
-     */
-    private fun setLeafSeason(season: Season)
-    {
-        for(part in this.leafStructures)
-        {
-            if(part.type.tileType.mode == TileTypeMode.Seasonal)
-                part.tileInstance.setSeason(season)
-        }
-    }
-
-    /**
      * Update the simulation state of the tree system based on given number of elapsed ticks
      *
      * @param elapsedTicks Ticks elapsed since last update
@@ -274,10 +266,10 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
 
                     val partsToModify = this.leavesToModify.take(amount)
 
+                    // Update the leaf state in all parts that have to modified
                     for(part in partsToModify)
                     {
-                        if(part.tileInstance.tileMode == TileTypeMode.Seasonal)
-                            part.tileInstance.setSeason(this.currentSeason)
+                        part.leafState = this.currentLeafState
                     }
 
                     // Remove modified leaves
@@ -294,16 +286,7 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
                     this.currentSeason = Season.Summer
 
                     // Advance state to changing leaves
-                    this.currentState = TreeSystemState.ChangingLeaves
-
-                    // Prepare animation
-                    this.leavesToModify.clear()
-                    for(part in this.leafStructures)
-                        this.leavesToModify.add(part)
-
-                    this.leavesToModify.shuffle()
-
-                    this.modificationAnim.reset(this.leavesToModify.size)
+                    this.currentState = TreeSystemState.Summer
                 }
             }
             TreeSystemState.Summer ->
@@ -313,6 +296,9 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
                 {
                     // Advance season to autumn
                     this.currentSeason = Season.Autumn
+
+                    // New leaf state is autumnal
+                    this.currentLeafState = LeafState.Autumnal
 
                     // Advance state to changing leaves
                     this.currentState = TreeSystemState.ChangingLeaves
@@ -335,6 +321,9 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
                 {
                     // Switch to leaf dropping state
                     this.currentState = TreeSystemState.AutumnDroppingLeaves
+
+                    // New leaf state is dropped
+                    this.currentLeafState = LeafState.Dropped
 
                     // Collect all tree parts that need to drop leaves
                     this.leavesToModify.clear()
@@ -390,9 +379,6 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
                     this.coverings.shuffle()
 
                     this.modificationAnim.reset(this.coverings.size)
-
-                    // Make sure all leaves are in winter mode
-                    this.setLeafSeason(Season.Winter)
                 }
             }
             TreeSystemState.RemovingDroppedLeaves ->
@@ -415,6 +401,9 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
                 {
                     // Advance season to spring
                     this.currentSeason = Season.Spring
+
+                    // New leaf state is normal
+                    this.currentLeafState = LeafState.Normal
 
                     // Advance state to changing leaves
                     this.currentState = TreeSystemState.ChangingLeaves
@@ -459,9 +448,8 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
         if(!map.isInBounds(part.position))
             return
 
-        // Set season to winter which most often represent dropped leaves
-        if(part.tileInstance.tileMode == TileTypeMode.Seasonal)
-            part.tileInstance.setSeason(Season.Winter)
+        // Set leaf state to dropped
+        part.leafState = LeafState.Dropped
 
         // "Raycast" downwards to find ground
         for(iy in part.position.y downTo 0)
