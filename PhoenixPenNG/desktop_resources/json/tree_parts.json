@@ -36,10 +36,8 @@
         ]
       },
       "dropped": {
-      	"mode": "Static",
-        "glpyh": 5,
-        "foreground": "#FFFFFF",
-        "background": "#000000"
+        "glyph": 172,
+        "foreground": "#8E6004"
       }
     }
   },
