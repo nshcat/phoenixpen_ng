@@ -56,3 +56,24 @@ dependencies {
 sourceCompatibility = "7"
 targetCompatibility = "7"
 
+/*task myTask << {
+    workingDir "$projectDir"
+    def proc = "copyDesktopResources.sh".execute()
+    proc.waitForProcessOutput(System.out, System.err)
+}
+compileKotlin.dependsOn myTask*/
+
+task myTask(type: Exec) {
+    workingDir "$projectDir"
+
+    if(!System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows'))
+    {
+        commandLine 'sh', '-c', './../copyDesktopResources.sh'
+    }
+}
+compileKotlin.dependsOn myTask
+
+//compileKotlin.doFirst{
+//    println "MEOW"
+//}
+
