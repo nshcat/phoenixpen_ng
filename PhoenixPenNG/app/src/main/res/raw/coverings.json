@@ -34,8 +34,9 @@
     "identifier": "default_dropped_leaves_old",
     "display_name": "a pile of dropped leaves",
     "description": "a pile of dropped leaves",
+    "draw_mode": "Staining",
     "tile": {
-      "mode": "Staining",
+      "mode": "Varied",
       "varied_tiles": [
         { "tile": { "glyph": 0, "background": "#602610" }, "probability": 0.25 },
         { "tile": { "glyph": 0, "background": "#8E3627" }, "probability": 0.25 },
