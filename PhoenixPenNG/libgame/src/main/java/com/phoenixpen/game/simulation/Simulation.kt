@@ -2,6 +2,8 @@ package com.phoenixpen.game.simulation
 
 import com.phoenixpen.game.ascii.Position3D
 import com.phoenixpen.game.core.Updateable
+import com.phoenixpen.game.core.WeightedList
+import com.phoenixpen.game.core.WeightedPair
 import com.phoenixpen.game.data.*
 import com.phoenixpen.game.data.biome.BiomeConfiguration
 import com.phoenixpen.game.data.biome.BiomeDataSet
@@ -11,6 +13,7 @@ import com.phoenixpen.game.logging.GlobalLogger
 import com.phoenixpen.game.map.Map
 import com.phoenixpen.game.resources.ResourceProvider
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
 import java.util.*
 
 /**

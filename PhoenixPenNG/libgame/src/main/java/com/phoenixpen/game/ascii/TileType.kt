@@ -25,6 +25,12 @@ enum class TileTypeMode
     Varied,
 
     /**
+     * Similar to varied mode, but color info and glyph are stored and chosen independently
+     * from each other.
+     */
+    VariedSeparate,
+
+    /**
      * A selection of tiles meant to be played in sequential order, repeating.
      */
     Animated,
@@ -44,10 +50,14 @@ enum class TileTypeMode
  * seasonal changes independently from each other
  * @property tileIndex Index used to store which varied entry was selected for this tile
  * @property animIdx Index used to store the animation state of an animated tile
+ * @property colorIndex Index of the active color info. Used in VariedSeparate mode.
+ * @property glyphIndex Index of the active glyph. Used in VariedSeparate mode.
  */
 data class TileInstance(
         val tileMode: TileTypeMode = TileTypeMode.Static,
         val tileIndex: Int = -1,
+        val colorIndex: Int = -1,
+        val glyphIndex: Int = -1,
         val animIdx: TickCounter = TickCounter(0)
         ): Updateable
 {
@@ -75,12 +85,16 @@ data class TileInstance(
  * @property staticTile The static tile info, if used
  * @property variedTiles The varied tile info, if used
  * @property animatedTile The tile animation, if used
+ * @property variedGlyphs Varied glyphs, used in VariedSeparate mode
+ * @property variedColors Varied color info, used in VariedSeparate mode
  */
 @Serializable
 class TileType(
         val mode: TileTypeMode = TileTypeMode.Static,
         val staticTile: DrawInfo = DrawInfo(),
         val variedTiles: WeightedTileList = WeightedTileList(listOf()),
+        val variedGlyphs: WeightedGlyphList = WeightedGlyphList(listOf()),
+        val variedColors: WeightedColorList = WeightedColorList(listOf()),
         val animatedTile: Animation = Animation.empty()
 )
 {
@@ -100,6 +114,7 @@ class TileType(
             TileTypeMode.NoDraw, TileTypeMode.Static  -> TileInstance(this.mode)
             TileTypeMode.Varied -> TileInstance(this.mode, this.variedTiles.drawIndex())
             TileTypeMode.Animated -> TileInstance(this.mode, animIdx = TickCounter(period = this.animatedTile.speed, initial = animOffset))
+            TileTypeMode.VariedSeparate -> TileInstance(this.mode, colorIndex = this.variedColors.drawIndex(), glyphIndex = this.variedGlyphs.drawIndex())
         }
     }
 
@@ -117,6 +132,11 @@ class TileType(
             TileTypeMode.Static -> this.staticTile
             TileTypeMode.Varied -> this.variedTiles.elementAt(instance.tileIndex)
             TileTypeMode.Animated -> this.animatedTile.frameAtRaw(instance.animIdx.totalPeriods)
+            TileTypeMode.VariedSeparate -> {
+                val colorInfo = this.variedColors.elementAt(instance.colorIndex)
+
+                DrawInfo(this.variedGlyphs.elementAt(instance.glyphIndex), colorInfo.foreground, colorInfo.background)
+            }
         }
     }
 
@@ -168,6 +188,25 @@ class TileTypeSerializer : KSerializer<TileType>
             // Decide what to do depending on the mode value
             return when (mode)
             {
+                TileTypeMode.VariedSeparate ->
+                {
+                    // Try to parse varied glyph entries
+                    if(!root.containsKey("varied_glyphs"))
+                        throw RuntimeException("missing \"varied_glyphs\" entry")
+
+                    if(!root.containsKey("varied_colors"))
+                        throw RuntimeException("missing \"varied_colors\" entry")
+
+                    // Retrieve JSON entries for both the glyphs and the colors
+                    val glyphsEntry = root.getArray("varied_glyphs")
+                    val colorsEntry = root.getArray("varied_colors")
+
+                    // Parse them
+                    val glyphs = Json.nonstrict.parse(WeightedGlyphListSerializer(), glyphsEntry.toString())
+                    val colors = Json.nonstrict.parse(WeightedColorListSerializer(), colorsEntry.toString())
+
+                    TileType(mode, variedGlyphs = glyphs, variedColors = colors)
+                }
                 TileTypeMode.NoDraw ->
                 {
                     // No further data is needed.
