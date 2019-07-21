@@ -14,13 +14,15 @@ import java.util.*
  * @param mapTemplateIds Resource IDs describing the different map template layers
  * @property treeIds Resource IDs describing the tree data set
  * @property decorationIds Resource IDs describing the decorations data set
+ * @property waterIds Resource IDs describing the map tile data set
  */
 class BiomeDataSet(
         val resources: ResourceProvider,
         val biomeConfigId: Optional<String>,
         mapInfoId: String, mapTemplateIds: List<String>,
         val treeIds: Optional<TreeDataSetIds> = Optional.empty(),
-        val decorationIds: Optional<DecorationDataSetIds> = Optional.empty()
+        val decorationIds: Optional<DecorationDataSetIds> = Optional.empty(),
+        val waterIds: Optional<WaterDataSetIds> = Optional.empty()
 )
 {
     /**
@@ -50,6 +52,12 @@ class BiomeDataSet(
         if (decorationIds.isPresent)
         {
             DecorationDataSet(this.resources, decorationIds.get()).apply(simulation)
+        }
+
+        // Generate water tiles if requested
+        if (waterIds.isPresent)
+        {
+            WaterDataSet(this.resources, waterIds.get()).apply(simulation)
         }
     }
 }

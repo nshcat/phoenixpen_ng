@@ -20,7 +20,7 @@ data class DecorationDataSetIds(val keyId: String, val templateIds: List<String>
 class DecorationDataSet(resources: ResourceProvider, ids: DecorationDataSetIds)
 {
     /**
-     * The decoration key used to translate colours in the biome template into actual tree types
+     * The decoration key used to translate colours in the biome template into actual decoration structure types
      */
     val decorationKey: TypeKey = Json.indented.parse(
             (Color.serializer()).to(TypeKeyEntry.serializer()).map,
