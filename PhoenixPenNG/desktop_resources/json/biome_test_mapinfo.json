@@ -4,6 +4,14 @@
     "#FFFFFF" : {
       "material": "grass",
       "cell_type": "Ground"
+    },
+    "#EEEEEE" : {
+      "material": "stone",
+      "cell_type": "Solid"
+    },
+    "#0000FF" : {
+      "material": "water",
+      "cell_type": "Ground"
     }
   }
 }
