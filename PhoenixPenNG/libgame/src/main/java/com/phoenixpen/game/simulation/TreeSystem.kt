@@ -20,62 +20,44 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
     enum class TreeSystemState
     {
         /**
-         * It is spring
+         * Just normal, green leaves. Ever-green trees will mostly stay in this state.
+         * This state can also lead to different states depending on the season:
+         *  - If it is autumn, leaves can brown
+         *  - If it is spring, the flowers of the trees can begin to bloom
+         *  - If in summer, fruit will start to grow
+         *  - If in summer, dropped flowers will disappear
          */
-        Spring,
+        // TODO:
+        // - clean up dropped flowers if in summer (if list of dropped flowers is not empty)
+        Leaves,
 
         /**
-         * It is summer
+         * Trees are in bloom. Trees that do not support blooming will just stay green.
          */
-        Summer,
+        InBloom,
 
         /**
-         * Leaves are changing in a normal way. This state is used between each season, except
-         * between autumn and winter.
+         * Tree is bearing fruit
          */
-        ChangingLeaves,
+        BearingFruit,
 
         /**
-         * It is autumn, but the trees are not yet dropping their leaves
+         * Leaves are autumnal colours. This state also has to clean up dropped fruit after a while.
+         * It also has to drop the leaves after a while.
          */
-        Autumn,
+        AutumnalLeaves,
 
         /**
-         * Trees are in the progress of dropping their leaves
+         * Leaves have been dropped. Has to clean up dropped leaves a short while after winter
+         * started.
          */
-        AutumnDroppingLeaves,
-
-        /**
-         * All leaves have been dropped and are present as a covering on the ground.
-         */
-        AutumnDroppedLeaves,
-
-        /**
-         * The system is removing all dropped leaves
-         */
-        RemovingDroppedLeaves,
-
-        /**
-         * When entering winter, all dropped leaves are removed
-         */
-        Winter
+        Barren
     }
-
-    /**
-     * The current season
-     */
-    private var currentSeason = Season.Spring
-
-    /**
-     * The currently "active" leaf state. This means this is the leaf state all leaves get assigned
-     * to while in [TreeSystemState.ChangingLeaves] state.
-     */
-    private var currentLeafState = LeafState.Normal
 
     /**
      * The current state this simulation system is in
      */
-    private var currentState: TreeSystemState = TreeSystemState.Spring
+    private var currentState: TreeSystemState = TreeSystemState.Leaves
 
     /**
      * Collection of all trees currently present in the game world
@@ -86,6 +68,21 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
      * Collection of all leaf coverings
      */
     private val coverings = LinkedList<Covering>()
+
+    /**
+     * Collection of all dropped fruit coverings
+     */
+    private val droppedFruit = LinkedList<Covering>()
+
+    /**
+     * Collection of all dropped flower coverings
+     */
+    private val droppedFlowers = LinkedList<Covering>()
+
+    /**
+     * Collection of all flower coverings on trees
+     */
+    private val flowersOnTrees = LinkedList<Covering>()
 
     /**
      * Class that manages all the tree part type classes
@@ -108,14 +105,9 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
     private val leafStructures = ArrayList<TreePart>()
 
     /**
-     * A collection containing all the leaf parts that need to still drop their leaves
+     * Transition used to implement tree changes
      */
-    private val leavesToModify = LinkedList<TreePart>()
-
-    /**
-     * Animation used to make changing leaves more appealing
-     */
-    private val modificationAnim = ModificationAnimation(0.05, 1)
+    private var transition = Optional.empty<TreeTransition>()
 
     /**
      * Initialize all the type class managers present in this system
@@ -203,7 +195,7 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
                         val pos = Position3D(topLeft.x + ix, topLeft.y + dy, topLeft.z + iz)
 
                         // Create tree part
-                        val part = TreePart.create(treePartType, pos)
+                        val part = TreePart.create(treePartType, pos, tree)
 
                         // Save in tree object
                         tree.structures.add(part)
@@ -227,7 +219,15 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
      */
     override fun coverings(): Collection<Covering>
     {
-        return this.coverings
+        // Array list to store all the coverings
+        val result = ArrayList<Covering>()
+
+        result.addAll(this.coverings)
+        result.addAll(this.droppedFruit)
+        result.addAll(this.droppedFlowers)
+        result.addAll(this.flowersOnTrees)
+
+        return result
     }
 
     /**
@@ -242,236 +242,116 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
             for(part in tree.structures)
                 part.update(elapsedTicks)
 
+        // If a transition is currently active, we _only_ do that. This allows transitions to
+        // define the "next" state right when they start, since we ignore any active state when
+        // a transition is currently active.
+        if(this.transition.isPresent)
+        {
+            // Retrieve transition instance
+            val currentTransition = this.transition.get()
+
+            // If the transition is finished, we then just go on reacting to the current state,
+            // since the "new" state was already set when the transition was activated.
+            if(!currentTransition.isDone())
+            {
+                // Update transition
+                currentTransition.update(elapsedTicks)
+
+                // Do _not_ handle current state further
+                return
+            }
+            else
+            {
+                // If it is done, replace optional instance with empty value
+                this.transition = Optional.empty()
+
+                // We do _not_ return here, since we now want to react to the current state
+            }
+        }
+
         // Switch over current state
         when(this.currentState)
         {
-            TreeSystemState.ChangingLeaves ->
+            // In the [InBloom] state we only have to check for the end of the spring in order to
+            // drop the flowers.
+            TreeSystemState.InBloom ->
             {
-                // Check if we are done
-                if(!this.modificationAnim.isActive)
-                {
-                    // Determine which state to switch to
-                    this.currentState = when(this.currentSeason)
-                    {
-                        Season.Spring -> TreeSystemState.Spring
-                        Season.Summer -> TreeSystemState.Summer
-                        Season.Autumn -> TreeSystemState.Autumn
-                        else -> throw IllegalStateException("ChangingLeaves state cant be used between autumn and winter")
-                    }
-                }
-                else
-                {
-                    // Otherwise perform animation
-                    val amount = this.modificationAnim.update(elapsedTicks)
-
-                    val partsToModify = this.leavesToModify.take(amount)
-
-                    // Update the leaf state in all parts that have to modified
-                    for(part in partsToModify)
-                    {
-                        part.leafState = this.currentLeafState
-                    }
-
-                    // Remove modified leaves
-                    for(ix in 1 .. amount)
-                        this.leavesToModify.removeFirst()
-                }
-            }
-            TreeSystemState.Spring ->
-            {
-                // Check if its summer yet
+                // If the tree is currently in bloom, we have to wait until the summer to drop the
+                // flowers
                 if(this.simulation.seasonSystem.currentSeason == Season.Summer)
                 {
-                    // Set current season to summer
-                    this.currentSeason = Season.Summer
+                    this.transition = Optional.of(
+                            CoveringDropTransition(
+                                    this.simulation, this.droppedFlowers, LeafState.Normal,
+                                    { x -> x.tree.type.dropFlowerCoveringType },
+                                    true,
+                                    this.flowersOnTrees,
+                                    this.leafStructures.filter { x -> x.tree.type.doesBloom }
+                            )
+                    )
 
-                    // Advance state to changing leaves
-                    this.currentState = TreeSystemState.Summer
+                    // New state is normal leaves
+                    this.currentState = TreeSystemState.Leaves
                 }
             }
-            TreeSystemState.Summer ->
+
+            // In autumn we have to drop leaves and clean-up dropped fruit
+            TreeSystemState.AutumnalLeaves ->
             {
-                // Check if its autumn yet
-                if(this.simulation.seasonSystem.currentSeason == Season.Autumn)
+                // Do we still have to clean up dropped fruit and have actually reached the start
+                // time for that?
+                if(this.droppedFruit.isNotEmpty()
+                    && this.simulation.seasonSystem.seasonProgress() >= this.simulation.seasonConfiguration.fruitCleanupStart)
                 {
-                    // Advance season to autumn
-                    this.currentSeason = Season.Autumn
+                    // Create animation to clean up coverings
+                    this.transition = Optional.of(CoveringCleanupTransition(this.droppedFruit))
+                }
 
-                    // New leaf state is autumnal
-                    this.currentLeafState = LeafState.Autumnal
+                // Are we supposed to drop leaves?
+                else if(this.simulation.seasonSystem.seasonProgress() >= this.simulation.seasonConfiguration.leafDropStart)
+                {
+                    // Create leaf drop animation
+                    this.transition = Optional.of(
+                            CoveringDropTransition(
+                                    this.simulation, this.coverings, LeafState.Dropped,
+                                    { x -> x.type.dropCoveringType },
+                                    false,
+                                    listOf<Covering>().toMutableList(),
+                                    this.leafStructures.filter { x -> x.dropsLeaves() }
+                            )
+                    )
 
-                    // Advance state to changing leaves
-                    this.currentState = TreeSystemState.ChangingLeaves
-
-                    // Prepare animation
-                    this.leavesToModify.clear()
-                    for(part in this.leafStructures)
-                        this.leavesToModify.add(part)
-
-                    this.leavesToModify.shuffle()
-
-                    this.modificationAnim.reset(this.leavesToModify.size)
+                    // Switch to barren state
+                    this.currentState = TreeSystemState.Barren
                 }
             }
-            TreeSystemState.Autumn ->
+
+            // When leaves are dropped, we have to both clean up the dropped leaves and wait for the
+            // end of winter in order to regrow the leaves.
+            TreeSystemState.Barren ->
             {
-                // We do nothing in autumn, until the given point in time is reached where we
-                // are supposed to start dropping the leaves.
-                if(this.simulation.seasonSystem.seasonProgress() >= this.simulation.seasonConfiguration.leafDropStart)
+                // When its winter and there are still dropped leaves and the season has changed to winter,
+                // we need to clean them up
+                if(this.coverings.isNotEmpty() &&
+                    this.simulation.seasonSystem.currentSeason == Season.Winter)
                 {
-                    // Switch to leaf dropping state
-                    this.currentState = TreeSystemState.AutumnDroppingLeaves
-
-                    // New leaf state is dropped
-                    this.currentLeafState = LeafState.Dropped
-
-                    // Collect all tree parts that need to drop leaves
-                    this.leavesToModify.clear()
-                    for(part in this.leafStructures)
-                    {
-                        if(part.type.dropsLeaves)
-                        {
-                            this.leavesToModify.add(part)
-                        }
-                    }
-
-                    // Shuffle for nice random effect
-                    this.leavesToModify.shuffle()
-
-                    // Reset animation
-                    this.modificationAnim.reset(this.leavesToModify.size)
+                    // Create animation to clean up the leaf coverings
+                    this.transition = Optional.of(CoveringCleanupTransition(this.coverings))
                 }
-            }
-            TreeSystemState.AutumnDroppingLeaves ->
-            {
-                // Check if we are done with dropping leaves
-                if(!this.modificationAnim.isActive)
+
+                // If we have reached spring we need to regrow all leaves
+                else if(this.simulation.seasonSystem.currentSeason == Season.Spring)
                 {
-                    // Switch to next state
-                    this.currentState = TreeSystemState.AutumnDroppedLeaves
+                    // Create a transition that changes the state of all leaf structures to normal
+                    this.transition = Optional.of(LeafStateTransition(LeafState.Normal, this.leafStructures))
+
+                    // Switch to new state
+                    this.currentState = TreeSystemState.Leaves
                 }
-                else
-                {
-                    // Retrieve amount of leave structures to drop
-                    val amount = this.modificationAnim.update(elapsedTicks)
 
-                    // Retrieve those structures
-                    val parts = this.leavesToModify.take(amount)
-
-                    // Drop the leaves
-                    for(part in parts)
-                        this.dropLeaves(part)
-
-                    // Remove from collection
-                    for(i in 1 .. amount)
-                        this.leavesToModify.removeFirst()
-                }
-            }
-            TreeSystemState.AutumnDroppedLeaves ->
-            {
-                // Wait for winter
-                if(this.simulation.seasonSystem.currentSeason == Season.Winter)
-                {
-                    // Begin removing dropped leaves
-                    this.currentState = TreeSystemState.RemovingDroppedLeaves
-
-                    // Set up animation
-                    this.coverings.shuffle()
-
-                    this.modificationAnim.reset(this.coverings.size)
-                }
-            }
-            TreeSystemState.RemovingDroppedLeaves ->
-            {
-                // Are we done?
-                if(!this.modificationAnim.isActive)
-                    this.currentState = TreeSystemState.Winter
-                else
-                {
-                    val amount = this.modificationAnim.update(elapsedTicks)
-
-                    for(ix in 1 .. amount)
-                        this.coverings.removeFirst()
-                }
-            }
-            TreeSystemState.Winter ->
-            {
-                // Wait for spring
-                if(this.simulation.seasonSystem.currentSeason == Season.Spring)
-                {
-                    // Advance season to spring
-                    this.currentSeason = Season.Spring
-
-                    // New leaf state is normal
-                    this.currentLeafState = LeafState.Normal
-
-                    // Advance state to changing leaves
-                    this.currentState = TreeSystemState.ChangingLeaves
-
-                    // Prepare animation
-                    this.leavesToModify.clear()
-                    for(part in this.leafStructures)
-                        this.leavesToModify.add(part)
-
-                    this.leavesToModify.shuffle()
-
-                    this.modificationAnim.reset(this.leavesToModify.size)
-                }
             }
         }
     }
 
-    /**
-     * Try to drop the leaves for given tree part
-     *
-     * @param part Tree part to drop leaves for
-     */
-    private fun dropLeaves(part: TreePart)
-    {
-        // Retrieve covering type to use for dropped leaves
-        val coveringTypeId = part.type.dropCoveringType
 
-        // Check if it was given
-        if(coveringTypeId.isEmpty())
-        {
-            GlobalLogger.e("TreeSystem", "Tree part type \"${part.type.basicData.identifier}\" is marked as dropping leaves but has no covering type assigned")
-            return
-        }
-
-        // Otherwise retrieve the actual covering type
-        val coveringType = this.simulation.coveringManager.lookupCovering(coveringTypeId)
-
-        // Retrieve map instance
-        val map = this.simulation.map
-
-        // It could be that the given tree part is outside of map bounds. Check for that
-        if(!map.isInBounds(part.position))
-            return
-
-        // Set leaf state to dropped
-        part.leafState = LeafState.Dropped
-
-        // "Raycast" downwards to find ground
-        for(iy in part.position.y downTo 0)
-        {
-            // Calculate position
-            val position = Position3D(part.position.x, iy, part.position.z)
-
-            // Retrieve map cell
-            val mapCell = map.cellAt(position)
-
-            // Check if its ground
-            if(mapCell.state == MapCellState.Ground)
-            {
-                // Is there a structure on the ground?
-                if(map.getStructureAtExact(position, true).isPresent)
-                    break
-
-                // Spawn covering
-                this.coverings.add(Covering.create(coveringType, position))
-
-                break
-            }
-        }
-    }
 }

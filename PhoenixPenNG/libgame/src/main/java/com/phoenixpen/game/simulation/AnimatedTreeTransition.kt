@@ -16,8 +16,8 @@ import kotlin.math.min
  * @param shuffleObjects Whether order of the given objects should be randomized before starting the animation
  */
 abstract class AnimatedTreeTransition<T>(
-        protected val objectPercentage: Double,
-        protected val animationSpeed: Int,
+        protected val objectPercentage: Double = 0.05,
+        protected val animationSpeed: Int = 1,
         objectCollection: Collection<T>,
         shuffleObjects: Boolean = true
 ): TreeTransition
