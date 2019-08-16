@@ -1,6 +1,6 @@
 {
-  "spring_duration": 100,
-  "summer_duration": 100,
-  "autumn_duration": 100,
-  "winter_duration": 100
+  "spring_duration": 200,
+  "summer_duration": 200,
+  "autumn_duration": 200,
+  "winter_duration": 200
 }

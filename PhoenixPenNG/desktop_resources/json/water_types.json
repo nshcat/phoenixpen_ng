@@ -4,7 +4,7 @@
       "identifier": "flowing_water",
       "display_name": "flowing water",
       "description": "flowing water",
-      "pathing_type": "Water",
+      "pathing_type": "None",
       "is_stainable": false
     },
     "body_type": "River",
@@ -26,7 +26,7 @@
       "identifier": "still_water",
       "display_name": "still water",
       "description": "still water",
-      "pathing_type": "Water",
+      "pathing_type": "None",
       "is_stainable": false
     },
     "tile": {

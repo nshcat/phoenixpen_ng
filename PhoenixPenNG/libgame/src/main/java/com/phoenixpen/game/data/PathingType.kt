@@ -23,5 +23,11 @@ enum class PathingType
     /**
      * Blocks all pathing
      */
-    FullBlocking
+    FullBlocking,
+
+    /**
+     * Is ignored by path finding. Is used for special structures, such as water tiles, which use a underlying
+     * map tile type to set the pathing mode.
+     */
+    None
 }
