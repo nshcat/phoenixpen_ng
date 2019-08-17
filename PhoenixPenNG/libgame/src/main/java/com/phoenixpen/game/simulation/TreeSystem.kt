@@ -65,7 +65,7 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
     private val trees = ArrayList<Tree>()
 
     /**
-     * Collection of all leaf coverings
+     * Collection of all dropped leaf coverings
      */
     private val coverings = LinkedList<Covering>()
 
@@ -83,6 +83,11 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
      * Collection of all flower coverings on trees
      */
     private val flowersOnTrees = LinkedList<Covering>()
+
+    /**
+     * Collection of all fruit coverings on trees
+     */
+    private val fruitOnTrees = LinkedList<Covering>()
 
     /**
      * Class that manages all the tree part type classes
@@ -105,7 +110,7 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
     private val leafStructures = ArrayList<TreePart>()
 
     /**
-     * Transition used to implement tree changes
+     * Currently active transition used to implement tree changes, if any
      */
     private var transition = Optional.empty<TreeTransition>()
 
@@ -323,6 +328,30 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
 
                     // Switch to barren state
                     this.currentState = TreeSystemState.Barren
+                }
+            }
+
+            // When the trees are having fruit, we need to wait to drop them.
+            TreeSystemState.BearingFruit ->
+            {
+                // If we did not drop the fruit yet and we reached the threshold, drop them
+                if(this.fruitOnTrees.isNotEmpty() &&
+                    this.simulation.seasonSystem.seasonProgress() >= this.simulation.seasonConfiguration.fruitDropStart)
+                {
+                    // Create transition that both drops the fruit and removes the fruit coverings
+                    // on the trees
+                    this.transition = Optional.of(
+                        CoveringDropTransition(
+                                this.simulation, this.droppedFruit, LeafState.Normal,
+                                { x -> x.tree.type.dropFruitCoveringType },
+                                true,
+                                this.fruitOnTrees,
+                                this.leafStructures.filter { x -> x.tree.type.hasFruit }
+                        )
+                    )
+
+                    // The trees are in default state after this
+                    this.currentState = TreeSystemState.Leaves
                 }
             }
 
