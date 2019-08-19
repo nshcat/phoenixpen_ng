@@ -284,11 +284,8 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
                 if(this.simulation.seasonSystem.currentSeason == Season.Summer)
                 {
                     this.transition = Optional.of(
-                            CoveringDropTransition(
-                                    this.simulation, this.droppedFlowers, LeafState.Normal,
-                                    { x -> x.tree.type.dropFlowerCoveringType },
-                                    true,
-                                    this.flowersOnTrees,
+                            FlowerDropTransition(
+                                    this.simulation, this.droppedFlowers, this.flowersOnTrees,
                                     this.leafStructures.filter { x -> x.tree.type.doesBloom }
                             )
                     )
@@ -315,13 +312,7 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
                 {
                     // Create leaf drop animation
                     this.transition = Optional.of(
-                            CoveringDropTransition(
-                                    this.simulation, this.coverings, LeafState.Dropped,
-                                    { x -> x.type.dropCoveringType },
-                                    false,
-                                    listOf<Covering>().toMutableList(),
-                                    this.leafStructures.filter { x -> x.dropsLeaves() }
-                            )
+                            LeafDropTransition(this.simulation, this.coverings, this.leafStructures.filter { x -> x.dropsLeaves() })
                     )
 
                     // Switch to barren state
@@ -339,13 +330,10 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
                     // Create transition that both drops the fruit and removes the fruit coverings
                     // on the trees
                     this.transition = Optional.of(
-                        CoveringDropTransition(
-                                this.simulation, this.droppedFruit, LeafState.Normal,
-                                { x -> x.tree.type.dropFruitCoveringType },
-                                true,
-                                this.fruitOnTrees,
-                                this.leafStructures.filter { x -> x.tree.type.hasFruit }
-                        )
+                            FlowerDropTransition(
+                                    this.simulation, this.droppedFruit, this.fruitOnTrees,
+                                    this.leafStructures.filter { x -> x.tree.type.hasFruit }
+                            )
                     )
 
                     // The trees are in default state after this
