@@ -1,35 +1,26 @@
 package com.phoenixpen.game.input
 
+
 /**
- * Interface for classes that emit input events for the game logic to process and react on
+ * Interface for classes that provide raw input to the game.
  */
 interface InputProvider
 {
     /**
-     * Check if there currently are any pending events
+     * Check whether given key is currently pressed.
      *
-     * @return Flag indicating whether there currently are any pending events
+     * @param key Key to check
+     * @return Flag indicating whether key is currently pressed
      */
-    fun hasEvents(): Boolean
+    fun isKeyDown(key: Key): Boolean
 
     /**
-     * Retrieve pending events, but do not consume them
+     * Check whether given modifier was pressed as part of a key stroke
      *
-     * @return Collection of all currently pending events
+     * @param modifier Key modifer to check
+     * @return Flag indicating whether modifer key was pressed
      */
-    fun peekEvents(): Iterable<InputEvent>
+    fun isKeyModifierDown(modifier: Modifier): Boolean
 
-    /**
-     * Retrieve pending events, consuming them in the process
-     *
-     * @return Collection of all currently pending events
-     */
-    fun consumeEvents(): Iterable<InputEvent>
-
-    /**
-     * Register given input event as a pending event.
-     *
-     * @param event Event to register
-     */
-    fun queueEvent(event: InputEvent)
+    // TODO hasTouchInput, getTouchInputs ... mouse...
 }
