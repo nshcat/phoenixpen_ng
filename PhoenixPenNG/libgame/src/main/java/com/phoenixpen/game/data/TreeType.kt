@@ -14,6 +14,9 @@ import kotlinx.serialization.Serializable
  * @property doesBloom Whether this tree part blooms in spring
  * @property flowerCoveringType The covering type to use for blooming leaves
  * @property dropFlowerCoveringType The covering type to use for dropped bloom flowers
+ * @property hasFruit Whether this tree will develop fruit in its yearly life cycle
+ * @property fruitCoveringType The covering type used to visualize fruit on the tree
+ * @property dropFlowerCoveringType The covering type used to visualize dropped fruit
  */
 @Serializable
 data class TreeType(
@@ -24,7 +27,10 @@ data class TreeType(
         @SerialName("structure_types") val structureTypes: List<String>,
         @SerialName("does_bloom") val doesBloom: Boolean = false,
         @SerialName("flowers") val flowerCoveringType: String = "",
-        @SerialName("dropped_flowers") val dropFlowerCoveringType: String = ""
+        @SerialName("dropped_flowers") val dropFlowerCoveringType: String = "",
+        @SerialName("has_fruit") val hasFruit: Boolean = false,
+        @SerialName("fruits") val fruitCoveringType: String = "",
+        @SerialName("dropped_fruits") val dropFruitCoveringType: String = ""
 )
 {
     companion object

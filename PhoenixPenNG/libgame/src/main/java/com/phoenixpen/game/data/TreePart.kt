@@ -14,13 +14,15 @@ import com.phoenixpen.game.simulation.LeafState
  * @property tileInstance Tile instance describing how to draw this tree part
  * @property leafTileInstance Leaf tile instance used if this part is a leaf
  * @property leafState Current leaf state, only used if this tree part is a leaf
+ * @property tree The tree this part belongs to
  */
 class TreePart(
         val type: TreePartType,
         position: Position3D,
         val tileInstance: TileInstance,
         val leafTileInstance: LeafTileInstance,
-        var leafState: LeafState
+        var leafState: LeafState,
+        var tree: Tree
 )
     : Structure(type.basicData, position), Updateable
 {
@@ -88,9 +90,9 @@ class TreePart(
          * @return New tree part instance
          *
          */
-        fun create(type: TreePartType, pos: Position3D): TreePart
+        fun create(type: TreePartType, pos: Position3D, tree: Tree): TreePart
         {
-            return TreePart(type, pos, type.tileType.createInstance(), type.leafTileType.createInstance(), LeafState.Normal)
+            return TreePart(type, pos, type.tileType.createInstance(), type.leafTileType.createInstance(), LeafState.Normal, tree)
         }
     }
 }
