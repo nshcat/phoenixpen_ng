@@ -16,6 +16,7 @@ import kotlinx.serialization.Serializable
  * @property dropCoveringType The covering type identifier to use when dropping leaves
  * @property dropsLeaves Whether this tree part drops leaves
  * @property leafTileType Combined tile types for different leaf states. Only used if [isLeaves] is true.
+ * @property isEvergreen Whether this leaf type is evergreen, meaning it doesnt brown in autumn
  */
 @Serializable
 data class TreePartType(
@@ -24,7 +25,8 @@ data class TreePartType(
         @SerialName("is_leaves") val isLeaves: Boolean = false,
         @SerialName("leaf_tiles") val leafTileType: LeafTileType = LeafTileType(),
         @SerialName("drops_leaves") val dropsLeaves: Boolean = false,
-        @SerialName("dropped_leaves") val dropCoveringType: String = ""
+        @SerialName("dropped_leaves") val dropCoveringType: String = "",
+        @SerialName("is_evergreen") val isEvergreen: Boolean = false
 )
 {
     companion object

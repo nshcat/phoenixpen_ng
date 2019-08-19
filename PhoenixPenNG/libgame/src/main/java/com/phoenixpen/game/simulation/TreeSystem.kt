@@ -2,6 +2,7 @@ package com.phoenixpen.game.simulation
 
 import com.phoenixpen.game.ascii.*
 import com.phoenixpen.game.data.*
+import com.phoenixpen.game.logging.GlobalLogger
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -25,8 +26,6 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
          *  - If in summer, fruit will start to grow
          *  - If in summer, dropped flowers will disappear
          */
-        // TODO:
-        // - clean up dropped flowers if in summer (if list of dropped flowers is not empty)
         Leaves,
 
         /**
@@ -269,12 +268,76 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
                 this.transition = Optional.empty()
 
                 // We do _not_ return here, since we now want to react to the current state
+                GlobalLogger.d("TreeSystem", "Transition is done")
             }
         }
 
         // Switch over current state
         when(this.currentState)
         {
+            // In the [Leaves] state the tree has "normal" green leaves.
+            TreeSystemState.Leaves ->
+            {
+                // In spring, some trees will bloom after a while.
+                if(this.simulation.seasonSystem.currentSeason == Season.Spring
+                        && this.simulation.seasonSystem.seasonProgress() >= this.simulation.seasonConfiguration.bloomStart)
+                {
+                    // Create a transition that spawns blooming flowers on all leaf tree parts that support it
+                    this.transition = Optional.of(
+                            SpawnFlowersTransition(
+                                    this.simulation, this.flowersOnTrees,
+                                    this.leafStructures.filter { x -> x.tree.type.doesBloom }
+                            )
+                    )
+
+                    this.currentState = TreeSystemState.InBloom
+
+                    GlobalLogger.d("TreeSystem", "Switched to InBloom")
+                }
+
+                // In summer, some trees will bear fruit after a while
+                else if(this.simulation.seasonSystem.currentSeason == Season.Summer
+                        && this.simulation.seasonSystem.seasonProgress() >= this.simulation.seasonConfiguration.fruitOnTreeStart
+                        && this.simulation.seasonSystem.seasonProgress() < this.simulation.seasonConfiguration.fruitDropStart)
+                {
+                    // Create a transition that spawns fruit on all leaf tree parts that support it
+                    this.transition = Optional.of(
+                            SpawnFruitTransition(
+                                    this.simulation, this.fruitOnTrees,
+                                    this.leafStructures.filter { x -> x.tree.type.hasFruit }
+                            )
+                    )
+
+                    this.currentState = TreeSystemState.BearingFruit
+
+                    GlobalLogger.d("TreeSystem", "Switched to BearingFruit")
+                }
+
+                // Trees change to brown leaves in autumn
+                else if(this.simulation.seasonSystem.currentSeason == Season.Autumn)
+                {
+                    // Create a transition that turns all non-evergreen leaves brown
+                    this.transition = Optional.of(
+                            LeafStateTransition(LeafState.Autumnal, this.leafStructures.filter { x -> !x.type.isEvergreen })
+                    )
+
+                    this.currentState = TreeSystemState.AutumnalLeaves
+
+                    GlobalLogger.d("TreeSystem", "Switched to AutumnalLeaves")
+                }
+
+                // In summer, dropped flowers need to be cleaned up after a while
+                else if(this.simulation.seasonSystem.currentSeason == Season.Summer
+                        && this.droppedFlowers.isNotEmpty()
+                        && this.simulation.seasonSystem.seasonProgress() >= this.simulation.seasonConfiguration.flowerCleanupStart)
+                {
+                    // Create a transition that cleans up dropped fruit
+                    this.transition = Optional.of(CoveringCleanupTransition(this.droppedFlowers))
+
+                    GlobalLogger.d("TreeSystem", "Started cleanup of dropped flowers")
+                }
+            }
+
             // In the [InBloom] state we only have to check for the end of the spring in order to
             // drop the flowers.
             TreeSystemState.InBloom ->
@@ -292,6 +355,8 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
 
                     // New state is normal leaves
                     this.currentState = TreeSystemState.Leaves
+
+                    GlobalLogger.d("TreeSystem", "Switched from InBloom to Leaves")
                 }
             }
 
@@ -305,6 +370,8 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
                 {
                     // Create animation to clean up coverings
                     this.transition = Optional.of(CoveringCleanupTransition(this.droppedFruit))
+
+                    GlobalLogger.d("TreeSystem", "Started cleanup of dropped fruit")
                 }
 
                 // Are we supposed to drop leaves?
@@ -317,6 +384,8 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
 
                     // Switch to barren state
                     this.currentState = TreeSystemState.Barren
+
+                    GlobalLogger.d("TreeSystem", "Switched to barren")
                 }
             }
 
@@ -324,8 +393,7 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
             TreeSystemState.BearingFruit ->
             {
                 // If we did not drop the fruit yet and we reached the threshold, drop them
-                if(this.fruitOnTrees.isNotEmpty() &&
-                    this.simulation.seasonSystem.seasonProgress() >= this.simulation.seasonConfiguration.fruitDropStart)
+                if(this.simulation.seasonSystem.seasonProgress() >= this.simulation.seasonConfiguration.fruitDropStart)
                 {
                     // Create transition that both drops the fruit and removes the fruit coverings
                     // on the trees
@@ -338,6 +406,8 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
 
                     // The trees are in default state after this
                     this.currentState = TreeSystemState.Leaves
+
+                    GlobalLogger.d("TreeSystem", "Switched from BearingFruit to Leaves")
                 }
             }
 
@@ -345,13 +415,14 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
             // end of winter in order to regrow the leaves.
             TreeSystemState.Barren ->
             {
-                // When its winter and there are still dropped leaves and the season has changed to winter,
-                // we need to clean them up
+                // When its winter and there are still dropped leaves, we need to clean them up
                 if(this.coverings.isNotEmpty() &&
                     this.simulation.seasonSystem.currentSeason == Season.Winter)
                 {
                     // Create animation to clean up the leaf coverings
                     this.transition = Optional.of(CoveringCleanupTransition(this.coverings))
+
+                    GlobalLogger.d("TreeSystem", "Started cleanup of dropped leaves")
                 }
 
                 // If we have reached spring we need to regrow all leaves
@@ -362,8 +433,9 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
 
                     // Switch to new state
                     this.currentState = TreeSystemState.Leaves
-                }
 
+                    GlobalLogger.d("TreeSystem", "Switched from Barren to Leaves")
+                }
             }
         }
     }

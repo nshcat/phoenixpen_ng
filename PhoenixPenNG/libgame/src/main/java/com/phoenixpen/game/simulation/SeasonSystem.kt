@@ -63,8 +63,8 @@ class SeasonSystem(simulation: Simulation): System(simulation)
         if(this.seasonCounter.update(elapsedTicks) > 0)
             this.advanceSeason()
 
-        if(this.logCounter.update(elapsedTicks) > 0)
-            GlobalLogger.d("SeasonSystem", "Current season progress: ${(this.seasonProgress()*100).format(1)}%")
+        //if(this.logCounter.update(elapsedTicks) > 0)
+         //   GlobalLogger.d("SeasonSystem", "Current season progress: ${(this.seasonProgress()*100).format(1)}%")
     }
 
     /**
