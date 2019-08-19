@@ -16,6 +16,7 @@ import kotlinx.serialization.Serializable
  * @property flowerCleanupStart Percentage of summer when dropped flowers are cleaned up
  * @property fruitOnTreeStart Percentage of summer when fruit spawns on trees
  * @property fruitDropStart Percentage of summer when fruit is dropped
+ * @property leafCleanupStart Percentage of autumn when dropped leaves are cleaned up
  * @property fruitCleanupStart Percentage of autumn when dropped fruit is removed
  */
 @Serializable
@@ -24,14 +25,14 @@ data class SeasonConfiguration(
         @SerialName("summer_duration") val summerDuration: Int = 1200,
         @SerialName("autumn_duration") val autumnDuration: Int = 1200,
         @SerialName("winter_duration") val winterDuration: Int = 1200,
-        @SerialName("leaf_drop_start") val leafDropStart: Double = 0.7,
+        @SerialName("leaf_drop_start") val leafDropStart: Double = 0.5,
+        @SerialName("leaf_cleanup_start") val leafCleanupStart: Double = 0.9,
         @SerialName("bloom_start") val bloomStart: Double = 0.75,
         @SerialName("flower_cleanup_start") val flowerCleanupStart: Double = 0.10,
         @SerialName("fruit_start") val fruitOnTreeStart: Double = 0.65,
         @SerialName("drop_fruit_start") val fruitDropStart: Double = 0.85,
         @SerialName("dropped_fruit_cleanup_start") val fruitCleanupStart: Double = 0.85
-
-        )
+)
 {
     /**
      * Retrieve season duration for given season.

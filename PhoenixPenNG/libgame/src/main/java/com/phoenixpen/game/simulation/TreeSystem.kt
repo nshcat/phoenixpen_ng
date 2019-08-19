@@ -415,9 +415,9 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
             // end of winter in order to regrow the leaves.
             TreeSystemState.Barren ->
             {
-                // When its winter and there are still dropped leaves, we need to clean them up
+                // If there are still dropped leaves and the threshold is reached, clean them up
                 if(this.coverings.isNotEmpty() &&
-                    this.simulation.seasonSystem.currentSeason == Season.Winter)
+                    this.simulation.seasonSystem.seasonProgress() >= this.simulation.seasonConfiguration.leafCleanupStart)
                 {
                     // Create animation to clean up the leaf coverings
                     this.transition = Optional.of(CoveringCleanupTransition(this.coverings))
