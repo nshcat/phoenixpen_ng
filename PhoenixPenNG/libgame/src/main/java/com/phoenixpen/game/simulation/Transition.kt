@@ -2,9 +2,11 @@ package com.phoenixpen.game.simulation
 
 
 /**
- * An interface for processes that implemented transitions in the seasonal cycle of a tree.
+ * An interface for processes that describes transitions in the game simulation.
+ * This is a very abstract concept - what exactly a transition is will be defined by
+ * subclasses.
  */
-interface TreeTransition
+interface Transition
 {
     /**
      * Check whether this transition is completed
@@ -14,7 +16,7 @@ interface TreeTransition
     fun isDone(): Boolean
 
     /**
-     * Update tree transition based on given number of elapsed ticks
+     * Update transition based on given number of elapsed ticks
      *
      * @param elapsedTicks Number of simulation ticks elapsed since last update
      */

@@ -7,30 +7,32 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- * A tree transition that applies change in a smooth animation.
+ * An animated transition where a number of game objects are modified over time rather than instantly.
+ * This is used to implement various state transitions inside the simulation in a visually pleasing way.
  *
- * @property objectPercentage How many of the affected objectCollection should be modified in each animation frame
- * @property animationSpeed The speed of the animation -- number of ticks each frame should take
- * @param objectCollection A collection of all objectCollection to be processed by this animated transition
  * @param T Type of object that is processed by this animated transition
+ *
+ * @param objectCollection A collection of all objects to be processed by this animated transition
+ * @property objectPercentage How many of the affected objects should be modified in each animation frame
+ * @property animationSpeed The speed of the animation - number of ticks each frame should take
  * @param shuffleObjects Whether order of the given objects should be randomized before starting the animation
  */
-abstract class AnimatedTreeTransition<T>(
-        protected val objectPercentage: Double = 0.05,
-        protected val animationSpeed: Int = 1,
+abstract class AnimatedTransition<T>(
         objectCollection: Collection<T>,
+        private val objectPercentage: Double = 0.05,
+        private val animationSpeed: Int = 1,
         shuffleObjects: Boolean = true
-): TreeTransition
+): Transition
 {
     /**
      * Tick counter used to implement the animation
      */
-    protected val animationCounter = TickCounter(this.animationSpeed)
+    private val animationCounter = TickCounter(this.animationSpeed)
 
     /**
      * Number of objectCollection affected each animation frame
      */
-    protected val objectsPerFrame: Int
+    private val objectsPerFrame: Int
 
     /**
      * List of all affected objects

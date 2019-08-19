@@ -2,8 +2,6 @@ package com.phoenixpen.game.simulation
 
 import com.phoenixpen.game.ascii.*
 import com.phoenixpen.game.data.*
-import com.phoenixpen.game.logging.GlobalLogger
-import com.phoenixpen.game.map.MapCellState
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -112,7 +110,7 @@ class TreeSystem(simulation: Simulation): System(simulation), StructureHolder, C
     /**
      * Currently active transition used to implement tree changes, if any
      */
-    private var transition = Optional.empty<TreeTransition>()
+    private var transition = Optional.empty<Transition>()
 
     /**
      * Initialize all the type class managers present in this system

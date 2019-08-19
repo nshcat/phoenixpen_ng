@@ -9,8 +9,8 @@ import com.phoenixpen.game.data.TreePart
  * @property objects All affected leaf structures
  */
 class LeafStateTransition(val newState: LeafState, objects: Collection<TreePart>):
-    AnimatedTreeTransition<TreePart>(
-        objectCollection = objects
+    AnimatedTransition<TreePart>(
+            objectCollection = objects
     )
 {
     /**
