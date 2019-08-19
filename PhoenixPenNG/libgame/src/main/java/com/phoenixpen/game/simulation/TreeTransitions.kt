@@ -68,3 +68,41 @@ class FlowerDropTransition(
         return part.tree.type.dropFlowerCoveringType
     }
 }
+
+/**
+ * Animated transition used to spawn flowers on trees that are in bloom
+ */
+class SpawnFlowersTransition(
+        simulation: Simulation,
+        flowersOnTrees: MutableList<Covering>,
+        treeParts: Collection<TreePart>
+):  CoveringSpawnTransition(
+       simulation,
+        flowersOnTrees,
+        treeParts
+    )
+{
+    override fun retrieveCoveringType(part: TreePart): String
+    {
+        return part.tree.type.flowerCoveringType
+    }
+}
+
+/**
+ * Animated transition used to spawn fruit on trees
+ */
+class SpawnFruitTransition(
+        simulation: Simulation,
+        fruitOnTrees: MutableList<Covering>,
+        treeParts: Collection<TreePart>
+):  CoveringSpawnTransition(
+        simulation,
+        fruitOnTrees,
+        treeParts
+)
+{
+    override fun retrieveCoveringType(part: TreePart): String
+    {
+        return part.tree.type.fruitCoveringType
+    }
+}
