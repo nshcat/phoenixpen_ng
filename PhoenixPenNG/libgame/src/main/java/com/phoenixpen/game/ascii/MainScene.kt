@@ -6,6 +6,7 @@ import com.phoenixpen.game.simulation.Simulation
 import com.phoenixpen.game.logging.GlobalLogger
 import com.phoenixpen.game.logging.Logger
 import com.phoenixpen.game.resources.ResourceProvider
+import java.awt.Dimension
 
 /**
  * The game main scene, displaying the map and allowing interaction with the game.
@@ -53,6 +54,11 @@ class MainScene(
     private class MainSceneInputAdapter(input: InputProvider, val dimensions: ScreenDimensions):
             InputAdapter(input)
     {
+        /**
+         * Touch area for the "west" command
+         */
+        private val touchAreaWest = Rectangle.fromDimensions(ScreenDimensions(this.dimensions.width/4, this.dimensions.height))
+
         /**
          * Register input mappings
          */

@@ -6,7 +6,7 @@ package com.phoenixpen.game.ascii
  * @property topLeft The top left point of the rectangle
  * @property bottomRight The bottom right point of the rectangle
  */
-class Rectangle(val topLeft: Position, val bottomRight: Position)
+class Rectangle(var topLeft: Position, var bottomRight: Position)
 {
     /**
      * Check if a given point lies inside this rectangle
