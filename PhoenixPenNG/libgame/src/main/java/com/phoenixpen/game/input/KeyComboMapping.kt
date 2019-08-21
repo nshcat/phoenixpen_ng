@@ -94,5 +94,5 @@ abstract class KeyComboMapping(vararg components: Any): InputMapping()
      * sub classes according to the needs of the game system associated with the input adapter this
      * mapping belongs to.
      */
-    abstract fun createEvent(): InputEvent
+    protected abstract fun createEvent(): InputEvent
 }
