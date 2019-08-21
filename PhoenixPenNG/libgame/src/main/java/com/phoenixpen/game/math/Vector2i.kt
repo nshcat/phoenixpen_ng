@@ -6,7 +6,7 @@ package com.phoenixpen.game.math
  * @property x The x component of this vector
  * @property y The y component of this vector
  */
-class Vector2i(var x: Int, var y: Int)
+class Vector2i(var x: Int = 0, var y: Int = 0)
 {
     override fun equals(other: Any?): Boolean
     {
@@ -28,5 +28,31 @@ class Vector2i(var x: Int, var y: Int)
         result = prime * result + x
         result = prime * result + y
         return result
+    }
+
+    /**
+     * Additional helper instances
+     */
+    companion object
+    {
+        /**
+         * A vector describing the direction "north"
+         */
+        val north = Vector2i(0, -1)
+
+        /**
+         * A vector describing the direction "south"
+         */
+        val south = Vector2i(0, 1)
+
+        /**
+         * A vector describing the direction "west"
+         */
+        val west = Vector2i(-1, 0)
+
+        /**
+         * A vector describing the direction "east"
+         */
+        val east = Vector2i(1, 0)
     }
 }

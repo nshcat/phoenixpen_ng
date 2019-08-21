@@ -10,13 +10,15 @@ import com.phoenixpen.game.resources.ResourceProvider
  * @property resources The resource manager to retrieve game data from
  * @property input The input manager providing input events
  * @property logger The logger instance to use
- * @property dimensions The screen dimensions
+ * @property dimensions The screen dimensions, in glyphs
+ * @property dimensionsInPixels The screen dimensions, in pixels
  */
 abstract class Scene(
         protected val resources: ResourceProvider,
         protected val input: InputProvider,
         protected val logger: Logger,
-        protected val dimensions: ScreenDimensions
+        protected val dimensions: ScreenDimensions,
+        protected val dimensionsInPixels: ScreenDimensions
 )
 {
     /**

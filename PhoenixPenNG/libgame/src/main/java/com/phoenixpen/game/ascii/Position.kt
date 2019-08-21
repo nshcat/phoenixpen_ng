@@ -43,6 +43,11 @@ operator fun Position.times(factor: Float): Position
     return Position((this.x.toFloat() * factor).toInt(), (this.y.toFloat() * factor).toInt())
 }
 
+operator fun Position.times(factor: Int): Position
+{
+    return Position(this.x * factor, this.y * factor)
+}
+
 operator fun Position.div(factor: Float): Position
 {
     return Position((this.x.toFloat() / factor).toInt(), (this.y.toFloat() / factor).toInt())

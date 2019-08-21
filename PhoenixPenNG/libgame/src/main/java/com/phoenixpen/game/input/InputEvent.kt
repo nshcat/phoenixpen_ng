@@ -23,3 +23,9 @@ enum class Direction
  */
 class MapViewMoveEvent(val direction: Direction): InputEvent
 
+/**
+ * Input event containing a single enumeration value of enumeration type [E]
+ *
+ * @property value The enumeration value stored in this event
+ */
+class EnumEvent<E>(val value: E): InputEvent

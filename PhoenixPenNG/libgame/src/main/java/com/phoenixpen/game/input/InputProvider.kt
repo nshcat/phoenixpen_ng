@@ -1,35 +1,61 @@
 package com.phoenixpen.game.input
 
+
 /**
- * Interface for classes that emit input events for the game logic to process and react on
+ * Interface for classes that provide raw input to the game.
  */
 interface InputProvider
 {
     /**
-     * Check if there currently are any pending events
+     * Check whether given key is currently pressed.
      *
-     * @return Flag indicating whether there currently are any pending events
+     * @param key Key to check
+     * @return Flag indicating whether key is currently pressed
      */
-    fun hasEvents(): Boolean
+    fun isKeyDown(key: Key): Boolean
 
     /**
-     * Retrieve pending events, but do not consume them
+     * Check whether given modifier was pressed as part of a key stroke
      *
-     * @return Collection of all currently pending events
+     * @param modifier Key modifer to check
+     * @return Flag indicating whether modifier key was pressed
      */
-    fun peekEvents(): Iterable<InputEvent>
+    fun isKeyModifierDown(modifier: Modifier): Boolean
 
     /**
-     * Retrieve pending events, consuming them in the process
+     * Check whether there is a string of text available.
      *
-     * @return Collection of all currently pending events
+     * @return Flag indicating whether there currently is text available.
      */
-    fun consumeEvents(): Iterable<InputEvent>
+    fun hasText(): Boolean
 
     /**
-     * Register given input event as a pending event.
+     * Retrieve input as text. This is always recorded - every key press is automatically added to the
+     * text buffer. The text buffer is automatically cleared after each frame.
      *
-     * @param event Event to register
+     * @return Input as text.
      */
-    fun queueEvent(event: InputEvent)
+    fun text(): String
+
+    /**
+     * Check whether there currently is touch input available
+     *
+     * @return Flag indicating whether there is touch input available
+     */
+    fun hasTouchInput(): Boolean
+
+    /**
+     * Retrieve stored touch input. This can only be called if [hasTouchInput] returned true in the
+     * current frame.
+     *
+     * @return A collection of [TouchInput] instances
+     */
+    fun getTouchInput(): Iterable<TouchInput>
+
+    /**
+     * Clears all stored input data. Has to be called exactly once each frame.
+     */
+    fun clear()
+
+    //  ... mouse...
 }
