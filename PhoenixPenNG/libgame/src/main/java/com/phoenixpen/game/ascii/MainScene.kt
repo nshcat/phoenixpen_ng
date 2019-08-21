@@ -6,7 +6,6 @@ import com.phoenixpen.game.simulation.Simulation
 import com.phoenixpen.game.logging.GlobalLogger
 import com.phoenixpen.game.logging.Logger
 import com.phoenixpen.game.resources.ResourceProvider
-import java.awt.Dimension
 
 /**
  * The game main scene, displaying the map and allowing interaction with the game.
