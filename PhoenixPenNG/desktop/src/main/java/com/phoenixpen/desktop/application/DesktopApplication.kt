@@ -283,5 +283,8 @@ class DesktopApplication(val dimensions: Dimension, desktopMode: Boolean = false
         this.secondPass.endRender()
 
         gl.glFlush()
+
+        // Clear the input provider
+        this.inputProvider.clear()
     }
 }

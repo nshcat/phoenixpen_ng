@@ -37,5 +37,25 @@ interface InputProvider
      */
     fun text(): String
 
-    // TODO hasTouchInput, getTouchInputs ... mouse...
+    /**
+     * Check whether there currently is touch input available
+     *
+     * @return Flag indicating whether there is touch input available
+     */
+    fun hasTouchInput(): Boolean
+
+    /**
+     * Retrieve stored touch input. This can only be called if [hasTouchInput] returned true in the
+     * current frame.
+     *
+     * @return A collection of [TouchInput] instances
+     */
+    fun getTouchInput(): Iterable<TouchInput>
+
+    /**
+     * Clears all stored input data. Has to be called exactly once each frame.
+     */
+    fun clear()
+
+    //  ... mouse...
 }

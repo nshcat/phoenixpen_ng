@@ -14,34 +14,56 @@ import java.util.*
 class SurfaceViewInputProvider: InputProvider
 {
     /**
-     * The currently pending input events
+     * The currently pending touch inputs
      */
-    val currentEvents: Queue<InputEvent> = ArrayDeque<InputEvent>()
+    val currentTouchInput = ArrayList<TouchInput>()
 
-    override fun hasEvents(): Boolean
+    /**
+     * Enqueue a new touch input event detected using external use of the Android API
+     *
+     * @param event New touch input event to enqueue
+     */
+    fun queueTouchEvent(event: TouchInput)
     {
-        return !this.currentEvents.isEmpty()
+        this.currentTouchInput.add(event)
     }
 
-    override fun peekEvents(): Iterable<InputEvent>
+    override fun isKeyDown(key: Key): Boolean
     {
-        return this.currentEvents
+        return false
     }
 
-    override fun consumeEvents(): Iterable<InputEvent>
+    override fun isKeyModifierDown(modifier: Modifier): Boolean
     {
-        val elements = this.currentEvents.filter { true }
-
-        this.currentEvents.clear()
-
-        return elements
+        return false
     }
 
-    override fun queueEvent(event: InputEvent)
+    override fun hasText(): Boolean
     {
-        this.currentEvents.add(event)
+        return false
     }
 
+    override fun text(): String
+    {
+        throw IllegalStateException("No text input available")
+    }
+
+    override fun hasTouchInput(): Boolean
+    {
+        return this.currentTouchInput.isNotEmpty()
+    }
+
+    override fun getTouchInput(): Iterable<TouchInput>
+    {
+        if(this.currentTouchInput.isEmpty())
+            throw IllegalStateException("No touch input available")
+        return this.currentTouchInput
+    }
+
+    override fun clear()
+    {
+        this.currentTouchInput.clear()
+    }
 }
 
 class MySurfaceView(ctx: Context): GLSurfaceView(ctx)
@@ -68,7 +90,9 @@ class MySurfaceView(ctx: Context): GLSurfaceView(ctx)
             {
                 Log.d("INPUT", "Found ACTION_DOWN")
 
-                val screenDim = com.phoenixpen.game.ascii.ScreenDimensions(v.width, v.height)
+                this.inputProvider.queueTouchEvent(TouchTapInput(Position(m.rawX.toInt(), m.rawY.toInt()), TouchTapType.SingleTap))
+
+                /*val screenDim = com.phoenixpen.game.ascii.ScreenDimensions(v.width, v.height)
                 val pos = Position(m.rawX.toInt(), m.rawY.toInt())
 
                 if(pos.y < screenDim.height/4)
@@ -103,7 +127,7 @@ class MySurfaceView(ctx: Context): GLSurfaceView(ctx)
                         this.inputProvider.queueEvent(MapViewMoveEvent(Direction.Down))
                         Log.d("INPUT", "Emitted DOWN")
                     }
-                }
+                }*/
             }
         }
 

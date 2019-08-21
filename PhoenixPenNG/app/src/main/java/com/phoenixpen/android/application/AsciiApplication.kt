@@ -146,5 +146,8 @@ class AsciiApplication (context: Context, input: InputProvider): Application(con
 
         // Finish rendering
         this.secondPass.endRender()
+
+        // Clear the input provider
+        this.input.clear()
     }
 }

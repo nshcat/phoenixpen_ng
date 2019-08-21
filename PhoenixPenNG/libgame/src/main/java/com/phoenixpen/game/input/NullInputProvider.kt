@@ -5,22 +5,38 @@ package com.phoenixpen.game.input
  */
 class NullInputProvider: InputProvider
 {
-    override fun queueEvent(event: InputEvent)
-    {
-    }
-
-    override fun hasEvents(): Boolean
+    override fun isKeyDown(key: Key): Boolean
     {
         return false
     }
 
-    override fun peekEvents(): Iterable<InputEvent>
+    override fun isKeyModifierDown(modifier: Modifier): Boolean
     {
-        return listOf()
+        return false
     }
 
-    override fun consumeEvents(): Iterable<InputEvent>
+    override fun hasText(): Boolean
     {
-        return listOf()
+        return false
+    }
+
+    override fun text(): String
+    {
+         throw IllegalStateException("text() called with no active input text")
+    }
+
+    override fun hasTouchInput(): Boolean
+    {
+        return false
+    }
+
+    override fun getTouchInput(): Iterable<TouchInput>
+    {
+        throw IllegalStateException("getTouchInput() called with no active touch input")
+    }
+
+    override fun clear()
+    {
+        // Do nothing
     }
 }

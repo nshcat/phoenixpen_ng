@@ -18,9 +18,9 @@ enum class Key
     Number1, Number2, Number3, Number4, Number5, Number6, Number7, Number8, Number9, Number0,
 
     // Modifier keys
-    LShift, RShift, LAlt, LCtrl, RCtrl,
+    Shift, Alt, Ctrl, AltGr,
 
-    PageUp, PageDown, LAngle, RAngle,
+    PageUp, PageDown, Less,
 
     // Special keys
     Return, Backspace, Space, Escape, Super

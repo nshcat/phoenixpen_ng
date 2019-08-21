@@ -8,7 +8,7 @@ import java.util.*
  * @property inputProvider The input provider to use
  * @param mappings The initial collection of input mappings to register
  */
-class InputAdapter(val inputProvider: InputProvider, vararg mappings: InputMapping)
+open class InputAdapter(val inputProvider: InputProvider, vararg mappings: InputMapping)
 {
     /**
      * A list containing all the currently active events

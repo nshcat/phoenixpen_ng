@@ -29,4 +29,30 @@ class Vector2i(var x: Int, var y: Int)
         result = prime * result + y
         return result
     }
+
+    /**
+     * Additional helper instances
+     */
+    companion object
+    {
+        /**
+         * A vector describing the direction "north"
+         */
+        val north = Vector2i(0, -1)
+
+        /**
+         * A vector describing the direction "south"
+         */
+        val south = Vector2i(0, 1)
+
+        /**
+         * A vector describing the direction "west"
+         */
+        val west = Vector2i(-1, 0)
+
+        /**
+         * A vector describing the direction "east"
+         */
+        val east = Vector2i(1, 0)
+    }
 }
