@@ -10,17 +10,19 @@ import com.phoenixpen.game.resources.ResourceProvider
 /**
  * The game main scene, displaying the map and allowing interaction with the game.
  *
- * @property resources The resource manager to retrieve game data from
- * @property input The input manager providing input events
- * @property logger The logger instance to use
- * @property dimensions The screen dimensions
+ * @param resources The resource manager to retrieve game data from
+ * @param input The input manager providing input events
+ * @param logger The logger instance to use
+ * @param dimensions The screen dimensions, in glyphs
+ * @param dimensionsInPixels The screen dimensions, in pixels
  */
 class MainScene(
         resources: ResourceProvider,
         input: InputProvider,
         logger: Logger,
-        dimensions: ScreenDimensions
-): Scene(resources, input, logger, dimensions)
+        dimensions: ScreenDimensions,
+        dimensionsInPixels: ScreenDimensions
+): Scene(resources, input, logger, dimensions, dimensionsInPixels)
 {
     /**
      * Input event enumeration for this scene
@@ -44,8 +46,11 @@ class MainScene(
 
     /**
      * The input adapter for this scene
+     *
+     * @param input The input provider reference
+     * @property dimensions The screen dimensions, in pixels
      */
-    private class MainSceneInputAdapter(input: InputProvider):
+    private class MainSceneInputAdapter(input: InputProvider, val dimensions: ScreenDimensions):
             InputAdapter(input)
     {
         /**
@@ -66,6 +71,9 @@ class MainScene(
 
             this.addMapping(EnumKeyComboMapping(MainSceneInput.MoveMapViewUp, Key.PageUp))
             this.addMapping(EnumKeyComboMapping(MainSceneInput.MoveMapViewDown, Key.PageDown))
+
+            // Touch controls
+            this.addMapping(EnumAreaTouchMapping(MainSceneInput.MoveMapViewUp, Rectangle.fromDimensions(this.dimensions)))
         }
     }
 
@@ -80,7 +88,7 @@ class MainScene(
     /**
      * The input adapter for this scene
      */
-    private val inputAdapter = MainSceneInputAdapter(input)
+    private val inputAdapter = MainSceneInputAdapter(input, this.dimensionsInPixels)
 
     /**
      * The main simulation state

@@ -1,6 +1,7 @@
 package com.phoenixpen.game.input
 
 import com.phoenixpen.game.ascii.Rectangle
+import com.phoenixpen.game.logging.GlobalLogger
 import java.util.*
 
 /**
@@ -9,7 +10,7 @@ import java.util.*
  * @property type The tap type required, i.e. singular or double tap
  * @property area The rectangular area to test touch input for
  */
-abstract class AreaTouchMapping(val type: TouchTapType, val area: Rectangle): InputMapping()
+abstract class AreaTouchMapping(val area: Rectangle, val type: TouchTapType = TouchTapType.SingleTap): InputMapping()
 {
     /**
      * Try to fire the associated input event. If all requirements are met, a new input event is returned,

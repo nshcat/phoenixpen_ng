@@ -243,7 +243,7 @@ class DesktopApplication(val dimensions: Dimension, desktopMode: Boolean = false
         this.firstPass.updateDimensions(dimensions)
         this.secondPass.updateDimensions(dimensions)
 
-        this.scene = MainScene(this.resourceProvider, this.inputProvider, this.logger, this.screen.size)
+        this.scene = MainScene(this.resourceProvider, this.inputProvider, this.logger, this.screen.size, ScreenDimensions(this.dimensions.width, this.dimensions.height))
     }
 
     override fun dispose(drawable: GLAutoDrawable?)

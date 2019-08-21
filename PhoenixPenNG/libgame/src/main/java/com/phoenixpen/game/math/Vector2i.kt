@@ -6,7 +6,7 @@ package com.phoenixpen.game.math
  * @property x The x component of this vector
  * @property y The y component of this vector
  */
-class Vector2i(var x: Int, var y: Int)
+class Vector2i(var x: Int = 0, var y: Int = 0)
 {
     override fun equals(other: Any?): Boolean
     {

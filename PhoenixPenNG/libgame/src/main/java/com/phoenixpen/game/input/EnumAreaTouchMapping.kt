@@ -11,8 +11,8 @@ import com.phoenixpen.game.ascii.Rectangle
  * @param type Requested touch tap type
  * @param area Rectangular area to check touch input for
  */
-class EnumAreaTouchMapping<E>(val value: E, type: TouchTapType, area: Rectangle)
-    : AreaTouchMapping(type, area)
+class EnumAreaTouchMapping<E>(val value: E, area: Rectangle, type: TouchTapType = TouchTapType.SingleTap)
+    : AreaTouchMapping(area, type)
 {
     /**
      * Create enumeration input event based on stored enum [value]

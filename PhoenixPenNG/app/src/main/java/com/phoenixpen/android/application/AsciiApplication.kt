@@ -75,7 +75,7 @@ class AsciiApplication (context: Context, input: InputProvider): Application(con
             this.screen.resize(screenDimensions)
             this.orthoProjection.refresh(screenDimensions)
 
-            this.scene = MainScene(this.resources, this.input, this.logger, this.screen.size)
+            this.scene = MainScene(this.resources, this.input, this.logger, this.screen.size, screenDimensions)
         }
     }
 
@@ -119,6 +119,9 @@ class AsciiApplication (context: Context, input: InputProvider): Application(con
 
         this.scene.update(this.calculateTicks(elapsedMillis))
 
+        // Clear the input provider
+        this.input.clear()
+
         // Begin rendering to texture
         this.firstPass.beginRender()
 
@@ -146,8 +149,5 @@ class AsciiApplication (context: Context, input: InputProvider): Application(con
 
         // Finish rendering
         this.secondPass.endRender()
-
-        // Clear the input provider
-        this.input.clear()
     }
 }

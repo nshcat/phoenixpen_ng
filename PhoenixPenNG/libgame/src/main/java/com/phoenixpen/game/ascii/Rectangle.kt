@@ -19,4 +19,21 @@ class Rectangle(val topLeft: Position, val bottomRight: Position)
         return point.x >= this.topLeft.x && point.x <= this.bottomRight.x
                 && point.y >= this.topLeft.y && point.y <= this.bottomRight.y
     }
+
+    /**
+     * Helper builder functions and constants
+     */
+    companion object
+    {
+        /**
+         * Create a rectangle with a top left corner in (0,0) and given dimensions
+         *
+         * @param dimensions Dimensions of the rectangle
+         * @return Rectangle based on given dimensions
+         */
+        fun fromDimensions(dimensions: ScreenDimensions): Rectangle
+        {
+            return Rectangle(Position(), dimensions.toPosition())
+        }
+    }
 }
