@@ -34,6 +34,7 @@ enum class CoveringDrawMode
  * @property description Short description text for this structure type
  * @property drawMode How this covering should be drawn on top of other structures or map cells
  * @property tileType Graphical representation of this covering
+ * @property priority Drawing priority of this covering. See [DrawingPriority] for explanation
  */
 @Serializable
 data class CoveringType(
@@ -41,7 +42,8 @@ data class CoveringType(
         @SerialName("display_name") val displayName: String,
         val description: String = "",
         @SerialName("draw_mode") val drawMode: CoveringDrawMode = CoveringDrawMode.Covering,
-        @SerialName("tile") @Serializable(with = TileTypeSerializer::class) val tileType: TileType = TileType()
+        @SerialName("tile") @Serializable(with = TileTypeSerializer::class) val tileType: TileType = TileType(),
+        @SerialName("drawing_priority") val priority: DrawingPriority = DrawingPriority.Normal
 )
 {
     companion object

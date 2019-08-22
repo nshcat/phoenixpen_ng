@@ -181,8 +181,8 @@ class Map(val dimensions: MapDimensions): Updateable
     }
 
     /**
-     * Retrieve covering at given position, if one exists. Returns the last encountered covering,
-     * since it overlays all the other ones.
+     * Retrieve covering at given position, if one exists. Returns the one with the highest
+     * drawing priority.
      *
      * @param position Position to look at
      * @return Covering reference, if found
@@ -194,7 +194,14 @@ class Map(val dimensions: MapDimensions): Updateable
             val list = this.coveringMap[position] ?: throw RuntimeException("Should not happen")
 
             if(list.isNotEmpty())
-                return Optional.of(list.last())
+            {
+                // Sort list by drawing priority. Since enums are ordered according to the
+                // sequence of the enum value definitions, higher priorities will naturally be at
+                // the front of the list.
+                list.sortBy { x -> x.type.priority }
+
+                return Optional.of(list.first())
+            }
         }
 
         return Optional.empty()
