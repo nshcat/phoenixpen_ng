@@ -3,6 +3,7 @@ package com.phoenixpen.game.data
 import com.phoenixpen.game.ascii.DrawInfo
 import com.phoenixpen.game.ascii.Position3D
 import com.phoenixpen.game.ascii.TileInstance
+import com.phoenixpen.game.core.Updateable
 
 /**
  * A covering instance as part of the game world.
@@ -15,8 +16,15 @@ class Covering(
         val type: CoveringType,
         val position: Position3D,
         val tileInstance: TileInstance
-)
+): Updateable
 {
+    /**
+     * For how many ticks this covering has been "alive" for
+     * TODO: Base class "GameObject" that implements this for all game objects, like coverings
+     *       and structures
+     */
+    var lifetime: Int = 0
+
     /**
      * Retrieve graphical representation for this covering
      *
@@ -25,6 +33,16 @@ class Covering(
     fun tile(): DrawInfo
     {
         return this.type.tileType.tile(this.tileInstance)
+    }
+
+    /**
+     * Update covering state based on given number of elapsed ticks
+     *
+     * @param elapsedTicks Elapsed ticks since last update
+     */
+    override fun update(elapsedTicks: Int)
+    {
+        this.lifetime += elapsedTicks
     }
 
     companion object

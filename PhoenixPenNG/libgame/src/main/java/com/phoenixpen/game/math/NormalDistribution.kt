@@ -1,4 +1,4 @@
-package com.phoenixpen.game.core
+package com.phoenixpen.game.math
 
 import kotlinx.serialization.Serializable
 import java.util.concurrent.ThreadLocalRandom
@@ -54,6 +54,8 @@ class NormalDistribution(
         // If the probability is 100% anyways, don't bother
         if(this.probability >= 1.0)
             return true
+        else if(this.probability <= 0.00)
+            return false
         else
         {
             // Pick random number between 0 and 1

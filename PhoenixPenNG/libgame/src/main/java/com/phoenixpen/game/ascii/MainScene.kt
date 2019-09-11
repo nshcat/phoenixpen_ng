@@ -5,6 +5,7 @@ import com.phoenixpen.game.map.MapView
 import com.phoenixpen.game.simulation.Simulation
 import com.phoenixpen.game.logging.GlobalLogger
 import com.phoenixpen.game.logging.Logger
+import com.phoenixpen.game.math.PoissonTest
 import com.phoenixpen.game.resources.ResourceProvider
 
 /**
@@ -90,6 +91,8 @@ class MainScene(
         GlobalLogger.setLogger(logger)
     }
 
+    private val poissonTest = PoissonTest(dimensions)
+
     /**
      * The input adapter for this scene
      */
@@ -112,6 +115,8 @@ class MainScene(
     {
         // Render the map and all its structures, entities, etc..
         this.mapView.render(screen)
+
+        this.poissonTest.render(screen)
     }
 
     /**
@@ -157,5 +162,7 @@ class MainScene(
 
         // Update the map view
         this.mapView.update(elapsedTicks)
+
+        this.poissonTest.update(elapsedTicks)
     }
 }
