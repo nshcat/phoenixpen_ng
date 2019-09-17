@@ -85,7 +85,8 @@ class TypeKeyEntrySerializer : KSerializer<TypeKeyEntry>
     {
         // The JSON AST only supports unchecked casts, so we need to be prepared for any
         // type mismatch exceptions here
-        try {
+        try
+        {
             // Retrieve JSON input
             val jsonInput = input as JsonInput
 
