@@ -5,10 +5,7 @@ import com.phoenixpen.game.core.Updateable
 import com.phoenixpen.game.core.WeightedList
 import com.phoenixpen.game.core.WeightedPair
 import com.phoenixpen.game.data.*
-import com.phoenixpen.game.data.biome.BiomeConfiguration
-import com.phoenixpen.game.data.biome.BiomeDataSet
-import com.phoenixpen.game.data.biome.TreeDataSetIds
-import com.phoenixpen.game.data.biome.WaterDataSetIds
+import com.phoenixpen.game.data.biome.*
 import com.phoenixpen.game.logging.GlobalLogger
 import com.phoenixpen.game.map.Map
 import com.phoenixpen.game.resources.ResourceProvider
@@ -66,7 +63,7 @@ class Simulation(val resources: ResourceProvider): Updateable
     /**
      * Information about the current biome
      */
-    var biomeConfiguration = BiomeConfiguration()
+    lateinit var biomeConfiguration: BiomeConfiguration
 
     /**
      * Information about the seasons
@@ -107,17 +104,11 @@ class Simulation(val resources: ResourceProvider): Updateable
         // Initialize water system
         this.waterSystem = WaterSystem(this.resources)
 
-        // Create biome data set
-        val biomeDataSet = BiomeDataSet(
-                this.resources, Optional.empty(),
-                "biome_test_mapinfo.json", listOf("biome_test_layer0.bmp", "biome_test_layer1.bmp"),
-                Optional.of(TreeDataSetIds("biome_test_trees.json", listOf("biome_test_trees_layer0.bmp"))),
-                Optional.empty(),
-                Optional.of(WaterDataSetIds("biome_test_water.json", listOf("biome_test_water_layer0.bmp")))
-        )
+        // Setup biome generator
+        val biomeGenerator = BiomeGenerator(this.resources, "biome_test.json")
 
         // Load biome
-        biomeDataSet.apply(this)
+        biomeGenerator.apply(this)
 
         this.mapDecorationSystem.addDecoration(Position3D(15, 1, 15), "test_plant")
 

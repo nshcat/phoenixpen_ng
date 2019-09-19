@@ -3,7 +3,10 @@ package com.phoenixpen.game.data.biome
 import com.phoenixpen.game.ascii.Color
 import com.phoenixpen.game.ascii.Position
 import com.phoenixpen.game.ascii.Position3D
+import com.phoenixpen.game.resources.ResourceProvider
 import com.phoenixpen.game.simulation.Simulation
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.map
 
 /**
  * A single biome component that can be applied to a simulation state
@@ -29,6 +32,23 @@ abstract class TypeBiomeComponent(
         val typeKey: TypeKey
 ): BiomeComponent
 {
+    /**
+     * Alternative constructor used to create this component based on resource IDs
+     *
+     * @param res Resource provider instance used to extract JSON files and layer bitmaps
+     * @param infoId The ID for the type key
+     * @param templateLayerIds IDs for the layers in the biome template
+     */
+    constructor(res: ResourceProvider, infoId: String, templateLayerIds: Collection<String>):
+        this(
+            BiomeTemplate.fromBitmaps(res, *(templateLayerIds.toTypedArray())),
+            Json.indented.parse(
+                (Color.serializer()).to(TypeKeyEntry.serializer()).map,
+                res.json(infoId)
+            )
+        )
+
+
     /**
      * Initialize a mapping between colours in the biome template and the associated object spawner instances.
      * This also contains precomputed sampling state in order to speed things up.
