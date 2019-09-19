@@ -74,7 +74,7 @@ class TypeKeyEntrySerializer : KSerializer<TypeKeyEntry>
         else
         {
             // Otherwise just parse weighted type list
-            val entry = input.getPrimitive("types")
+            val entry = input.getArray("types")
 
             return Json.parse(WeightedTypeListSerializer(), entry.toString())
         }

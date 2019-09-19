@@ -116,7 +116,7 @@ class MainScene(
         // Render the map and all its structures, entities, etc..
         this.mapView.render(screen)
 
-        this.poissonTest.render(screen)
+        //this.poissonTest.render(screen)
     }
 
     /**
@@ -163,6 +163,6 @@ class MainScene(
         // Update the map view
         this.mapView.update(elapsedTicks)
 
-        this.poissonTest.update(elapsedTicks)
+        //this.poissonTest.update(elapsedTicks)
     }
 }
