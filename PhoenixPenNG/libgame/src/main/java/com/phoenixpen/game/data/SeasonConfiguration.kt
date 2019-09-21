@@ -7,6 +7,8 @@ import kotlinx.serialization.Serializable
 /**
  * Class containing info about the seasons
  *
+ * TODO move to biome config
+ *
  * @property springDuration Duration of spring, in ticks
  * @property summerDuration Duration of summer, in ticks
  * @property autumnDuration Duration of autumn, in ticks

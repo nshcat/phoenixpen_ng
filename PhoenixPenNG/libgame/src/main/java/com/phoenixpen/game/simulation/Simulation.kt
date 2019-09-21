@@ -76,6 +76,11 @@ class Simulation(val resources: ResourceProvider): Updateable
     val seasonSystem: SeasonSystem
 
     /**
+     * The system that manages weather effects
+     */
+    val weatherSystem: WeatherSystem
+
+    /**
      * Simulation state initialization procedure
      */
     init
@@ -119,11 +124,13 @@ class Simulation(val resources: ResourceProvider): Updateable
 
         // Update all map data structures to detect all initial data
         this.map.updateDatastructures()
-
-        // Cover everything in snow
         this.snowSystem = SnowSystem(this)
         this.map.registerHolder(this.snowSystem)
         this.map.registerHolder(this.treeHolder as CoveringHolder)
+
+        // Init weather system
+        this.weatherSystem = WeatherSystem(this)
+        this.map.registerHolder(this.weatherSystem)
     }
 
     /**
@@ -148,5 +155,8 @@ class Simulation(val resources: ResourceProvider): Updateable
 
         // Update tree system
         this.treeHolder.update(elapsedTicks)
+
+        // Update weather system
+        this.weatherSystem.update(elapsedTicks)
     }
 }

@@ -11,6 +11,7 @@ import kotlinx.serialization.Serializable
  * @property movingWaterFreezes Whether rivers will freeze in winter
  * @property oceanFreezes Whether ocean tiles will freeze in winter
  * @property snowEnabled Whether snow is enabled
+ * @property weather The weather configuration for all four seasons
  */
 @Serializable
 data class BiomeConfiguration(
@@ -18,7 +19,8 @@ data class BiomeConfiguration(
         @SerialName("moving_water_freezes") val movingWaterFreezes: Boolean = false,
         @SerialName("ocean_freezes") val oceanFreezes: Boolean = false,
         @SerialName("snow") val snowEnabled: Boolean = true,
-        @SerialName("generation") val generationInfo: BiomeGenerationConfiguration
+        @SerialName("generation") val generationInfo: BiomeGenerationConfiguration,
+        val weather: WeatherConfig
 )
 
 /**

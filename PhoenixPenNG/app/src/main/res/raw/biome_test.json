@@ -20,5 +20,42 @@
     "tree_layers": [
       "biome_test_trees_layer0.bmp"
     ]
+  },
+  "weather": {
+    "spring": {
+      "rain_distribution": {
+        "probability": 1,
+        "mean": 300,
+        "variance": 50,
+        "restricted": true,
+        "min": 150,
+        "max": 450
+      }
+    },
+    "summer": {
+      "rain_distribution": {
+        "probability": 0.001,
+        "mean": 300,
+        "variance": 50,
+        "restricted": true,
+        "min": 150,
+        "max": 450
+      }
+    },
+    "autumn": {
+      "rain_distribution": {
+        "probability": 0.001,
+        "mean": 300,
+        "variance": 50,
+        "restricted": true,
+        "min": 150,
+        "max": 450
+      }
+    },
+    "winter": {
+      "rain_distribution": {
+        "probability": 0.0
+      }
+    }
   }
 }
