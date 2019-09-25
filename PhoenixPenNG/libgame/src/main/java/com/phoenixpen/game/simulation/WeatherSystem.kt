@@ -68,7 +68,7 @@ class WeatherSystem(simulation: Simulation): System(simulation), CoveringHolder
     /**
      * How many ticks a rain covering will last
      */
-    private var rainCoveringLifespan = 2
+    private var rainCoveringLifespan = 4
 
     /**
      * The current state of this system

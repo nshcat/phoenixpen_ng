@@ -24,32 +24,32 @@
   "weather": {
     "spring": {
       "rain_distribution": {
-        "probability": 1,
-        "mean": 300,
-        "variance": 50,
+        "probability": 0.0001,
+        "mean": 1000,
+        "variance": 250,
         "restricted": true,
-        "min": 150,
-        "max": 450
+        "min": 680,
+        "max": 1350
       }
     },
     "summer": {
       "rain_distribution": {
-        "probability": 0.001,
-        "mean": 300,
-        "variance": 50,
+        "probability": 0.0001,
+        "mean": 1000,
+        "variance": 250,
         "restricted": true,
-        "min": 150,
-        "max": 450
+        "min": 680,
+        "max": 1350
       }
     },
     "autumn": {
       "rain_distribution": {
-        "probability": 0.001,
-        "mean": 300,
-        "variance": 50,
+        "probability": 0.0001,
+        "mean": 1000,
+        "variance": 250,
         "restricted": true,
-        "min": 150,
-        "max": 450
+        "min": 680,
+        "max": 1350
       }
     },
     "winter": {
