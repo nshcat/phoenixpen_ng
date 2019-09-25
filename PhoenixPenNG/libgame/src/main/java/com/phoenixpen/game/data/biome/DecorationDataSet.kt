@@ -10,27 +10,22 @@ import kotlinx.serialization.map
 import java.util.concurrent.ThreadLocalRandom
 
 /**
- * A simple class holding all the resource IDs needed to construct a decoration data set.
- */
-data class DecorationDataSetIds(val keyId: String, val templateIds: List<String>)
-
-/**
  * A class aggregating data on how map decorations should appear in the biome.
  */
-class DecorationDataSet(resources: ResourceProvider, ids: DecorationDataSetIds)
+class DecorationDataSet(resources: ResourceProvider, cfg: BiomeGenerationConfiguration)
 {
     /**
      * The decoration key used to translate colours in the biome template into actual decoration structure types
      */
     val decorationKey: TypeKey = Json.indented.parse(
             (Color.serializer()).to(TypeKeyEntry.serializer()).map,
-            resources.json(ids.keyId)
+            resources.json(cfg.decorationInfoId)
     )
 
     /**
      * The decoration template
      */
-    val decorationTemplate: BiomeTemplate = BiomeTemplate.fromBitmaps(resources, *(ids.templateIds.toTypedArray()))
+    val decorationTemplate: BiomeTemplate = BiomeTemplate.fromBitmaps(resources, *(cfg.decorationLayerIds.toTypedArray()))
 
     /**
      * Actually apply the decoration template to the current simulation state

@@ -6,58 +6,45 @@ import kotlinx.serialization.json.Json
 import java.util.*
 
 /**
- * A class containing all data required to setup a biome scene in the current simulation instance
+ * A class used to generate a map based on a biome description
  *
  * @property resources Resource manager used to retrieve biome resources
  * @property biomeConfigId The resource ID pointing to a JSON document containing biome configuration info
- * @param mapInfoId The resource ID pointing to a JSON document containing the map information
- * @param mapTemplateIds Resource IDs describing the different map template layers
- * @property treeIds Resource IDs describing the tree data set
- * @property decorationIds Resource IDs describing the decorations data set
- * @property waterIds Resource IDs describing the map tile data set
  */
-class BiomeDataSet(
+class BiomeGenerator(
         val resources: ResourceProvider,
-        val biomeConfigId: Optional<String>,
-        mapInfoId: String, mapTemplateIds: List<String>,
-        val treeIds: Optional<TreeDataSetIds> = Optional.empty(),
-        val decorationIds: Optional<DecorationDataSetIds> = Optional.empty(),
-        val waterIds: Optional<WaterDataSetIds> = Optional.empty()
+        val biomeConfigId: String
 )
 {
-    /**
-     * The map data used to create the map instance
-     */
-    val mapDataSet = MapDataSet(this.resources, mapInfoId, mapTemplateIds)
-
     /**
      * Apply this biome data set, making the biome that it describes the current biome
      */
     fun apply(simulation: Simulation)
     {
         // Retrieve biome config
-        if(this.biomeConfigId.isPresent)
-            simulation.biomeConfiguration = Json.parse(BiomeConfiguration.serializer(), this.resources.json(this.biomeConfigId.get()))
+        val config = Json.parse(BiomeConfiguration.serializer(), this.resources.json(this.biomeConfigId))
+        simulation.biomeConfiguration = config
+        val genConfig = config.generationInfo
 
-        // Generate map
-        simulation.map = this.mapDataSet.load(simulation)
+        // Generate terrain
+        simulation.map = MapDataSet(this.resources, genConfig.mapInfoId, genConfig.mapLayerIds).load(simulation)
 
-        // Generate trees if requested
-        if (treeIds.isPresent)
+        // Generate trees if any layers where given
+        if (genConfig.treeLayerIds.isNotEmpty())
         {
-            TreeDataSet(this.resources, treeIds.get()).apply(simulation)
+            TreeComponent(this.resources, genConfig).apply(simulation)
         }
 
         // Generate decorations if requested
-        if (decorationIds.isPresent)
+        if (genConfig.decorationLayerIds.isNotEmpty())
         {
-            DecorationDataSet(this.resources, decorationIds.get()).apply(simulation)
+            DecorationDataSet(this.resources, genConfig).apply(simulation)
         }
 
         // Generate water tiles if requested
-        if (waterIds.isPresent)
+        if (genConfig.waterLayerIds.isNotEmpty())
         {
-            WaterDataSet(this.resources, waterIds.get()).apply(simulation)
+            WaterDataSet(this.resources, genConfig).apply(simulation)
         }
     }
 }

@@ -14,6 +14,15 @@
     }
   },
   {
+    "identifier": "rain_drop",
+    "display_name": "a splash of rain water",
+    "description": "a splash of rain water",
+    "draw_mode": "Staining",
+    "tile": {
+      "glyph": 0, "foreground": "#0088FF", "background": "#00427B"
+    }
+  },
+  {
     "identifier": "default_dropped_leaves",
     "display_name": "a pile of dropped leaves",
     "description": "a pile of dropped leaves",

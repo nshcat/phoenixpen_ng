@@ -1,0 +1,61 @@
+{
+  "generation": {
+    "terrain_info": "biome_test_mapinfo.json",
+    "terrain_layers": [
+      "biome_test_layer0.bmp",
+      "biome_test_layer1.bmp"
+    ],
+
+    "decoration_info": "biome_test_decorations.json",
+    "decoration_layers": [
+      "biome_test_decorations_layer0.bmp"
+    ],
+
+    "water_info": "biome_test_water.json",
+    "water_layers": [
+      "biome_test_water_layer0.bmp"
+    ],
+
+    "tree_info": "biome_test_trees.json",
+    "tree_layers": [
+      "biome_test_trees_layer0.bmp"
+    ]
+  },
+  "weather": {
+    "spring": {
+      "rain_distribution": {
+        "probability": 0.0001,
+        "mean": 1000,
+        "variance": 250,
+        "restricted": true,
+        "min": 680,
+        "max": 1350
+      }
+    },
+    "summer": {
+      "rain_distribution": {
+        "probability": 0.0001,
+        "mean": 1000,
+        "variance": 250,
+        "restricted": true,
+        "min": 680,
+        "max": 1350
+      }
+    },
+    "autumn": {
+      "rain_distribution": {
+        "probability": 0.0001,
+        "mean": 1000,
+        "variance": 250,
+        "restricted": true,
+        "min": 680,
+        "max": 1350
+      }
+    },
+    "winter": {
+      "rain_distribution": {
+        "probability": 0.0
+      }
+    }
+  }
+}

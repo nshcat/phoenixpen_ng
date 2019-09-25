@@ -11,27 +11,22 @@ import kotlinx.serialization.map
 import java.util.concurrent.ThreadLocalRandom
 
 /**
- * A simple class holding all the resource IDs needed to construct a water data set.
- */
-data class WaterDataSetIds(val keyId: String, val templateIds: List<String>)
-
-/**
  * A class aggregating data on how water tiles should appear in the biome.
  */
-class WaterDataSet(resources: ResourceProvider, ids: WaterDataSetIds)
+class WaterDataSet(resources: ResourceProvider, cfg: BiomeGenerationConfiguration)
 {
     /**
      * The water key used to translate colours in the biome template into actual water tile types
      */
     val waterKey: WaterKey = Json.indented.parse(
             (Color.serializer()).to(WaterKeyEntry.serializer()).map,
-            resources.json(ids.keyId)
+            resources.json(cfg.waterInfoId)
     )
 
     /**
      * The water tile template
      */
-    val waterTemplate: BiomeTemplate = BiomeTemplate.fromBitmaps(resources, *(ids.templateIds.toTypedArray()))
+    val waterTemplate: BiomeTemplate = BiomeTemplate.fromBitmaps(resources, *(cfg.waterLayerIds.toTypedArray()))
 
     /**
      * Actually apply the decoration template to the current simulation state

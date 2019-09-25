@@ -37,3 +37,8 @@ class ScreenDimensions(val width: Int, val height: Int)
         fun empty(): ScreenDimensions = ScreenDimensions(0, 0)
     }
 }
+
+/**
+ * A convenience alias for generic dimensions
+ */
+typealias Dimensions = ScreenDimensions
