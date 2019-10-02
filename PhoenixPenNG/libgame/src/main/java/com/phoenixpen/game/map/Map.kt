@@ -3,6 +3,8 @@ package com.phoenixpen.game.map
 import com.phoenixpen.game.ascii.Position3D
 import com.phoenixpen.game.core.Updateable
 import com.phoenixpen.game.data.Covering
+import com.phoenixpen.game.data.PathBlockType
+import com.phoenixpen.game.data.PathingType
 import com.phoenixpen.game.data.Structure
 import com.phoenixpen.game.logging.GlobalLogger
 import com.phoenixpen.game.simulation.CoveringHolder
@@ -178,6 +180,78 @@ class Map(val dimensions: MapDimensions): Updateable
         if(result.isPresent && result.get().isNotEmpty())
             return Optional.of(result.get().first())
         else return Optional.empty()
+    }
+
+    /**
+     * Check whether the map cell at given position is traversable by an actor with given pathing type.
+     * This also checks for structures at the given position.
+     *
+     * @param mapPosition Position of map cell to check
+     * @param pathingType Pathing type of the actor
+     * @return Flag indicating whether the map cell is traversable by an actor with given pathing type
+     */
+    fun isTraversableBy(mapPosition: Position3D, pathingType: PathingType): Boolean
+    {
+        // Retrieve map cell and material type
+        val cell = this.cellAt(mapPosition)
+        val mat = cell.material.type
+
+        // Helper function used to extract all structures at the given map position
+        fun queryStructures(): List<Structure> {
+            // Query possible structures at the map position.
+            // We ignore invisible structures here since they should not affect path finding.
+            val maybeStructures = this.getStructuresAtExact(mapPosition, true)
+            return if (maybeStructures.isPresent) maybeStructures.get() else listOf()
+        }
+
+        when(cell.state)
+        {
+            // If the cell is in solid state, nothing is able to path through it, with the
+            // exception being if its water and the actor can swim.
+            // Structures inside solid blocks are not supported and are thus disregarded.
+            MapCellState.Solid -> return mat.isWater && pathingType == PathingType.WaterBound
+
+            MapCellState.Air -> {
+                // If the actor can not fly, short circuit here
+                if(pathingType != PathingType.Flying)
+                    return false
+
+                // We ignore the material being set to "is water" here since that makes no sense.
+                // We still diagnose this, since it means the biome layers are messed up.
+                if(mat.isWater)
+                    GlobalLogger.w("Map", "Found map cell in state \"Air\" but with \"is_water=true\" material at ${mapPosition}")
+
+                // Otherwise, check if there are any full blocking structures.
+                return !queryStructures().any { x -> x.baseType.pathBlockType == PathBlockType.FullBlocking }
+            }
+
+            // If the map cell is ground, we have to be careful about water ground, as well as
+            // blocking structures.
+            MapCellState.Ground -> {
+                // If the ground is water, the actor needs to be able to swim
+                if(mat.isWater)
+                    return pathingType == PathingType.WaterBound
+
+                // Ground material is not water. Water bound actors cant traverse this.
+                if(pathingType == PathingType.WaterBound)
+                    return false
+
+                // Check for obstacles
+                val structures = queryStructures()
+
+                // Flying actors can pass half blocking structures like bushes, while land bound actors
+                // can not
+                if(pathingType == PathingType.LandBound)
+                    return structures.all{ x -> x.baseType.pathBlockType == PathBlockType.NonRestricted }
+                else
+                    return structures.all{ x -> x.baseType.pathBlockType == PathBlockType.NonRestricted
+                            || x.baseType.pathBlockType == PathBlockType.HalfBlocking}
+
+            }
+        }
+
+
+
     }
 
     /**

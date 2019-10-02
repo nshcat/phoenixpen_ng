@@ -27,7 +27,7 @@ data class MapDecorationType(
                         "placeholder",
                         "MISSING STRUCTURE",
                         "MISSING STRUCTURE DATA",
-                        PathingType.NonRestricted
+                        PathBlockType.NonRestricted
                 ),
                 TileType(
                         mode = TileTypeMode.Static,

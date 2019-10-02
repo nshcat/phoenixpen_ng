@@ -39,7 +39,7 @@ data class TreePartType(
                         "placeholder",
                         "MISSING STRUCTURE",
                         "MISSING STRUCTURE DATA",
-                        PathingType.NonRestricted
+                        PathBlockType.NonRestricted
                 ),
                 TileType(staticTile = DrawInfo(background = Color.green))
         )
