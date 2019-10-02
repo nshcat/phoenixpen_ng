@@ -27,4 +27,20 @@ class PathfindingResult(val path: Optional<Path>, val elapsedTime: Double)
 
         return this.path.get()
     }
+
+    /**
+     * Utility functions
+     */
+    companion object
+    {
+        /**
+         * Create path finding result for successful operation
+         */
+        fun success(path: Path, elapsedTime: Double) = PathfindingResult(Optional.of(path), elapsedTime)
+
+        /**
+         * Create path finding result for failed operation
+         */
+        fun failure(elapsedTime: Double) = PathfindingResult(Optional.empty(), elapsedTime)
+    }
 }

@@ -7,6 +7,11 @@ import com.phoenixpen.game.simulation.Simulation
 import com.phoenixpen.game.simulation.System
 
 /**
+ * The default path finding algorithm to use
+ */
+typealias DefaultPathfindingAlgorithm = NullPathfindingAlgorithm
+
+/**
  * A simulation system that handles all pathfinding requests from game object in the simulated
  * world.
  *
@@ -14,6 +19,11 @@ import com.phoenixpen.game.simulation.System
  */
 class PathfindingSystem(simulation: Simulation): System(simulation)
 {
+    /**
+     * The path finding algorithm to use for path calculation
+     */
+    private val pathfinder = DefaultPathfindingAlgorithm(simulation.map)
+
     /**
      * The pathfinding system does not have any state, and thus does not require any updating.
      */
@@ -24,7 +34,11 @@ class PathfindingSystem(simulation: Simulation): System(simulation)
      *
      * @param start Start position
      * @param end End position
-     * @param type Pathing type of the actor to calculate path for
+     * @param pathingType Pathing type of the actor to calculate path for
      */
-    fun calculatePath(start: Position3D, end: Position3D, type: PathingType): PathfindingResult
+    fun calculatePath(start: Position3D, end: Position3D, pathingType: PathingType): PathfindingResult
+    {
+        // This method exists since later on, there might be an asynchronous implementation.
+        return this.pathfinder.findPath(start, end, pathingType)
+    }
 }

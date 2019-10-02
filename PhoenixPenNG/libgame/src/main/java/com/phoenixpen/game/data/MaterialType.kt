@@ -36,7 +36,7 @@ data class MaterialType(
          * Placeholder material intended to be used if a material can not be found anymore. Very visible
          * to make debugging easier
          */
-        val placeholder = MaterialType("placeholder", "Placeholder material", PathBlockType.NonRestricted,
+        val placeholder = MaterialType("placeholder", "Placeholder material", false,
                 TileType(staticTile = DrawInfo(background = Color.magenta))
         )
 
