@@ -19,7 +19,7 @@ fun Screen.putString(pos: Position, str: String, front: Color = Color.white, bac
         return pos
 
     // Calculate number of characters to draw
-    val toDraw = min(this.getDimensions().width-1 - pos.x, str.length)
+    val toDraw = min(this.getDimensions().width - pos.x, str.length)
 
     for(i in 0 until toDraw)
     {
