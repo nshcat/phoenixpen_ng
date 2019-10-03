@@ -5,11 +5,14 @@ import kotlin.math.min
 /**
  * Print given string to screen at given position. Will cut off the string if it wont fit on screen.
  *
- * @param pos Position of the first character
+ * @param pos Position of the first character. This is modified to point to the glyph after the last printed one, if [modifyInput] is set to true.
  * @param str String to print
+ * @param front Front color
+ * @param back Back color
+ * @param modifyInput Whether to modify the given position to point at the glyph after the last printed one
  * @return Position of one character after the last printed one. Useful to print multiple things.
  */
-fun Screen.putString(pos: Position, str: String, front: Color = Color.white, back: Color = Color.black): Position
+fun Screen.putString(pos: Position, str: String, front: Color = Color.white, back: Color = Color.black, modifyInput: Boolean = true): Position
 {
     // Check if the initial position is inside the screen
     if(!this.isInBounds(pos))
@@ -31,7 +34,8 @@ fun Screen.putString(pos: Position, str: String, front: Color = Color.white, bac
         this.clearShadows(pos)
     }
 
-    pos.x += toDraw
+    if(modifyInput)
+        pos.x += toDraw
 
     return Position(pos.x + toDraw, pos.y)
 }
