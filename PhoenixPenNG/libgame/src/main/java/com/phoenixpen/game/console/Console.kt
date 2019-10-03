@@ -9,8 +9,8 @@ import com.phoenixpen.game.input.EnumEvent
 import com.phoenixpen.game.input.InputProvider
 import com.phoenixpen.game.logging.GlobalLogger
 import com.phoenixpen.game.logging.LogMessage
-import com.sun.org.apache.xpath.internal.operations.Bool
 import java.util.*
+import kotlin.math.min
 
 /**
  * Enumeration describing the current state of a console component
@@ -53,7 +53,7 @@ enum class ConsoleHeightMode
  * A scene component that can be used to show log and event messages and interact with the game using
  * textual commands
  */
-class Console(input: InputProvider): SceneComponent
+class Console(val input: InputProvider): SceneComponent
 {
     /**
      * Tick counter used to blink the prompt cursor
@@ -111,9 +111,14 @@ class Console(input: InputProvider): SceneComponent
     var heightFull = 15
 
     /**
+     * The current input buffer
+     */
+    var inputBuffer: String = ""
+
+    /**
      * Color used for old, and thus greyed out, buffer entries
      */
-    private val greyedOutColor = Color(156, 156, 156)
+    private val textColor = Color(156, 156, 156)
 
     /**
      * Create observers
@@ -224,14 +229,25 @@ class Console(input: InputProvider): SceneComponent
         var yPos = if (this.heightMode == ConsoleHeightMode.Full) this.heightFull else this.heightCompact
 
         // Draw static prompt
-        screen.putString(Position(0, yPos), ">")
+        screen.putString(Position(0, yPos), ">", front = this.textColor)
+
+        // Draw user input
+        val maxInputLen = screen.getDimensions().width - 1
+
+        val displayString = this.inputBuffer.substring(0, min(maxInputLen, this.inputBuffer.length))
+                .padEnd(maxInputLen)
+
+        screen.putString(Position(1, yPos), displayString, front = this.textColor)
+
 
         // Draw cursor
-        val color = if (this.promptShowCursor) Color.white else Color.black
-        screen.putString(Position(1, yPos), "-", front = color)
+        if(this.inputBuffer.length < maxInputLen)
+        {
+            val xPos = 1 + this.inputBuffer.length
 
-        // TODO change this! blank whole line
-        screen.putString(Position(2, yPos), "".padEnd(screen.getDimensions().width - 2))
+            val color = if (this.promptShowCursor) this.textColor else Color.black
+            screen.putString(Position(xPos, yPos), "_", front = color)
+        }
 
     }
 
@@ -241,6 +257,9 @@ class Console(input: InputProvider): SceneComponent
     private fun handleInput()
     {
         this.adapter.update()
+
+        // TODO find way to fix this without this hack
+        var wasSpecialKey = false
 
         if(this.adapter.hasEvents())
         {
@@ -268,10 +287,26 @@ class Console(input: InputProvider): SceneComponent
                         }
 
                         ConsoleInput.ToggleHeightMode -> this.toggleHeightMode()
+
+                        ConsoleInput.ExecuteCommand -> wasSpecialKey = true
+                        ConsoleInput.EraseCharacter ->
+                        {
+                            wasSpecialKey = true
+                            if(this.inputBuffer.isNotEmpty())
+                                this.inputBuffer = this.inputBuffer.substring(0, this.inputBuffer.length - 1)
+
+                        }
+
                     }
                 }
 
             }
+        }
+
+        // Handle text input. [wasBackspace] is a hack to avoid the numerical code of special keys to appear
+        if(!wasSpecialKey && this.input.hasText())
+        {
+            this.inputBuffer += this.input.text()
         }
     }
 
@@ -286,6 +321,10 @@ class Console(input: InputProvider): SceneComponent
             ConsoleState.Log -> ConsoleState.Interactive
             ConsoleState.Interactive -> ConsoleState.Hidden
         }
+
+        // Clear input buffer if entered interactive mode
+        if(this.currentState == ConsoleState.Interactive)
+            this.inputBuffer = ""
     }
 
     /**
@@ -353,6 +392,6 @@ class Console(input: InputProvider): SceneComponent
         if(this.currentState == ConsoleState.Interactive)
             ++yPos
 
-        screen.putString(Position(0, yPos), "\u00C4".repeat(screen.getDimensions().width), front = this.greyedOutColor)
+        screen.putString(Position(0, yPos), "\u00C4".repeat(screen.getDimensions().width), front = this.textColor)
     }
 }

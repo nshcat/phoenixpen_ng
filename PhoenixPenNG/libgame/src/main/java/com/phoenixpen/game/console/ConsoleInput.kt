@@ -18,5 +18,15 @@ enum class ConsoleInput
     /**
      * Close console
      */
-    CloseConsole
+    CloseConsole,
+
+    /**
+     * Remove last typed character
+     */
+    EraseCharacter,
+
+    /**
+     * Execute command
+     */
+    ExecuteCommand
 }
