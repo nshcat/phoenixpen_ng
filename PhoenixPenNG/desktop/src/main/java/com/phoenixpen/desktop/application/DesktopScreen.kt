@@ -116,6 +116,16 @@ class DesktopScreen(val gl: GL4, val res: DesktopResourceProvider, size: ScreenD
     }
 
     /**
+     * Retrieve dimensions of this screen, in glyphs.
+     *
+     * @return Dimensions of this screen, in glyphs
+     */
+    override fun getDimensions(): ScreenDimensions
+    {
+        return this.size
+    }
+
+    /**
      * Calculates the dimensions of a single glyph, in pixels
      *
      * @return Dimensions of a single glyph, in pixels
@@ -221,7 +231,7 @@ class DesktopScreen(val gl: GL4, val res: DesktopResourceProvider, size: ScreenD
             throw IllegalArgumentException("Depth value out of range: $depth")
 
         this.data[this.offsetOf(pos) + OFFSET_DATA] =
-                (this.data[this.offsetOf(pos) + OFFSET_DATA] and 0xFF00.inv()) or depth
+                (this.data[this.offsetOf(pos) + OFFSET_DATA] and 0xFF00) or depth
 
         this.dirty = true
     }
@@ -306,6 +316,17 @@ class DesktopScreen(val gl: GL4, val res: DesktopResourceProvider, size: ScreenD
                 (this.data[this.offsetOf(pos) + OFFSET_DATA] and 0xFF00.inv()) or shadowValue
 
         this.dirty = true
+    }
+
+    /**
+     * Clear all shadow directions of a screen cell
+     *
+     * @param pos Screen position where shadows should be cleared at
+     */
+    override fun clearShadows(pos: Position)
+    {
+        this.data[this.offsetOf(pos) + OFFSET_DATA] =
+                (this.data[this.offsetOf(pos) + OFFSET_DATA] and 0xFF00.inv())
     }
 
     /**
