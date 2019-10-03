@@ -296,10 +296,8 @@ class Console(val input: InputProvider): SceneComponent
                                 this.inputBuffer = this.inputBuffer.substring(0, this.inputBuffer.length - 1)
 
                         }
-
                     }
                 }
-
             }
         }
 

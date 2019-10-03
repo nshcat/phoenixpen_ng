@@ -48,7 +48,8 @@ class MainScene(
         MoveMapViewSouthFast,
 
         ToggleConsoleMode,
-        ToggleConsoleHeight
+        ToggleConsoleHeight,
+        QuitConsole
     }
 
     /**
@@ -86,6 +87,7 @@ class MainScene(
 
             this.addMapping(EnumKeyComboMapping(MainSceneInput.ToggleConsoleHeight, Key.F4))
             this.addMapping(EnumKeyComboMapping(MainSceneInput.ToggleConsoleMode, Key.F3))
+            this.addMapping(EnumKeyComboMapping(MainSceneInput.QuitConsole, Key.Escape))
 
             // Touch controls
             this.addMapping(EnumAreaTouchMapping(MainSceneInput.MoveMapViewUp, Rectangle.fromDimensions(this.dimensions)))
@@ -120,7 +122,7 @@ class MainScene(
     /**
      * The user console
      */
-    val console = Console(input).apply { currentState = ConsoleState.Log }
+    val console = Console(input)
 
     /**
      * Render main scene
@@ -205,6 +207,11 @@ class MainScene(
 
                         MainSceneInput.ToggleConsoleHeight -> this.console.toggleHeightMode()
                         MainSceneInput.ToggleConsoleMode -> this.console.toggleState()
+                        MainSceneInput.QuitConsole ->
+                        {
+                            if(this.console.currentState == ConsoleState.Log)
+                                this.console.currentState = ConsoleState.Hidden
+                        }
                     }
                 }
 
