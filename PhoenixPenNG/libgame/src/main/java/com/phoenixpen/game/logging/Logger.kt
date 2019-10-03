@@ -1,9 +1,11 @@
 package com.phoenixpen.game.logging
 
+import com.phoenixpen.game.core.Observable
+
 /**
  * Base class for classes that provide logging functionality
  */
-abstract class Logger
+abstract class Logger: Observable<LogMessage>()
 {
     /**
      * Submit log message
@@ -12,7 +14,21 @@ abstract class Logger
      * @param tag The identifying tag, can be used to signal source of message
      * @param message The actual message
      */
-    abstract fun log(level: LogLevel, tag: String, message: String)
+    protected fun log(level: LogLevel, tag: String, message: String)
+    {
+        val logMessage = LogMessage(level, tag, message)
+
+        this.notifyAll(logMessage)
+
+        this.log(logMessage)
+    }
+
+    /**
+     * Submit and process log message in platform dependant way
+     *
+     * @param message The log message
+     */
+    protected abstract fun log(message: LogMessage)
 
     /**
      * Submit an error message
