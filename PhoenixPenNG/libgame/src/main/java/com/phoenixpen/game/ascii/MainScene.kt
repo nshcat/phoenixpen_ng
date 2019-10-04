@@ -1,5 +1,8 @@
 package com.phoenixpen.game.ascii
 
+import com.phoenixpen.game.console.Console
+import com.phoenixpen.game.console.ConsoleState
+import com.phoenixpen.game.core.Timer
 import com.phoenixpen.game.input.*
 import com.phoenixpen.game.map.MapView
 import com.phoenixpen.game.simulation.Simulation
@@ -42,7 +45,11 @@ class MainScene(
         MoveMapViewNorthFast,
         MoveMapViewWestFast,
         MoveMapViewEastFast,
-        MoveMapViewSouthFast
+        MoveMapViewSouthFast,
+
+        ToggleConsoleMode,
+        ToggleConsoleHeight,
+        QuitConsole
     }
 
     /**
@@ -78,6 +85,10 @@ class MainScene(
             this.addMapping(EnumKeyComboMapping(MainSceneInput.MoveMapViewUp, Key.PageUp))
             this.addMapping(EnumKeyComboMapping(MainSceneInput.MoveMapViewDown, Key.PageDown))
 
+            this.addMapping(EnumKeyComboMapping(MainSceneInput.ToggleConsoleHeight, Key.F4))
+            this.addMapping(EnumKeyComboMapping(MainSceneInput.ToggleConsoleMode, Key.F3))
+            this.addMapping(EnumKeyComboMapping(MainSceneInput.QuitConsole, Key.Escape))
+
             // Touch controls
             this.addMapping(EnumAreaTouchMapping(MainSceneInput.MoveMapViewUp, Rectangle.fromDimensions(this.dimensions)))
         }
@@ -109,6 +120,11 @@ class MainScene(
     val mapView: MapView = MapView(this.simulationState, this.dimensions, Position(0, 0), 2)
 
     /**
+     * The user console
+     */
+    val console = Console(input)
+
+    /**
      * Render main scene
      */
     override fun render(screen: Screen)
@@ -116,13 +132,50 @@ class MainScene(
         // Render the map and all its structures, entities, etc..
         this.mapView.render(screen)
 
-        //this.poissonTest.render(screen)
+        this.console.render(screen)
+        /*var line = 0
+
+        fun logMsg(tag: String, msg: String, clr: Color = Color.white)
+        {
+            val pos = Position(0, line)
+            screen.putString(pos, "[${tag.padEnd(8)}] ", Color(156, 156, 156))
+            screen.putString(pos, msg.padEnd(40), front = clr)
+
+            ++line
+        }
+
+        logMsg("Weather", "It has started raining", Color(156, 156, 156))
+        logMsg("Fauna", "The Jackdaw\u000C chirps at the Magpie\u000C!")
+        logMsg("Fauna", "The Toad\u000B eats the Dragonfly\u000C")
+        logMsg("Fauna", "The Wolf\u000C succumbs to loneliness", Color.red)
+        screen.putString(Position(0, 4), "".padEnd(51, '\u00C4'), Color(156, 156, 156))*/
     }
 
     /**
      * Update main scene logic
      */
     override fun update(elapsedTicks: Int)
+    {
+        // Only do input if the console has not grabbed it
+        if(!this.console.grabsInput())
+            this.doInput()
+        else
+            this.console.update(elapsedTicks)
+
+        // Update simulation state
+        this.simulationState.update(elapsedTicks)
+
+        // Update the map view
+        this.mapView.update(elapsedTicks)
+
+
+        //this.poissonTest.update(elapsedTicks)
+    }
+
+    /**
+     * Do main scene input
+     */
+    private fun doInput()
     {
         // Update the local input adapter
         this.inputAdapter.update()
@@ -151,18 +204,18 @@ class MainScene(
 
                         MainSceneInput.MoveMapViewDown -> this.mapView.moveUp(-1)
                         MainSceneInput.MoveMapViewUp -> this.mapView.moveUp(1)
+
+                        MainSceneInput.ToggleConsoleHeight -> this.console.toggleHeightMode()
+                        MainSceneInput.ToggleConsoleMode -> this.console.toggleState()
+                        MainSceneInput.QuitConsole ->
+                        {
+                            if(this.console.currentState == ConsoleState.Log)
+                                this.console.currentState = ConsoleState.Hidden
+                        }
                     }
                 }
 
             }
         }
-
-        // Update simulation state
-        this.simulationState.update(elapsedTicks)
-
-        // Update the map view
-        this.mapView.update(elapsedTicks)
-
-        //this.poissonTest.update(elapsedTicks)
     }
 }

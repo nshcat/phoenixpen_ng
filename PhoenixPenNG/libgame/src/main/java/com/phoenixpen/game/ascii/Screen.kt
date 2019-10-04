@@ -16,6 +16,13 @@ interface Screen
     fun setGlyph(pos: Position, glyph: Int)
 
     /**
+     * Retrieve dimensions of this screen, in glyphs.
+     *
+     * @return Dimensions of this screen, in glyphs
+     */
+    fun getDimensions(): ScreenDimensions
+
+    /**
      * Set the depth value of a screen cell
      *
      * @param pos Screen position of depth to set, in glyphs
@@ -63,4 +70,11 @@ interface Screen
      * @param shadows Set of shadow directions. Will overwrite old one
      */
     fun setShadows(pos: Position, shadows: ShadowDirections)
+
+    /**
+     * Clear all shadow directions of a screen cell
+     *
+     * @param pos Screen position where shadows should be cleared at
+     */
+    fun clearShadows(pos: Position)
 }

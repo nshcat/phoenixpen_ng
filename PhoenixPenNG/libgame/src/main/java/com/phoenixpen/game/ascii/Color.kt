@@ -41,6 +41,7 @@ data class Color(var r: Int, var g: Int, var b: Int)
         val black = Color(0, 0, 0)
         val white = Color(255, 255, 255)
         val magenta = Color(255, 0, 255)
+        val yellow = Color(255, 255, 0)
     }
 
     override fun equals(other: Any?): Boolean {

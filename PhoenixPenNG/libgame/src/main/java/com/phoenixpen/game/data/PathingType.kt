@@ -1,33 +1,22 @@
 package com.phoenixpen.game.data
 
 /**
- * An enumeration detailing how a structure or material interacts with the path finding of actors.
+ * Enumeration describing what types of tiles an actor can move on
  */
 enum class PathingType
 {
     /**
-     * A material or structure not passable by land-bound actors
+     * Actor can only move on land
      */
-    Water,
+    LandBound,
 
     /**
-     * No restrictions at all
+     * Actor can only move in water
      */
-    NonRestricted,
+    WaterBound,
 
     /**
-     * Blocks every actor other than flying ones
+     * Actor can move on land and in the air, and also ignores half-height path blocks like bushes
      */
-    HalfBlocking,
-
-    /**
-     * Blocks all pathing
-     */
-    FullBlocking,
-
-    /**
-     * Is ignored by path finding. Is used for special structures, such as water tiles, which use a underlying
-     * map tile type to set the pathing mode.
-     */
-    None
+    Flying
 }

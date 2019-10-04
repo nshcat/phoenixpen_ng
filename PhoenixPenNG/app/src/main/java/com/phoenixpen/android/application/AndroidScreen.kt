@@ -75,6 +75,16 @@ class AndroidScreen(val context: Context, size: ScreenDimensions): Shadeable(Asc
     }
 
     /**
+     * Retrieve dimensions of this screen, in glyphs.
+     *
+     * @return Dimensions of this screen, in glyphs
+     */
+    override fun getDimensions(): ScreenDimensions
+    {
+        return this.size
+    }
+
+    /**
      * Update the screen size to the given, new screen dimensions (in pixels!)
      */
     fun resize(size: com.phoenixpen.game.ascii.ScreenDimensions)
@@ -223,7 +233,7 @@ class AndroidScreen(val context: Context, size: ScreenDimensions): Shadeable(Asc
             throw IllegalArgumentException("Depth value out of range: $depth")
 
         this.data[this.offsetOf(pos) + OFFSET_DATA] =
-                (this.data[this.offsetOf(pos) + OFFSET_DATA] and 0xFF00.inv()) or depth
+                (this.data[this.offsetOf(pos) + OFFSET_DATA] and 0xFF00) or depth
 
         this.dirty = true
     }
@@ -308,6 +318,17 @@ class AndroidScreen(val context: Context, size: ScreenDimensions): Shadeable(Asc
                 (this.data[this.offsetOf(pos) + OFFSET_DATA] and 0xFF00.inv()) or shadowValue
 
         this.dirty = true
+    }
+
+    /**
+     * Clear all shadow directions of a screen cell
+     *
+     * @param pos Screen position where shadows should be cleared at
+     */
+    override fun clearShadows(pos: Position)
+    {
+        this.data[this.offsetOf(pos) + OFFSET_DATA] =
+                (this.data[this.offsetOf(pos) + OFFSET_DATA] and 0xFF00.inv())
     }
 
     /**

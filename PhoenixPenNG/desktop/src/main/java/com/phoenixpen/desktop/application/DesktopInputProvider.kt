@@ -96,7 +96,21 @@ class DesktopInputProvider: InputProvider, KeyAdapter()
                 KeyEvent.VK_WINDOWS to Key.Super,
                 KeyEvent.VK_LESS to Key.Less,
                 KeyEvent.VK_PAGE_UP to Key.PageUp,
-                KeyEvent.VK_PAGE_DOWN to Key.PageDown
+                KeyEvent.VK_PAGE_DOWN to Key.PageDown,
+
+                // Function keys
+                KeyEvent.VK_F1 to Key.F1,
+                KeyEvent.VK_F2 to Key.F2,
+                KeyEvent.VK_F3 to Key.F3,
+                KeyEvent.VK_F4 to Key.F4,
+                KeyEvent.VK_F5 to Key.F5,
+                KeyEvent.VK_F6 to Key.F6,
+                KeyEvent.VK_F7 to Key.F7,
+                KeyEvent.VK_F8 to Key.F8,
+                KeyEvent.VK_F9 to Key.F9,
+                KeyEvent.VK_F10 to Key.F10,
+                KeyEvent.VK_F11 to Key.F11,
+                KeyEvent.VK_F12 to Key.F12
         )
     }
 
