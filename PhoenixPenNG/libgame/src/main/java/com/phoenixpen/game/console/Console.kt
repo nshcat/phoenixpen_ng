@@ -141,7 +141,7 @@ class Console(val input: InputProvider): SceneComponent
             }
         })
 
-        GlobalLogger.d("Console", "Console initialized")
+        GlobalEvents.postEvent("Console", "meow")
     }
 
     /**

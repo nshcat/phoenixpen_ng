@@ -3,6 +3,7 @@ package com.phoenixpen.game.ascii
 import com.phoenixpen.game.console.Console
 import com.phoenixpen.game.console.ConsoleState
 import com.phoenixpen.game.core.Timer
+import com.phoenixpen.game.events.GlobalEvents
 import com.phoenixpen.game.input.*
 import com.phoenixpen.game.map.MapView
 import com.phoenixpen.game.simulation.Simulation
@@ -158,7 +159,10 @@ class MainScene(
     {
         // Only do input if the console has not grabbed it
         if(!this.console.grabsInput())
+        {
+            this.console.update(elapsedTicks)
             this.doInput()
+        }
         else
             this.console.update(elapsedTicks)
 
@@ -205,7 +209,11 @@ class MainScene(
                         MainSceneInput.MoveMapViewDown -> this.mapView.moveUp(-1)
                         MainSceneInput.MoveMapViewUp -> this.mapView.moveUp(1)
 
-                        MainSceneInput.ToggleConsoleHeight -> this.console.toggleHeightMode()
+                        MainSceneInput.ToggleConsoleHeight ->
+                        {
+                            this.console.toggleHeightMode()
+                            GlobalEvents.postEvent("Console", "Changed height mode")
+                        }
                         MainSceneInput.ToggleConsoleMode -> this.console.toggleState()
                         MainSceneInput.QuitConsole ->
                         {
