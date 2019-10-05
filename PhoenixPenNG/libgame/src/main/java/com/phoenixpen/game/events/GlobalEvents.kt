@@ -1,7 +1,7 @@
 package com.phoenixpen.game.events
 
-import com.phoenixpen.game.ascii.Color
 import com.phoenixpen.game.core.Observable
+import com.phoenixpen.game.graphics.Color
 
 /**
  * Class managing the creation and distribution of in-game event messages, which can have different

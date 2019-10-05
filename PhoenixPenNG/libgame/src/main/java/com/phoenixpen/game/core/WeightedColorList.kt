@@ -1,6 +1,6 @@
 package com.phoenixpen.game.core
 
-import com.phoenixpen.game.ascii.Color
+import com.phoenixpen.game.graphics.Color
 import com.phoenixpen.game.graphics.ColorInfo
 import kotlinx.serialization.*
 import kotlinx.serialization.internal.StringDescriptor

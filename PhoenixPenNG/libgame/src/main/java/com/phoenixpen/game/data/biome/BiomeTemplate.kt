@@ -1,8 +1,8 @@
 package com.phoenixpen.game.data.biome
 
 import com.phoenixpen.game.ascii.ScreenDimensions
-import com.phoenixpen.game.ascii.Color
 import com.phoenixpen.game.ascii.Position
+import com.phoenixpen.game.graphics.Color
 import com.phoenixpen.game.resources.Bitmap
 import com.phoenixpen.game.resources.ResourceProvider
 

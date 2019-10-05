@@ -1,6 +1,5 @@
 package com.phoenixpen.game.data.biome
 
-import com.phoenixpen.game.ascii.Color
 import com.phoenixpen.game.ascii.Position
 import com.phoenixpen.game.ascii.Position3D
 import com.phoenixpen.game.logging.GlobalLogger

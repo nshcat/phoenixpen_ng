@@ -1,8 +1,10 @@
 package com.phoenixpen.game.console
 
-import com.phoenixpen.game.ascii.Color
 import com.phoenixpen.game.ascii.Position
 import com.phoenixpen.game.events.EventMessage
+import com.phoenixpen.game.graphics.Color
+import com.phoenixpen.game.graphics.Surface
+import com.phoenixpen.game.graphics.putString
 import com.phoenixpen.game.logging.LogLevel
 import com.phoenixpen.game.logging.LogMessage
 import java.util.*
@@ -67,21 +69,21 @@ class BufferEntry private constructor(val type: BufferEntryType)
     /**
      * Draw this buffer entry as part of a console
      *
-     * @param screen Screen to draw to
+     * @param surface Surface to draw to
      * @param position Position of the first character
      * @param width Maximum width of whole line
      */
-    fun render(screen: Screen, position: Position, width: Int)
+    fun render(surface: Surface, position: Position, width: Int)
     {
         // Draw tag, always greyed out
         val tagStr =  this.tagString()
-        screen.putString(position, tagStr, front = this.greyedOutColor)
+        surface.putString(position, tagStr, front = this.greyedOutColor)
 
         // Determine remaining width for the text
         val remainingWidth = width - tagStr.length
 
         // Draw message
-        screen.putString(position, this.messageString(remainingWidth), if (this.isOld()) this.greyedOutColor else this.color())
+        surface.putString(position, this.messageString(remainingWidth), if (this.isOld()) this.greyedOutColor else this.color())
     }
 
     /**
