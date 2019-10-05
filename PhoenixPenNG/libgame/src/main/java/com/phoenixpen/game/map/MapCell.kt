@@ -1,6 +1,6 @@
 package com.phoenixpen.game.map
 
-import com.phoenixpen.game.ascii.DrawInfo
+import com.phoenixpen.game.graphics.DrawInfo
 import com.phoenixpen.game.data.Material
 
 /**
