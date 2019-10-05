@@ -1,4 +1,4 @@
-package com.phoenixpen.game.ascii
+package com.phoenixpen.game.graphics
 
 import kotlinx.serialization.*
 import kotlinx.serialization.internal.StringDescriptor
@@ -6,7 +6,7 @@ import kotlinx.serialization.internal.StringDescriptor
 /**
  * An integral RGB color value. Each component has to be in range [0, 255].
  */
-@Serializable(with=ColorSerializer::class)
+@Serializable(with= ColorSerializer::class)
 data class Color(var r: Int, var g: Int, var b: Int)
 {
     //@Serializer(forClass = Color::class)
