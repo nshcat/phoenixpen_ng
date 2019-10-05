@@ -100,7 +100,7 @@ class MainScene(
     /**
      * The root drawing surface, used to render the map view.
      */
-    val rootSurface = this.surfaceManager.createSurface(this.settings.mainTileSetId)
+    private val rootSurface = this.surfaceManager.createSurface(this.settings.mainTileSetId)
 
     /**
      * Initialize global logger
