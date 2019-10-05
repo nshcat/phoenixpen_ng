@@ -1,5 +1,6 @@
 package com.phoenixpen.game.ascii
 
+import com.phoenixpen.game.graphics.DrawInfo
 import kotlinx.serialization.Serializable
 
 /**

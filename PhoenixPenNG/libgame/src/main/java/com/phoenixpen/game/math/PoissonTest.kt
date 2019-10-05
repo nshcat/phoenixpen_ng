@@ -2,10 +2,8 @@ package com.phoenixpen.game.math
 
 import com.phoenixpen.game.ascii.Color
 import com.phoenixpen.game.ascii.SceneComponent
-import com.phoenixpen.game.ascii.Screen
 import com.phoenixpen.game.ascii.ScreenDimensions
 import com.phoenixpen.game.core.TickCounter
-import com.phoenixpen.game.logging.GlobalLogger
 
 class PoissonTest(screenDimensions: ScreenDimensions): SceneComponent
 {

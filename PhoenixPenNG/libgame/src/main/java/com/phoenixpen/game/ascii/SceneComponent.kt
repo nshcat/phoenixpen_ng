@@ -1,5 +1,7 @@
 package com.phoenixpen.game.ascii
 
+import com.phoenixpen.game.graphics.Surface
+
 /**
  * An interface describing a component of a scene that does receive logic/state updates and can
  * be rendered to an ascii screen.
@@ -16,7 +18,7 @@ interface SceneComponent
     /**
      * Render component to screen
      *
-     * @param screen Screen to render component to
+     * @param screen Surface to render to
      */
-    fun render(screen: Screen)
+    fun render(surface: Surface)
 }

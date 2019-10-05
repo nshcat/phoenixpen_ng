@@ -27,6 +27,11 @@ interface Surface
     val glyphDimensions: GlyphDimensions
 
     /**
+     * The absolute position of this surface on the device screen, in pixels
+     */
+    val position: Position
+
+    /**
      * The size of this surface, in pixels
      */
     val dimensionsInPixels: SurfacePixelDimensions

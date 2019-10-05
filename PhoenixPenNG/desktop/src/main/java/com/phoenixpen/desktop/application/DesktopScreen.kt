@@ -3,10 +3,10 @@ package com.phoenixpen.desktop.application
 import com.jogamp.opengl.GL4
 import com.phoenixpen.desktop.rendering.*
 import com.phoenixpen.desktop.rendering.materials.AsciiScreenMaterial
-import com.phoenixpen.game.ascii.Screen
 import com.phoenixpen.game.ascii.*
 import com.phoenixpen.game.ascii.Color
 import com.phoenixpen.game.ascii.ScreenDimensions
+import com.phoenixpen.game.graphics.DrawInfo
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 

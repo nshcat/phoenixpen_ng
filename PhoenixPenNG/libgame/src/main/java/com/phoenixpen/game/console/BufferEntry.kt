@@ -2,8 +2,6 @@ package com.phoenixpen.game.console
 
 import com.phoenixpen.game.ascii.Color
 import com.phoenixpen.game.ascii.Position
-import com.phoenixpen.game.ascii.Screen
-import com.phoenixpen.game.ascii.putString
 import com.phoenixpen.game.events.EventMessage
 import com.phoenixpen.game.logging.LogLevel
 import com.phoenixpen.game.logging.LogMessage

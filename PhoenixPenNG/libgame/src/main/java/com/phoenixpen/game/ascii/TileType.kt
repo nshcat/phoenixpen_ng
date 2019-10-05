@@ -1,8 +1,7 @@
 package com.phoenixpen.game.ascii
 
 import com.phoenixpen.game.core.*
-import com.phoenixpen.game.simulation.Season
-import com.sun.org.apache.xpath.internal.operations.Bool
+import com.phoenixpen.game.graphics.DrawInfo
 import kotlinx.serialization.*
 import kotlinx.serialization.internal.EnumSerializer
 import kotlinx.serialization.internal.StringDescriptor

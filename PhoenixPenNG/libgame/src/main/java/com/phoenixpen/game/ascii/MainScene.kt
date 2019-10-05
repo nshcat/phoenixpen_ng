@@ -4,6 +4,7 @@ import com.phoenixpen.game.console.Console
 import com.phoenixpen.game.console.ConsoleState
 import com.phoenixpen.game.core.Timer
 import com.phoenixpen.game.events.GlobalEvents
+import com.phoenixpen.game.graphics.SurfaceManager
 import com.phoenixpen.game.input.*
 import com.phoenixpen.game.map.MapView
 import com.phoenixpen.game.simulation.Simulation
@@ -11,6 +12,7 @@ import com.phoenixpen.game.logging.GlobalLogger
 import com.phoenixpen.game.logging.Logger
 import com.phoenixpen.game.math.PoissonTest
 import com.phoenixpen.game.resources.ResourceProvider
+import com.phoenixpen.game.settings.AppSettings
 
 /**
  * The game main scene, displaying the map and allowing interaction with the game.
@@ -18,16 +20,16 @@ import com.phoenixpen.game.resources.ResourceProvider
  * @param resources The resource manager to retrieve game data from
  * @param input The input manager providing input events
  * @param logger The logger instance to use
- * @param dimensions The screen dimensions, in glyphs
- * @param dimensionsInPixels The screen dimensions, in pixels
+ * @param surfaceManager The surface manager to use for surface creation
+ * @param settings The application settings
  */
 class MainScene(
         resources: ResourceProvider,
         input: InputProvider,
         logger: Logger,
-        dimensions: ScreenDimensions,
-        dimensionsInPixels: ScreenDimensions
-): Scene(resources, input, logger, dimensions, dimensionsInPixels)
+        surfaceManager: SurfaceManager,
+        settings: AppSettings
+): Scene(resources, input, logger, surfaceManager, settings)
 {
     /**
      * Input event enumeration for this scene
@@ -96,6 +98,11 @@ class MainScene(
     }
 
     /**
+     * The root drawing surface, used to render the map view.
+     */
+    val rootSurface = this.surfaceManager.createSurface(this.settings.mainTileSetId)
+
+    /**
      * Initialize global logger
      */
     init
@@ -103,12 +110,10 @@ class MainScene(
         GlobalLogger.setLogger(logger)
     }
 
-    private val poissonTest = PoissonTest(dimensions)
-
     /**
      * The input adapter for this scene
      */
-    private val inputAdapter = MainSceneInputAdapter(input, this.dimensionsInPixels)
+    private val inputAdapter = MainSceneInputAdapter(input, this.surfaceManager.screenDimensions)
 
     /**
      * The main simulation state
@@ -118,7 +123,7 @@ class MainScene(
     /**
      * The map view, a scene component tasked with rendering the map to screen
      */
-    val mapView: MapView = MapView(this.simulationState, this.dimensions, Position(0, 0), 2)
+    val mapView: MapView = MapView(this.simulationState, this.rootSurface.dimensionsInGlyphs, Position(0, 0), 2)
 
     /**
      * The user console
@@ -128,28 +133,12 @@ class MainScene(
     /**
      * Render main scene
      */
-    override fun render(screen: Screen)
+    override fun render()
     {
         // Render the map and all its structures, entities, etc..
-        this.mapView.render(screen)
+        this.mapView.render(this.rootSurface)
 
-        this.console.render(screen)
-        /*var line = 0
-
-        fun logMsg(tag: String, msg: String, clr: Color = Color.white)
-        {
-            val pos = Position(0, line)
-            screen.putString(pos, "[${tag.padEnd(8)}] ", Color(156, 156, 156))
-            screen.putString(pos, msg.padEnd(40), front = clr)
-
-            ++line
-        }
-
-        logMsg("Weather", "It has started raining", Color(156, 156, 156))
-        logMsg("Fauna", "The Jackdaw\u000C chirps at the Magpie\u000C!")
-        logMsg("Fauna", "The Toad\u000B eats the Dragonfly\u000C")
-        logMsg("Fauna", "The Wolf\u000C succumbs to loneliness", Color.red)
-        screen.putString(Position(0, 4), "".padEnd(51, '\u00C4'), Color(156, 156, 156))*/
+        this.console.render(this.rootSurface)
     }
 
     /**
@@ -171,9 +160,6 @@ class MainScene(
 
         // Update the map view
         this.mapView.update(elapsedTicks)
-
-
-        //this.poissonTest.update(elapsedTicks)
     }
 
     /**
@@ -222,7 +208,6 @@ class MainScene(
                         }
                     }
                 }
-
             }
         }
     }

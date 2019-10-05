@@ -1,7 +1,7 @@
 package com.phoenixpen.game.data
 
 import com.phoenixpen.game.ascii.Color
-import com.phoenixpen.game.ascii.DrawInfo
+import com.phoenixpen.game.graphics.DrawInfo
 import com.phoenixpen.game.ascii.TileType
 import com.phoenixpen.game.ascii.TileTypeSerializer
 import com.phoenixpen.game.core.WeightedTileList
