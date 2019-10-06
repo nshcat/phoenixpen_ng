@@ -27,7 +27,8 @@
 // br, bg, bb, data
 //
 // data format:
-// lower byte sets the depth of the cell
+// lower 7 bits of lower byte sets the depth of the cell
+// eighth bit of lower byte is transparency flag
 // next byte is a flag field, where each bit
 // represents a drop shadow
 //
