@@ -146,7 +146,7 @@ class DesktopSurfaceManager(
         val surface = DesktopSurface(
                 this.gl,
                 this.res,
-                Position(),
+                offset,
                 dimensions,
                 texture
         )

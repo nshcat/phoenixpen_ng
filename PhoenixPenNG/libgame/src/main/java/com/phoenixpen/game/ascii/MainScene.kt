@@ -105,7 +105,7 @@ class MainScene(
     /**
      * The surface used to draw the console
      */
-    private val consoleSurface = this.surfaceManager.createSurface(this.settings.mainTileSetId).apply {
+    private val consoleSurface = this.surfaceManager.createSurface(this.settings.consoleTileSetId).apply {
         clearWithTransparency = true
     }
 
