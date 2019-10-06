@@ -7,6 +7,7 @@ flat in vec4 back_color;
 in vec2 shadow_coords;
 flat in float fog_factor;
 flat in uint shadows[8];
+flat in uint is_transparent;
 
 
 uniform vec4 fog_color;
@@ -60,6 +61,10 @@ void apply_depth(inout vec4 p_pixel)
 
 void main()
 {
+    // Discard fragment if the glyph was transparent
+    if(is_transparent > 0U)
+       discard;
+
     //fragmentColor = calc_pixel();
     vec4 clr = calc_pixel();
 

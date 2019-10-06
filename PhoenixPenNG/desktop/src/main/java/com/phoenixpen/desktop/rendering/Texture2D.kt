@@ -3,7 +3,7 @@ package com.phoenixpen.desktop.rendering
 import com.jogamp.common.nio.Buffers
 import com.jogamp.opengl.GL
 import com.jogamp.opengl.GL4
-import com.jogamp.opengl.util.texture.TextureIO
+import com.jogamp.opengl.GLContext
 import com.phoenixpen.desktop.application.DesktopResourceProvider
 import com.phoenixpen.game.ascii.ScreenDimensions
 import java.awt.image.DataBufferByte

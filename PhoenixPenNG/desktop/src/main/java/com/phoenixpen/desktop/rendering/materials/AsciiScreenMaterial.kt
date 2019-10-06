@@ -8,6 +8,9 @@ import com.phoenixpen.desktop.rendering.Material
 import com.phoenixpen.desktop.rendering.Shader
 import com.phoenixpen.desktop.rendering.ShaderProgram
 import com.phoenixpen.desktop.rendering.ShaderType
+import com.phoenixpen.game.ascii.Dimensions
+import com.phoenixpen.game.ascii.Position
+import com.phoenixpen.game.graphics.GlyphDimensions
 import org.joml.Vector4f
 
 /**
@@ -33,23 +36,26 @@ class AsciiScreenMaterial(val gl: GL4, res: DesktopResourceProvider):
     var fogColor: Vector4f = Vector4f(0.1f, 0.1f, 0.3f, 1f)
 
     /**
-     * The dimensions of the screen, in glyphs (not pixels)
+     * The dimensions of the surface, in glyphs (not pixels)
      */
-    var screenDimensions: ScreenDimensions = ScreenDimensions.empty()
+    var surfaceDimensions: Dimensions = Dimensions.empty()
 
     /**
      * The dimensions of the glyph texture sheet, in glyphs.
      *
      * This is currently fixed to 16x16 glyphs.
      */
-    val sheetDimensions: ScreenDimensions = ScreenDimensions(16, 16)
+    val sheetDimensions: Dimensions = Dimensions(16, 16)
 
     /**
-     * The dimensions of a single glyph, in pixels.
-     *
-     * Currently, all glyphs have to be of the same dimensions.
+     * Glyph dimension data
      */
-    var glyphDimensions: ScreenDimensions = ScreenDimensions.empty()
+    var glyphDimensions: GlyphDimensions = GlyphDimensions()
+
+    /**
+     * The absolute position of the top left corner on the device screen, in pixels
+     */
+    var position: Position = Position()
 
     /**
      * Apply uniform data. We only need to set the required textures here.
@@ -66,14 +72,19 @@ class AsciiScreenMaterial(val gl: GL4, res: DesktopResourceProvider):
 
         // Misc uniforms
         uniformVec4f(gl, this.shaderProgram, "fog_color", this.fogColor)
-        uniformInt(gl, this.shaderProgram, "screen_width", this.screenDimensions.width)
-        //uniformInt(gl, this.shaderProgram, "screen_height", this.screenDimensions.height)
+        uniformInt(gl, this.shaderProgram, "surface_width", this.surfaceDimensions.width)
+        //uniformInt(gl, this.shaderProgram, "screen_height", this.surfaceDimensions.height)
 
         uniformInt(gl, this.shaderProgram, "sheet_width", this.sheetDimensions.width)
         uniformInt(gl, this.shaderProgram, "sheet_height", this.sheetDimensions.height)
 
-        uniformInt(gl, this.shaderProgram, "glyph_width", this.glyphDimensions.width)
-        uniformInt(gl, this.shaderProgram, "glyph_height", this.glyphDimensions.height)
+        uniformInt(gl, this.shaderProgram, "glyph_width", this.glyphDimensions.baseDimensions.width)
+        uniformInt(gl, this.shaderProgram, "glyph_height", this.glyphDimensions.baseDimensions.height)
+
+        uniformFloat(gl, this.shaderProgram, "glyph_scaling_factor", this.glyphDimensions.scaleFactor)
+
+        uniformInt(gl, this.shaderProgram, "position_x", this.position.x)
+        uniformInt(gl, this.shaderProgram, "position_y", this.position.y)
 
         uniformFloat(gl, this.shaderProgram, "fog_density", this.fogDensity)
     }

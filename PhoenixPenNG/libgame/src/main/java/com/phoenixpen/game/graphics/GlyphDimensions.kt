@@ -10,7 +10,7 @@ import com.phoenixpen.game.ascii.Position
  * @property scaleFactor The factor of which to scale the glyphs with
  */
 data class GlyphDimensions(
-        val baseDimensions: Dimensions,
+        val baseDimensions: Dimensions = Dimensions.empty(),
         val scaleFactor: Float = 1.0f
 )
 {

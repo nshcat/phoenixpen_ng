@@ -1,22 +1,31 @@
-package com.phoenixpen.desktop.application
+package com.phoenixpen.desktop.graphics
 
 import com.jogamp.opengl.GL4
+import com.phoenixpen.desktop.application.DesktopResourceProvider
+import com.phoenixpen.game.graphics.Color
 import com.phoenixpen.desktop.rendering.*
 import com.phoenixpen.desktop.rendering.materials.AsciiScreenMaterial
-import com.phoenixpen.game.ascii.*
-import com.phoenixpen.game.ascii.Color
-import com.phoenixpen.game.ascii.ScreenDimensions
+import com.phoenixpen.game.ascii.Dimensions
+import com.phoenixpen.game.ascii.Position
+import com.phoenixpen.game.ascii.ShadowDirection
+import com.phoenixpen.game.ascii.ShadowDirections
 import com.phoenixpen.game.graphics.DrawInfo
+import com.phoenixpen.game.graphics.Surface
+import com.phoenixpen.game.graphics.SurfacePixelDimensions
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-
 /**
- * A screen made up from a matrix of coloured ASCII glyphs.
- *
- * @property size Screen dimensions, in PIXELS
+ * Surface implementation for OpenGl4 desktop
  */
-class DesktopScreen(val gl: GL4, val res: DesktopResourceProvider, size: ScreenDimensions): Shadeable(AsciiScreenMaterial(gl, res)), Screen
+class DesktopSurface(
+        private val gl: GL4,
+        private val res: DesktopResourceProvider,
+        override val position: Position,
+        override val dimensionsInGlyphs: Dimensions,
+        private val glyphTexture: GlyphTexture
+    )
+    : Shadeable(AsciiScreenMaterial(gl, res)), Surface
 {
     // Data offsets for screen elements
     private val OFFSET_FR       = 0
@@ -29,137 +38,72 @@ class DesktopScreen(val gl: GL4, val res: DesktopResourceProvider, size: ScreenD
     private val OFFSET_DATA     = 7
 
     /**
-     * The glyph sheet texture
+     * Information about the glyphs this surface uses
      */
-    private val glyphTexture = JOGLTexture2D.FromImageResource(this.gl, this.res, "text.png")
+    override val glyphDimensions = this.glyphTexture.glyphDimensions
 
     /**
-     * The shadow texture
+     * The size of this surface, in pixels
      */
-    private val shadowTexture = JOGLTexture2D.FromImageResource(this.gl, this.res, "shadows.png")
+    override val dimensionsInPixels: SurfacePixelDimensions
 
     /**
-     * The buffer texture used to hold the screen data. We use a
+     * Whether [clear] should clear this surface using transparent glyphs,
+     * thus allowing underlying surfaces to show through
      */
-    private var bufferTexture = BufferTexture(this.gl, this.bufferSize(size))
+    override val clearWithTransparency: Boolean = false
 
     /**
-     * The data array that is used as backing storage for all screen operations. On render, its contents
-     * are copied to the buffer texture.
+     * Whether this surface is enabled. This controls whether it will be drawn or not.
      */
-    private var data = IntArray(this.bufferSize(size))
+    override val enabled: Boolean = true
 
     /**
-     * The size of the screen, in glyphs
-     */
-    var size: ScreenDimensions = dimensionsInGlyphs(size)
-
-    /**
-     * The size of the screen, in pixels
-     */
-    var pixelSize: ScreenDimensions = size
-
-    /**
-     * Whether the screen contents have been changed and need to be reuploaded
+     * Whether the surface contents have been changed and need to be reuploaded
      */
     private var dirty: Boolean = true
 
     /**
-     * Initialize the glyph screen
+     * Size of the internal buffer
+     */
+    private val bufferSize = this.dimensionsInGlyphs.height * this.dimensionsInGlyphs.width * 2 * 4
+
+    /**
+     * The buffer texture used to hold the surface data on the GPU.
+     */
+    private var bufferTexture = BufferTexture(this.gl, this.bufferSize)
+
+    /**
+     * The data array that is used as backing storage for all surface operations. On render, its contents
+     * are copied to the buffer texture.
+     */
+    private val data = IntArray(this.bufferSize)
+
+    /**
+     * The shadow texture TODO make this less hacky?
+     */
+    private val shadowTexture = JOGLTexture2D.FromImageResource(this.gl, this.res, "shadows.png")
+
+    /**
+     * Initialization
      */
     init
     {
-        this.resize(size)
-    }
+        // Determine dimensions in pixels
+        this.dimensionsInPixels = Dimensions(
+                this.glyphDimensions.dimensions.width * this.dimensionsInGlyphs.width,
+                this.glyphDimensions.dimensions.height * this.dimensionsInGlyphs.height
+        )
 
-    /**
-     * Update the screen size to the given, new screen dimensions (in pixels!)
-     */
-    fun resize(size: ScreenDimensions)
-    {
-        this.pixelSize = size
-
-        // Recalculate screen size in glyphs
-        this.size = this.dimensionsInGlyphs(size)
-
-        // Resize data array
-        this.data = IntArray(this.bufferSize(size))
-
-        // Resize buffer texture
-        this.bufferTexture.recreate(this.bufferSize(size))
-
-        // Update the properties in the AsciiMaterial
+        // Set the properties in the AsciiMaterial
         val mat = this.material as AsciiScreenMaterial
         mat.apply {
-            glyphDimensions = this@DesktopScreen.glyphDimensions()
-            screenDimensions = this@DesktopScreen.size
+            glyphDimensions = this@DesktopSurface.glyphDimensions
+            surfaceDimensions = this@DesktopSurface.dimensionsInGlyphs
+            position = this@DesktopSurface.position
         }
 
         // A refresh is definitely needed
-        this.dirty = true
-    }
-
-    /**
-     * Calculates the screen dimensions in glyphs
-     *
-     * @return Dimensions of the screen in glyphs
-     */
-    fun dimensionsInGlyphs(screenSize: ScreenDimensions): ScreenDimensions
-    {
-        // Retrieve dimensions of a single glyph
-        val glyphDimensions = this.glyphDimensions()
-
-        return ScreenDimensions(
-                screenSize.width / glyphDimensions.width,
-                screenSize.height / glyphDimensions.height
-        )
-    }
-
-    /**
-     * Retrieve dimensions of this screen, in glyphs.
-     *
-     * @return Dimensions of this screen, in glyphs
-     */
-    override fun getDimensions(): ScreenDimensions
-    {
-        return this.size
-    }
-
-    /**
-     * Calculates the dimensions of a single glyph, in pixels
-     *
-     * @return Dimensions of a single glyph, in pixels
-     */
-    fun glyphDimensions(): ScreenDimensions
-    {
-        // The glyph sheet always contains 16x16 glyphs
-        val sheetDimensions = ScreenDimensions(16, 16)
-
-        return ScreenDimensions(
-                this.glyphTexture.dimensions().width / sheetDimensions.width,
-                this.glyphTexture.dimensions().height / sheetDimensions.height
-        )
-    }
-
-    /**
-     * Calculates the buffer size (in integers) needed to fit the whole screen data.
-     *
-     * @return Size of the screen data, in integers
-     */
-    fun bufferSize(screenSize: ScreenDimensions): Int
-    {
-        val screenDims = this.dimensionsInGlyphs(screenSize)
-
-        // For each glyph, two four dimensional integer vectors are stored
-        return screenDims.height * screenDims.width * 2 * 4
-    }
-
-    /**
-     * Clear the screen
-     */
-    override fun clear()
-    {
-        this.data.fill(0)
         this.dirty = true
     }
 
@@ -193,29 +137,41 @@ class DesktopScreen(val gl: GL4, val res: DesktopResourceProvider, size: ScreenD
         }
 
         // Activate all textures
-        this.glyphTexture.use(TextureUnit.Unit0)
+        this.glyphTexture.openGlTexture.use(TextureUnit.Unit0)
         this.shadowTexture.use(TextureUnit.Unit1)
         this.bufferTexture.use(TextureUnit.Unit2)
 
         // Render instanced quad for each glyph on the scree
-        this.gl.glDrawArraysInstanced(GL4.GL_TRIANGLES, 0, 6, size.width * size.height)
+        this.gl.glDrawArraysInstanced(GL4.GL_TRIANGLES, 0, 6, this.dimensionsInGlyphs.width * this.dimensionsInGlyphs.height)
     }
 
     /**
-     * Set the glyph of a screen cell
+     * Calculate the buffer offset for given screen position, in glyphs
      *
-     * @param pos Screen position of glyph to set, in glyphs
-     * @param glyph New glyph code. Has to be in range [0, 255]
+     * @param pos Screen position to convert to linear address, in glyphs
+     * @return Linear buffer offset for given position
      */
-    override fun setGlyph(pos: Position, glyph: Int)
+    private fun offsetOf(pos: Position): Int
     {
-        // Check glyph range
-        if(glyph < 0 || glyph > 255)
-            throw IllegalArgumentException("Glyph code out of range: $glyph")
+        return (2 * 4) * ((this.dimensionsInGlyphs.width * pos.y) + pos.x)
+    }
 
-        this.data[this.offsetOf(pos) + OFFSET_GLYPH] = glyph
 
+    /**
+     * Clear the screen
+     */
+    override fun clear()
+    {
+        this.data.fill(0)
         this.dirty = true
+
+        // TODO make this more effecient?
+        if(this.clearWithTransparency)
+        {
+            for(ix in 0 until this.dimensionsInGlyphs.width)
+                for(iy in 0 until this.dimensionsInGlyphs.height)
+                    this.setTransparent(Position(ix, iy), true)
+        }
     }
 
     /**
@@ -227,13 +183,31 @@ class DesktopScreen(val gl: GL4, val res: DesktopResourceProvider, size: ScreenD
     override fun setDepth(pos: Position, depth: Int)
     {
         // Check depth range
-        if(depth < 0 || depth > 255)
+        if(depth < 0 || depth > 64)
             throw IllegalArgumentException("Depth value out of range: $depth")
 
+        // Prepare depth value. This is done to protect the transparency bit, which is the eighth
+        // bit of the depth value.
+        val maskedDepth = depth and 0x7F
+
         this.data[this.offsetOf(pos) + OFFSET_DATA] =
-                (this.data[this.offsetOf(pos) + OFFSET_DATA] and 0xFF00) or depth
+                (this.data[this.offsetOf(pos) + OFFSET_DATA] and 0xFF80) or maskedDepth
 
         this.dirty = true
+    }
+
+    /**
+     * Set the transparency status of a surface cell
+     *
+     * @param pos surface position to set transparency status for
+     * @param isTransparent new transparency status
+     */
+    override fun setTransparent(pos: Position, isTransparent: Boolean)
+    {
+        val bit = if (isTransparent) 0x1 else 0x0
+
+        this.data[this.offsetOf(pos) + OFFSET_DATA] =
+                (this.data[this.offsetOf(pos) + OFFSET_DATA] and 0xFF7F) or (bit shl 7)
     }
 
     /**
@@ -330,27 +304,19 @@ class DesktopScreen(val gl: GL4, val res: DesktopResourceProvider, size: ScreenD
     }
 
     /**
-     * Calculate the buffer offset for given screen position, in glyphs
+     * Set the glyph of a screen cell
      *
-     * @param pos Screen position to convert to linear address, in glyphs
-     * @return Linear buffer offset for given position
+     * @param pos Screen position of glyph to set, in glyphs
+     * @param glyph New glyph code. Has to be in range [0, 255]
      */
-    private fun offsetOf(pos: Position): Int
+    override fun setGlyph(pos: Position, glyph: Int)
     {
-        return (2 * 4) * ((this.size.width * pos.y) + pos.x)
-    }
+        // Check glyph range
+        if(glyph < 0 || glyph > 255)
+            throw IllegalArgumentException("Glyph code out of range: $glyph")
 
-    /**
-     * Retrieve useful debug information about the screen state
-     *
-     * @return Debug information, as a string
-     */
-    fun debugInfo(): String
-    {
-        return "\tScreen dimensions (in pixels): ${pixelSize.width}x${pixelSize.height}\n\tScreen dimensions (in glyphs):${size.width}x${size.height}\n" +
-                "\tLocal buffer size (in ints): ${data.size}\n" +
-                "\tGPU buffer texture handle: ${bufferTexture.handle}\n" +
-                "\tGPU buffer handle: ${bufferTexture.bufferHandle}\n" +
-                "\tGPU buffer size (in ints): ${bufferTexture.size}\n"
+        this.data[this.offsetOf(pos) + OFFSET_GLYPH] = glyph
+
+        this.dirty = true
     }
 }
