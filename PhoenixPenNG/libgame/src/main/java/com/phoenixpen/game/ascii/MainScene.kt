@@ -109,7 +109,6 @@ class MainScene(
         clearWithTransparency = true
     }
 
-
     /**
      * Initialize global logger
      */

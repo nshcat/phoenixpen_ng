@@ -185,7 +185,44 @@ class DesktopSurfaceManager(
      *
      * @return New surface with requested parameters
      */
-    override fun createSurfaceRelative(parent: Surface, tl: Position, br: Position, glyphSetId: String): Surface {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun createSurfaceRelative(parent: Surface, tl: Position, br: Position, glyphSetId: String): Surface
+    {
+        // Some sanity checks
+        if(tl.x >= br.x || tl.y >= br.y)
+            throw IllegalArgumentException("SurfaceManager::createSurfaceRelative: Illegal TL/BR points")
+
+        // Convert both positions into absolute pixel coordinates
+        val tlPixels = parent.glyphDimensions.positionToPixels(tl)
+        val brPixels = parent.glyphDimensions.positionToPixels(br)
+
+        // Determine width and height of the surface, in pixels.
+        // To fully include the BR point, we need to add the dimensions of the parent surfaces glyphs here.
+        val wPixels = (brPixels.x - tlPixels.x) + parent.glyphDimensions.dimensions.width
+        val hPixels = (brPixels.y - tlPixels.y) + parent.glyphDimensions.dimensions.height
+
+        // Retrieve texture instance from cache
+        val texture = this.textureManager.retrieveTexture(glyphSetId, 1.0f)
+
+        // Find nearest amount of glyphs that fit into it
+        val wGlyphs = wPixels / texture.glyphDimensions.dimensions.width
+        val hGlyphs = hPixels / texture.glyphDimensions.dimensions.height
+
+        // More sanity checks
+        if(wGlyphs <= 0 || hGlyphs <= 0)
+            throw IllegalArgumentException("SurfaceManager::createSurfaceRelative: Created surface fits no glyphs at all")
+
+        // Create actual surface object
+        val surface = DesktopSurface(
+                this.gl,
+                this.res,
+                tlPixels + parent.position,
+                SurfaceDimensions(wGlyphs, hGlyphs),
+                texture,
+                this.shadowTexture
+        )
+
+        this.surfaces.add(surface)
+
+        return surface
     }
 }

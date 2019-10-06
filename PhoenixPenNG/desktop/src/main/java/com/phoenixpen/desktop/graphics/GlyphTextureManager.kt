@@ -27,13 +27,13 @@ class GlyphTextureManager(val gl: GL4, val resourceProvider: DesktopResourceProv
     fun retrieveTexture(id: String, scaleFactor: Float): GlyphTexture
     {
         // First look if there is an OpenGL texture cached for this resource id
-        /*if(this.textureCache.containsKey(id))
+        if(this.textureCache.containsKey(id))
         {
             // Retrieve texture and use to make wrapper
             return this.makeTextureWrapper(this.textureCache.getValue(id), scaleFactor)
         }
         else
-        {*/
+        {
             // Create texture
             val tex = JOGLTexture2D.FromImageResource(gl, this.resourceProvider, id)
 
@@ -41,7 +41,7 @@ class GlyphTextureManager(val gl: GL4, val resourceProvider: DesktopResourceProv
             this.textureCache.put(id, tex)
 
             return this.makeTextureWrapper(tex, scaleFactor)
-        //}
+        }
     }
 
     private fun makeTextureWrapper(tex: JOGLTexture2D, scaleFactor: Float): GlyphTexture
