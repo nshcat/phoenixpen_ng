@@ -45,12 +45,12 @@ interface Surface
      * Whether [clear] should clear this surface using transparent glyphs,
      * thus allowing underlying surfaces to show through
      */
-    val clearWithTransparency: Boolean
+    var clearWithTransparency: Boolean
 
     /**
      * Whether this surface is enabled. This controls whether it will be drawn or not.
      */
-    val enabled: Boolean
+    var enabled: Boolean
 
     /**
      * Clear the surface

@@ -6,6 +6,7 @@ import com.phoenixpen.desktop.rendering.RenderParams
 import com.phoenixpen.desktop.rendering.Renderable
 import com.phoenixpen.game.ascii.Position
 import com.phoenixpen.game.ascii.ScreenDimensions
+import com.phoenixpen.game.ascii.plus
 import com.phoenixpen.game.graphics.Surface
 import com.phoenixpen.game.graphics.SurfaceDimensions
 import com.phoenixpen.game.graphics.SurfaceManager
@@ -41,7 +42,7 @@ class DesktopSurfaceManager(
     override fun render(params: RenderParams)
     {
         // Render all enabled surfaces in order
-        for(surface in this.surfaces)
+        for(surface in this.surfaces.asReversed())
         {
             if(surface.enabled)
                 surface.render(params)
@@ -133,8 +134,26 @@ class DesktopSurfaceManager(
      *
      * @return New surface with requested parameters
      */
-    override fun createSurfaceRelative(parent: Surface, position: Position, dimensions: SurfaceDimensions, glyphSetId: String): Surface {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun createSurfaceRelative(parent: Surface, position: Position, dimensions: SurfaceDimensions, glyphSetId: String): Surface
+    {
+        // Calculate offset
+        val offset = parent.position + parent.glyphDimensions.positionToPixels(position)
+
+        // Retrieve texture instance from cache
+        val texture = this.textureManager.retrieveTexture(glyphSetId, 1.0f)
+
+        // Create actual surface object
+        val surface = DesktopSurface(
+                this.gl,
+                this.res,
+                Position(),
+                dimensions,
+                texture
+        )
+
+        this.surfaces.add(surface)
+
+        return surface
     }
 
     /**

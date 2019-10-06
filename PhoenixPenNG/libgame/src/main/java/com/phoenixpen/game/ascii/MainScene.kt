@@ -4,7 +4,7 @@ import com.phoenixpen.game.console.Console
 import com.phoenixpen.game.console.ConsoleState
 import com.phoenixpen.game.core.Timer
 import com.phoenixpen.game.events.GlobalEvents
-import com.phoenixpen.game.graphics.SurfaceManager
+import com.phoenixpen.game.graphics.*
 import com.phoenixpen.game.input.*
 import com.phoenixpen.game.map.MapView
 import com.phoenixpen.game.simulation.Simulation
@@ -103,6 +103,14 @@ class MainScene(
     private val rootSurface = this.surfaceManager.createSurface(this.settings.mainTileSetId)
 
     /**
+     * The surface used to draw the console
+     */
+    private val consoleSurface = this.surfaceManager.createSurface(this.settings.mainTileSetId).apply {
+        clearWithTransparency = true
+    }
+
+
+    /**
      * Initialize global logger
      */
     init
@@ -138,7 +146,7 @@ class MainScene(
         // Render the map and all its structures, entities, etc..
         this.mapView.render(this.rootSurface)
 
-        this.console.render(this.rootSurface)
+        this.console.render(this.consoleSurface)
     }
 
     /**

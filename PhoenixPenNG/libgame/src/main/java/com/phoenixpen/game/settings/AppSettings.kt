@@ -12,8 +12,10 @@ import kotlinx.serialization.Serializable
  * fallback settings instance, for example when the user starts the application for the first time.
  *
  * @property mainTileSetId The resource ID of the main glyph tile set, used for graphical parts of the application
+ * @property consoleTileSetId The resource ID of the console tile set
  */
 @Serializable
 class AppSettings(
-    @SerialName("main_tileset_id") val mainTileSetId: String = "text.png"
+    @SerialName("main_tileset_id") val mainTileSetId: String = "text.png",
+    @SerialName("console_tileset_id") val consoleTileSetId: String = "curses_640x300.png"
 )

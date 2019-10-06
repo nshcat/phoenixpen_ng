@@ -51,12 +51,12 @@ class DesktopSurface(
      * Whether [clear] should clear this surface using transparent glyphs,
      * thus allowing underlying surfaces to show through
      */
-    override val clearWithTransparency: Boolean = false
+    override var clearWithTransparency: Boolean = false
 
     /**
      * Whether this surface is enabled. This controls whether it will be drawn or not.
      */
-    override val enabled: Boolean = true
+    override var enabled: Boolean = true
 
     /**
      * Whether the surface contents have been changed and need to be reuploaded
@@ -238,6 +238,8 @@ class DesktopSurface(
         this.data[this.offsetOf(pos) + OFFSET_FG] = color.g
         this.data[this.offsetOf(pos) + OFFSET_FB] = color.b
 
+        this.setTransparent(pos, false)
+
         this.dirty = true
     }
 
@@ -253,6 +255,8 @@ class DesktopSurface(
         this.data[this.offsetOf(pos) + OFFSET_BR] = color.r
         this.data[this.offsetOf(pos) + OFFSET_BG] = color.g
         this.data[this.offsetOf(pos) + OFFSET_BB] = color.b
+
+        this.setTransparent(pos, false)
 
         this.dirty = true
     }
@@ -316,6 +320,8 @@ class DesktopSurface(
             throw IllegalArgumentException("Glyph code out of range: $glyph")
 
         this.data[this.offsetOf(pos) + OFFSET_GLYPH] = glyph
+
+        this.setTransparent(pos, false)
 
         this.dirty = true
     }

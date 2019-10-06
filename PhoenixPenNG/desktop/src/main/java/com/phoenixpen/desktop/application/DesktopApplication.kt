@@ -224,6 +224,9 @@ class DesktopApplication(val dimensions: Dimension, desktopMode: Boolean = false
         // Retrieve context
         val gl = this.retrieveContext(drawable)
 
+        gl.glEnable(GL.GL_BLEND)
+        gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE_MINUS_SRC_ALPHA)
+
         // Print debug information to console
         this.printOpenGLVersion(gl)
 
