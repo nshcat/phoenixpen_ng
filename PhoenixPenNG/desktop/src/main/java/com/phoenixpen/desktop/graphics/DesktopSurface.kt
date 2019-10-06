@@ -20,10 +20,11 @@ import java.nio.ByteOrder
  */
 class DesktopSurface(
         private val gl: GL4,
-        private val res: DesktopResourceProvider,
+        res: DesktopResourceProvider,
         override val position: Position,
         override val dimensionsInGlyphs: Dimensions,
-        private val glyphTexture: GlyphTexture
+        private val glyphTexture: GlyphTexture,
+        private val shadowTexture: JOGLTexture2D
     )
     : Shadeable(AsciiScreenMaterial(gl, res)), Surface
 {
@@ -78,11 +79,6 @@ class DesktopSurface(
      * are copied to the buffer texture.
      */
     private val data = IntArray(this.bufferSize)
-
-    /**
-     * The shadow texture TODO make this less hacky?
-     */
-    private val shadowTexture = JOGLTexture2D.FromImageResource(this.gl, this.res, "shadows.png")
 
     /**
      * Initialization

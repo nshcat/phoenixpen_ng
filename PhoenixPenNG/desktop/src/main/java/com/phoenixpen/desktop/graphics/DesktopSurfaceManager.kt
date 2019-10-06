@@ -2,6 +2,7 @@ package com.phoenixpen.desktop.graphics
 
 import com.jogamp.opengl.GL4
 import com.phoenixpen.desktop.application.DesktopResourceProvider
+import com.phoenixpen.desktop.rendering.JOGLTexture2D
 import com.phoenixpen.desktop.rendering.RenderParams
 import com.phoenixpen.desktop.rendering.Renderable
 import com.phoenixpen.game.ascii.Position
@@ -33,6 +34,11 @@ class DesktopSurfaceManager(
      * The texture manager holding and caching glyph tile sets
      */
     private val textureManager = GlyphTextureManager(this.gl, this.res)
+
+    /**
+     * The shadow texture. This is used by all glyph textures
+     */
+    private val shadowTexture = JOGLTexture2D.FromImageResource(this.gl, this.res, "shadows.png")
 
     /**
      * Render to screen using given rendering parameters
@@ -80,7 +86,8 @@ class DesktopSurfaceManager(
                 this.res,
                 position,
                 dimensions,
-                texture
+                texture,
+                this.shadowTexture
         )
 
         this.surfaces.add(surface)
@@ -115,7 +122,8 @@ class DesktopSurfaceManager(
                 this.res,
                 Position(0, 0),
                 surfaceDims,
-                texture
+                texture,
+                this.shadowTexture
         )
 
         this.surfaces.add(surface)
@@ -148,7 +156,8 @@ class DesktopSurfaceManager(
                 this.res,
                 offset,
                 dimensions,
-                texture
+                texture,
+                this.shadowTexture
         )
 
         this.surfaces.add(surface)
