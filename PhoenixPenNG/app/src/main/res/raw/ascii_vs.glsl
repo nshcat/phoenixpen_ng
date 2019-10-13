@@ -124,7 +124,7 @@ void emit_shadow_coords()
 void emit_vertex()
 {
 	// Force usage of screen height so it doesnt get optimized away
-	int unsused = screen_height;
+	int unsused = surface_height;
 
     // Calculate screen coords in glyphs
     vec2 screen_coords = vec2(
