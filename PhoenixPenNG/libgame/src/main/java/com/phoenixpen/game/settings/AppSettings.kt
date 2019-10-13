@@ -1,5 +1,6 @@
 package com.phoenixpen.game.settings
 
+import com.phoenixpen.game.simulation.EternalSeasonType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -16,6 +17,11 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 class AppSettings(
-    @SerialName("main_tileset_id") val mainTileSetId: String = "text.png",
-    @SerialName("console_tileset_id") val consoleTileSetId: String = "curses_640x300.png"
+    @SerialName("main_tileset_id") var mainTileSetId: String = "text.png",
+    @SerialName("console_tileset_id") var consoleTileSetId: String = "curses_640x300.png",
+    @SerialName("enable_seasons") var enableSeasons: Boolean = true,
+    @SerialName("enable_rain") var enableRain: Boolean = true,
+    @SerialName("enable_snow") var enableSnow: Boolean = true,
+    @SerialName("enable_eternal_season") var enableEternalSeason: Boolean = false,
+    @SerialName("eternal_season") var eternalSeason: EternalSeasonType = EternalSeasonType.Spring
 )
