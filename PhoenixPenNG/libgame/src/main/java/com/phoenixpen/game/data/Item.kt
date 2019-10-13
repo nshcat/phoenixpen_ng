@@ -1,6 +1,6 @@
 package com.phoenixpen.game.data
 
-import com.phoenixpen.game.ascii.DrawInfo
+import com.phoenixpen.game.graphics.DrawInfo
 
 /**
  * A specific item instance existing in the game world, which has exactly one item type.

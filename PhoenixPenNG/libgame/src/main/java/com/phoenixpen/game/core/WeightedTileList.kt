@@ -1,6 +1,6 @@
 package com.phoenixpen.game.core
 
-import com.phoenixpen.game.ascii.DrawInfo
+import com.phoenixpen.game.graphics.DrawInfo
 import kotlinx.serialization.*
 import kotlinx.serialization.internal.StringDescriptor
 import java.util.concurrent.ThreadLocalRandom

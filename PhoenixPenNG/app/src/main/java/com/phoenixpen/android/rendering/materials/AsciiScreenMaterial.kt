@@ -4,6 +4,9 @@ import android.content.Context
 import com.phoenixpen.android.R
 import com.phoenixpen.game.ascii.ScreenDimensions
 import com.phoenixpen.android.rendering.*
+import com.phoenixpen.game.ascii.Dimensions
+import com.phoenixpen.game.ascii.Position
+import com.phoenixpen.game.graphics.GlyphDimensions
 import org.joml.Vector4f
 
 /**
@@ -26,23 +29,26 @@ class AsciiScreenMaterial(ctx: Context):
     var fogColor: Vector4f = Vector4f(0.1f, 0.1f, 0.3f, 1f)
 
     /**
-     * The dimensions of the screen, in glyphs (not pixels)
+     * The dimensions of the surface, in glyphs (not pixels)
      */
-    var screenDimensions: com.phoenixpen.game.ascii.ScreenDimensions = com.phoenixpen.game.ascii.ScreenDimensions.empty()
+    var surfaceDimensions: Dimensions = Dimensions.empty()
 
     /**
      * The dimensions of the glyph texture sheet, in glyphs.
      *
      * This is currently fixed to 16x16 glyphs.
      */
-    val sheetDimensions: com.phoenixpen.game.ascii.ScreenDimensions = com.phoenixpen.game.ascii.ScreenDimensions(16, 16)
+    val sheetDimensions: Dimensions = Dimensions(16, 16)
 
     /**
-     * The dimensions of a single glyph, in pixels.
-     *
-     * Currently, all glyphs have to be of the same dimensions.
+     * Glyph dimension data
      */
-    var glyphDimensions: com.phoenixpen.game.ascii.ScreenDimensions = com.phoenixpen.game.ascii.ScreenDimensions.empty()
+    var glyphDimensions: GlyphDimensions = GlyphDimensions()
+
+    /**
+     * The absolute position of the top left corner on the device screen, in pixels
+     */
+    var position: Position = Position()
 
     /**
      * Apply uniform data. We only need to set the required textures here.
@@ -59,26 +65,19 @@ class AsciiScreenMaterial(ctx: Context):
 
         // Misc uniforms
         uniformVec4f(this.shaderProgram, "fog_color", this.fogColor)
-        uniformInt(this.shaderProgram, "screen_width", this.screenDimensions.width)
-        uniformInt(this.shaderProgram, "screen_height", this.screenDimensions.height)
+        uniformInt(this.shaderProgram, "surface_width", this.surfaceDimensions.width)
 
         uniformInt(this.shaderProgram, "sheet_width", this.sheetDimensions.width)
         uniformInt(this.shaderProgram, "sheet_height", this.sheetDimensions.height)
 
-        uniformInt(this.shaderProgram, "glyph_width", this.glyphDimensions.width)
-        uniformInt(this.shaderProgram, "glyph_height", this.glyphDimensions.height)
+        uniformInt(this.shaderProgram, "glyph_width", this.glyphDimensions.baseDimensions.width)
+        uniformInt(this.shaderProgram, "glyph_height", this.glyphDimensions.baseDimensions.height)
+
+        uniformFloat(this.shaderProgram, "glyph_scaling_factor", this.glyphDimensions.scaleFactor)
+
+        uniformInt(this.shaderProgram, "position_x", this.position.x)
+        uniformInt(this.shaderProgram, "position_y", this.position.y)
 
         uniformFloat(this.shaderProgram, "fog_density", this.fogDensity)
-    }
-
-    companion object
-    {
-        /**
-         * The shader program this will be used for this material
-         */
-        /*private val asciiShaderProgram = ShaderProgram(
-                Shader.FromResource(ShaderType.FragmentShader, "res/raw/ascii_fs.glsl"),
-                Shader.FromResource(ShaderType.VertexShader, "res/raw/ascii_vs.glsl")
-        )*/
     }
 }

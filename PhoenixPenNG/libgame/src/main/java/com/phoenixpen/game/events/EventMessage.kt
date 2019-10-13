@@ -1,6 +1,6 @@
 package com.phoenixpen.game.events
 
-import com.phoenixpen.game.ascii.Color
+import com.phoenixpen.game.graphics.Color
 
 /**
  * A singular event message.

@@ -1,10 +1,10 @@
 package com.phoenixpen.game.data.biome
 
-import com.phoenixpen.game.ascii.Color
 import com.phoenixpen.game.ascii.Dimensions
 import com.phoenixpen.game.core.WeightedTypeList
 import com.phoenixpen.game.core.WeightedTypeListSerializer
 import com.phoenixpen.game.core.WeightedTypePair
+import com.phoenixpen.game.graphics.Color
 import com.phoenixpen.game.math.NormalDistribution
 import com.phoenixpen.game.math.PoissonDiskSampler
 import kotlinx.serialization.*

@@ -1,7 +1,8 @@
 package com.phoenixpen.desktop.application
 
-import com.phoenixpen.game.ascii.Color
+
 import com.phoenixpen.game.ascii.Position
+import com.phoenixpen.game.graphics.Color
 import com.phoenixpen.game.resources.Bitmap
 import com.phoenixpen.game.resources.ResourceProvider
 import java.awt.image.BufferedImage

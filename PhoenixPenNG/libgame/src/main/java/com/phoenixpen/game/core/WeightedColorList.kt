@@ -1,8 +1,7 @@
 package com.phoenixpen.game.core
 
-import com.phoenixpen.game.ascii.Color
-import com.phoenixpen.game.ascii.ColorInfo
-import com.phoenixpen.game.ascii.DrawInfo
+import com.phoenixpen.game.graphics.Color
+import com.phoenixpen.game.graphics.ColorInfo
 import kotlinx.serialization.*
 import kotlinx.serialization.internal.StringDescriptor
 import java.util.concurrent.ThreadLocalRandom

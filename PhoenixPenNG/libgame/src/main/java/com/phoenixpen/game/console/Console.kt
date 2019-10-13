@@ -5,6 +5,9 @@ import com.phoenixpen.game.core.Observer
 import com.phoenixpen.game.core.TickCounter
 import com.phoenixpen.game.events.EventMessage
 import com.phoenixpen.game.events.GlobalEvents
+import com.phoenixpen.game.graphics.Color
+import com.phoenixpen.game.graphics.Surface
+import com.phoenixpen.game.graphics.putString
 import com.phoenixpen.game.input.EnumEvent
 import com.phoenixpen.game.input.InputProvider
 import com.phoenixpen.game.logging.GlobalLogger
@@ -195,18 +198,18 @@ class Console(val input: InputProvider): SceneComponent
     /**
      * Draw console to screen
      *
-     * @param screen Screen to draw to
+     * @param surface The surface to draw to
      */
-    override fun render(screen: Screen)
+    override fun render(surface: Surface)
     {
         when(this.currentState)
         {
             ConsoleState.Hidden -> return
-            ConsoleState.Log -> this.drawMessages(screen)
+            ConsoleState.Log -> this.drawMessages(surface)
             ConsoleState.Interactive ->
             {
-                this.drawMessages(screen)
-                this.drawPrompt(screen)
+                this.drawMessages(surface)
+                this.drawPrompt(surface)
             }
         }
     }
@@ -223,21 +226,21 @@ class Console(val input: InputProvider): SceneComponent
     /**
      * Draw interactive mode prompt
      */
-    private fun drawPrompt(screen: Screen)
+    private fun drawPrompt(surface: Surface)
     {
         // Determine y pos of prompt
         var yPos = if (this.heightMode == ConsoleHeightMode.Full) this.heightFull else this.heightCompact
 
         // Draw static prompt
-        screen.putString(Position(0, yPos), ">", front = this.textColor)
+        surface.putString(Position(0, yPos), ">", front = this.textColor)
 
         // Draw user input
-        val maxInputLen = screen.getDimensions().width - 1
+        val maxInputLen = surface.dimensionsInGlyphs.width - 1
 
         val displayString = this.inputBuffer.substring(0, min(maxInputLen, this.inputBuffer.length))
                 .padEnd(maxInputLen)
 
-        screen.putString(Position(1, yPos), displayString, front = this.textColor)
+        surface.putString(Position(1, yPos), displayString, front = this.textColor)
 
 
         // Draw cursor
@@ -246,7 +249,7 @@ class Console(val input: InputProvider): SceneComponent
             val xPos = 1 + this.inputBuffer.length
 
             val color = if (this.promptShowCursor) this.textColor else Color.black
-            screen.putString(Position(xPos, yPos), "_", front = color)
+            surface.putString(Position(xPos, yPos), "_", front = color)
         }
 
     }
@@ -340,7 +343,7 @@ class Console(val input: InputProvider): SceneComponent
     /**
      * Draw as many messages as possible
      */
-    private fun drawMessages(screen: Screen)
+    private fun drawMessages(surface: Surface)
     {
         // Calculate how many messages we can fit
         val numMessages = if (this.heightMode == ConsoleHeightMode.Full) this.heightFull else this.heightCompact
@@ -366,7 +369,7 @@ class Console(val input: InputProvider): SceneComponent
         var i = startIndex
         for(entry in this.buffer)
         {
-            entry.render(screen, Position(0, i), screen.getDimensions().width)
+            entry.render(surface, Position(0, i), surface.dimensionsInGlyphs.width)
 
             i--
             if(i < 0)
@@ -374,15 +377,15 @@ class Console(val input: InputProvider): SceneComponent
         }
 
         for(i in blankStartIndex until numMessages)
-            screen.putString(Position(0, i), "".padEnd(screen.getDimensions().width))
+            surface.putString(Position(0, i), "".padEnd(surface.dimensionsInGlyphs.width))
 
-        this.drawDivider(screen)
+        this.drawDivider(surface)
     }
 
     /**
      * Draw the divider that is located at the bottom of the console
      */
-    private fun drawDivider(screen: Screen)
+    private fun drawDivider(surface: Surface)
     {
         var yPos = if (this.heightMode == ConsoleHeightMode.Full) this.heightFull else this.heightCompact
 
@@ -390,6 +393,6 @@ class Console(val input: InputProvider): SceneComponent
         if(this.currentState == ConsoleState.Interactive)
             ++yPos
 
-        screen.putString(Position(0, yPos), "\u00C4".repeat(screen.getDimensions().width), front = this.textColor)
+        surface.putString(Position(0, yPos), "\u00C4".repeat(surface.dimensionsInGlyphs.width), front = this.textColor)
     }
 }

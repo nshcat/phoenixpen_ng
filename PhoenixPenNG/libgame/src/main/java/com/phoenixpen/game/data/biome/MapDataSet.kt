@@ -1,10 +1,11 @@
 package com.phoenixpen.game.data.biome
 
-import com.phoenixpen.game.ascii.Color
 import com.phoenixpen.game.ascii.Position
 import com.phoenixpen.game.ascii.Position3D
 import com.phoenixpen.game.data.Material
+import com.phoenixpen.game.graphics.Color
 import com.phoenixpen.game.map.Map
+import com.phoenixpen.game.data.biome.MapKey
 import com.phoenixpen.game.map.MapDimensions
 import com.phoenixpen.game.simulation.Simulation
 import com.phoenixpen.game.resources.ResourceProvider

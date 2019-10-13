@@ -1,6 +1,6 @@
 package com.phoenixpen.game.data
 
-import com.phoenixpen.game.ascii.DrawInfo
+import com.phoenixpen.game.graphics.DrawInfo
 import com.phoenixpen.game.ascii.TileInstance
 import com.phoenixpen.game.ascii.TileType
 import com.phoenixpen.game.ascii.TileTypeSerializer

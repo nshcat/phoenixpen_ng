@@ -1,4 +1,6 @@
-package com.phoenixpen.game.ascii
+package com.phoenixpen.game.graphics
+
+import com.phoenixpen.game.graphics.Color
 
 /**
  * A class containing both a foreground as well as a background color

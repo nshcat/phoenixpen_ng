@@ -18,7 +18,10 @@
 #define SHADOW_BR 	0x1U << 15U
 
 // Depth bit mask
-#define DEPTH_MASK  0xFFU
+#define DEPTH_MASK  0x7FU
+
+// Transparency bit mask and shift
+#define TRANS_MASK 0x80U
 
 
 
@@ -35,13 +38,22 @@ precision highp usamplerBuffer;
 uniform usamplerBuffer input_buffer;
 
 uniform mat4 proj_mat;
-uniform int screen_width;  // In glyphs
+
 uniform int glyph_width;  // In glyphs
 uniform int glyph_height;
+
 uniform int sheet_width;  // In glyphs
 uniform int sheet_height;
+
 uniform float fog_density;
-uniform int screen_height;
+
+uniform int surface_width;  // In glyphs
+uniform int surface_height;
+
+uniform int position_x;	// Pixel position offset
+uniform int position_y;
+
+uniform float glyph_scaling_factor; // To scale up the glyphs
 
 const vec2 vertex_offset[] = vec2[6](
 	vec2(1, 1),	// BR
@@ -82,7 +94,7 @@ flat out vec4 front_color;
 flat out vec4 back_color;
 flat out float fog_factor;
 flat out uint shadows[8];
-
+flat out uint is_transparent; // Whether this glyph cell is completely transparent
 
 // Retrieve drop shadow orientations
 void emit_shadows(uvec4 low)
@@ -112,19 +124,22 @@ void emit_shadow_coords()
 void emit_vertex()
 {
 	// Force usage of screen height so it doesnt get optimized away
-	int unsused = screen_height;
+	int unsused = surface_height;
 
     // Calculate screen coords in glyphs
     vec2 screen_coords = vec2(
-        gl_InstanceID % screen_width,
-        gl_InstanceID / screen_width
+        gl_InstanceID % surface_width,
+        gl_InstanceID / surface_width
     );
 
 	// Calculate absolute (in world space) top left coordinates of this cell
 	vec2 t_tl = screen_coords * vec2(float(glyph_width), float(glyph_height));
 
 	// Add offset for vertices that are not the top left one
-	t_tl += vertex_offset[gl_VertexID] * vec2(float(glyph_width), float(glyph_height));
+	t_tl += vertex_offset[gl_VertexID] * vec2(float(glyph_width) * glyph_scaling_factor, float(glyph_height) * glyph_scaling_factor);
+
+	// Add absolute pixel offset
+	t_tl += vec2(float(position_x), float(position_y));
 
 	// Create homogenous 4D vector and transform using projection matrix,
 	// which implements an orthographic view frustum where the y-axis is flipped.
@@ -142,6 +157,13 @@ void emit_fog_factor(uvec4 low)
     float t_fogFactor = exp(-fog_density * float(depth));
     fog_factor = clamp(t_fogFactor, 0.f, 1.f);
 }
+
+void emit_transparency(uvec4 low)
+{
+	uint data = low.a;
+	is_transparent = data & TRANS_MASK;
+}
+
 
 void emit_color(uvec4 high, uvec4 low)
 {
@@ -221,6 +243,8 @@ void main()
    	emit_color(t_high, t_low);
 
    	emit_tex_coords(t_high, t_low);
+
+	emit_transparency(t_low);
 
    	emit_shadows(t_low);
 

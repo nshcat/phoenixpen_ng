@@ -3,10 +3,12 @@ package com.phoenixpen.desktop.application
 import com.jogamp.opengl.*
 import com.jogamp.opengl.awt.GLCanvas
 import com.jogamp.opengl.util.Animator
+import com.phoenixpen.desktop.graphics.DesktopSurfaceManager
 import com.phoenixpen.desktop.rendering.*
 import com.phoenixpen.game.ascii.MainScene
 import com.phoenixpen.game.ascii.Scene
 import com.phoenixpen.game.ascii.ScreenDimensions
+import com.phoenixpen.game.settings.AppSettings
 import java.awt.Dimension
 import java.nio.file.Paths
 import javax.swing.JFrame
@@ -73,11 +75,6 @@ class DesktopApplication(val dimensions: Dimension, desktopMode: Boolean = false
     private lateinit var secondPass: ScreenTarget
 
     /**
-     * The glyph matrix used to render the game scene to
-     */
-    private lateinit var screen: DesktopScreen
-
-    /**
      * A full screen quad we use to render the scene to screen in the second pass
      */
     private lateinit var fullscreenQuad: FullscreenQuad
@@ -92,6 +89,11 @@ class DesktopApplication(val dimensions: Dimension, desktopMode: Boolean = false
      * corner and origin of our coordinate system.
      */
     private var orthoProjection = OrthographicProjection()
+
+    /**
+     * The surface manager holding all surfaces
+     */
+    private lateinit var surfaceManager: DesktopSurfaceManager
 
     /**
      * Initialize OpenGL context and window
@@ -222,6 +224,9 @@ class DesktopApplication(val dimensions: Dimension, desktopMode: Boolean = false
         // Retrieve context
         val gl = this.retrieveContext(drawable)
 
+        gl.glEnable(GL.GL_BLEND)
+        gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE_MINUS_SRC_ALPHA)
+
         // Print debug information to console
         this.printOpenGLVersion(gl)
 
@@ -236,14 +241,13 @@ class DesktopApplication(val dimensions: Dimension, desktopMode: Boolean = false
         // Init all components
         this.firstPass = TextureTarget(gl)
         this.secondPass = ScreenTarget(gl)
-        this.screen = DesktopScreen(gl, resourceProvider, dimensions)
-        this.screen.resize(dimensions)
-        this.fullscreenQuad = FullscreenQuad(gl, resourceProvider)
+        this.surfaceManager = DesktopSurfaceManager(gl, this.resourceProvider, ScreenDimensions(this.dimensions.width, this.dimensions.height))
+        this.fullscreenQuad = FullscreenQuad(gl, this.resourceProvider)
 
         this.firstPass.updateDimensions(dimensions)
         this.secondPass.updateDimensions(dimensions)
 
-        this.scene = MainScene(this.resourceProvider, this.inputProvider, this.logger, this.screen.size, ScreenDimensions(this.dimensions.width, this.dimensions.height))
+        this.scene = MainScene(this.resourceProvider, this.inputProvider, this.logger, this.surfaceManager, AppSettings())
     }
 
     override fun dispose(drawable: GLAutoDrawable?)
@@ -271,13 +275,14 @@ class DesktopApplication(val dimensions: Dimension, desktopMode: Boolean = false
         this.secondPass.beginRender()
 
             // Clear the screen
-            this.screen.clear()
+            this.surfaceManager.clearAll()
 
-            // Draw current scene to screen
-            this.scene.render(this.screen)
+            // Draw current scene. This will cause the scene to write data to various surfaces
+            // it created.
+            this.scene.render()
 
-            // Render the ASCII matrix to device screen
-            this.screen.render(this.orthoProjection.toRenderParams())
+            // Now render all surfaces to the window
+            this.surfaceManager.render(this.orthoProjection.toRenderParams())
 
         // Finish rendering
         this.secondPass.endRender()

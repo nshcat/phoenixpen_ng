@@ -1,6 +1,6 @@
 package com.phoenixpen.game.data.biome
 
-import com.phoenixpen.game.ascii.Color
+import com.phoenixpen.game.graphics.Color
 import com.phoenixpen.game.map.MapCellState
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -7,7 +7,9 @@ import com.phoenixpen.game.core.TickCounter
 import com.phoenixpen.game.data.Covering
 import com.phoenixpen.game.data.CoveringDrawMode
 import com.phoenixpen.game.data.Structure
-import com.phoenixpen.game.logging.GlobalLogger
+import com.phoenixpen.game.graphics.Color
+import com.phoenixpen.game.graphics.DrawInfo
+import com.phoenixpen.game.graphics.Surface
 import java.lang.Integer.min
 import java.util.*
 import kotlin.math.max
@@ -36,9 +38,6 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var 
     override fun update(elapsedTicks: Int)
     {
         this.counter.update(elapsedTicks)
-        //this.height = 3
-
-        //this.height = 2 //+ (this.counter.totalPeriods % 6)
     }
 
     /**
@@ -226,14 +225,14 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var 
      * Draw a map cell. This will apply depth value and drop shadows according to relative depth to
      * display height.
      *
-     * @param screen Screen to draw to
+     * @param surface Surface to draw to
      * @param cell Cell to draw
      * @param position Position of said cell
      */
-    private fun drawCell(screen: Screen, cell: MapCell, position: Position3D)
+    private fun drawCell(surface: Surface, cell: MapCell, position: Position3D)
     {
         // Apply draw info
-        screen.setTile(position.xz() - this.topLeft, cell.tile())
+        surface.setTile(position.xz() - this.topLeft, cell.tile())
 
         // If the cell is not directly at display level, depth and shadows need to be applied.
         if(position.y < this.height)
@@ -242,28 +241,28 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var 
             val depth = this.height - position.y
 
             // Apply depth
-            screen.setDepth(position.xz() - this.topLeft, depth)
+            surface.setDepth(position.xz() - this.topLeft, depth)
 
             // Determine which drop shadows need to be applied
             val shadows = this.calculateShadowsAt(position)
 
             // Apply shadows
-            screen.setShadows(position.xz() - this.topLeft, shadows)
+            surface.setShadows(position.xz() - this.topLeft, shadows)
         }
     }
 
     /**
      * Draw given structure. This will apply depth values to it, if required.
      *
-     * @param screen Screen to draw to
+     * @param surface Surface to draw to
      * @param structure Structure to draw
      */
-    private fun drawStructure(screen: Screen, structure: Structure)
+    private fun drawStructure(surface: Surface, structure: Structure)
     {
         val structurePos = structure.position.xz() - this.topLeft
 
         // Apply draw info
-        screen.setTile(structure.position.xz() - this.topLeft, structure.tile())
+        surface.setTile(structure.position.xz() - this.topLeft, structure.tile())
 
         // If the structure is not directly at view height, we need to apply depth information
         if(structure.position.y < this.height)
@@ -272,13 +271,13 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var 
             val depth = this.height - structure.position.y
 
             // Apply depth
-            screen.setDepth(structure.position.xz() - this.topLeft, depth)
+            surface.setDepth(structure.position.xz() - this.topLeft, depth)
 
             // Determine which drop shadows need to be applied
             val shadows = this.calculateShadowsAt(structure.position)
 
             // Apply shadows
-            screen.setShadows(structure.position.xz() - this.topLeft, shadows)
+            surface.setShadows(structure.position.xz() - this.topLeft, shadows)
         }
     }
 
@@ -289,7 +288,7 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var 
      * @param covering Covering to draw
      * @param underlying Tile of underlying structure or map cell.
      */
-    private fun drawCovering(screen: Screen, covering: Covering, underlying: DrawInfo)
+    private fun drawCovering(surface: Surface, covering: Covering, underlying: DrawInfo)
     {
         // Are we supposed to stain the underlying object?
         // Having a underlying tile with glyph 0 basically forces us to just overwrite the draw info.
@@ -303,7 +302,7 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var 
             val underlyingCopy = underlying.copy()
 
             // Modify tile graphical representation
-            screen.setTile(covering.position.xz() - this.topLeft, underlyingCopy.apply {
+            surface.setTile(covering.position.xz() - this.topLeft, underlyingCopy.apply {
                 this.foreground = coveringTile.foreground
 
                 // Leave background as it is if its black
@@ -323,7 +322,7 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var 
 
             screen.setTile(covering.position.xz() - this.topLeft, tile)*/
 
-            screen.setTile(covering.position.xz() - this.topLeft, covering.tile())
+            surface.setTile(covering.position.xz() - this.topLeft, covering.tile())
         }
 
         // If the covering is not directly at view height, we need to apply depth information
@@ -333,22 +332,22 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var 
             val depth = this.height - covering.position.y
 
             // Apply depth
-            screen.setDepth(covering.position.xz() - this.topLeft, depth)
+            surface.setDepth(covering.position.xz() - this.topLeft, depth)
 
             // Determine which drop shadows need to be applied
             val shadows = this.calculateShadowsAt(covering.position)
 
             // Apply shadows
-            screen.setShadows(covering.position.xz() - this.topLeft, shadows)
+            surface.setShadows(covering.position.xz() - this.topLeft, shadows)
         }
     }
 
     /**
      * Render component to screen
      *
-     * @param screen Screen to render component to
+     * @param surface The surface to draw to
      */
-    override fun render(screen: Screen)
+    override fun render(surface: Surface)
     {
         // Retrieve map reference
         val map = this.simulation.map
@@ -391,12 +390,12 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var 
                         // the structure is drawn as usual
                         if(covering.isPresent && !(covering.get().type.drawMode == CoveringDrawMode.Staining && !structure.baseType.isStainable))
                         {
-                            this.drawCovering(screen, covering.get(), structure.tile())
+                            this.drawCovering(surface, covering.get(), structure.tile())
                         }
                         else
                         {
                             // Otherwise just draw the structure
-                            this.drawStructure(screen, structure)
+                            this.drawStructure(surface, structure)
                         }
                     }
                     else // Try to draw the map cell
@@ -413,12 +412,12 @@ class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var 
                             // If it is the case, draw the covering instead, possibly staining the underlying map cell
                             if(covering.isPresent)
                             {
-                                this.drawCovering(screen, covering.get(), pair.first.tile())
+                                this.drawCovering(surface, covering.get(), pair.first.tile())
                             }
                             else
                             {
                                 // Otherwise just draw the cell
-                                this.drawCell(screen, pair.first, pair.second)
+                                this.drawCell(surface, pair.first, pair.second)
                             }
                         }
                     }

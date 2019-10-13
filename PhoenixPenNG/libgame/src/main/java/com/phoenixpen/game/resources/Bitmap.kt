@@ -1,7 +1,7 @@
 package com.phoenixpen.game.resources
 
-import com.phoenixpen.game.ascii.Color
 import com.phoenixpen.game.ascii.Position
+import com.phoenixpen.game.graphics.Color
 
 /**
  * A class containing bitmap data. This is done to allow platform independence.

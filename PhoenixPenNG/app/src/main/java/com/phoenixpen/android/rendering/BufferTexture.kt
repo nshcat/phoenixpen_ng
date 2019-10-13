@@ -25,6 +25,25 @@ class BufferTexture(var size: Int): Texture()
     }
 
     /**
+     * Destroy this buffer texture
+     */
+    fun destroy()
+    {
+        if(this.handle != GLES31.GL_NONE)
+        {
+            // Free texture object
+            val textures = intArrayOf(this.handle)
+            GLES31.glDeleteTextures(1, textures, 0)
+            this.handle = GLES31.GL_NONE
+
+            // Free buffer object
+            val buffers = intArrayOf(this.bufferHandle)
+            GLES31.glDeleteBuffers(1, buffers, 0)
+            this.bufferHandle = GLES31.GL_NONE
+        }
+    }
+
+    /**
      * Recreate the texture and buffer objects based on given size.
      *
      * @param size The new buffer size
@@ -38,18 +57,7 @@ class BufferTexture(var size: Int): Texture()
         this.size = size
 
         // The current texture and buffer objects need to be deleted if they already exist
-        if(this.handle != GLES31.GL_NONE)
-        {
-            // Free texture object
-            val textures = intArrayOf(this.handle)
-            GLES31.glDeleteTextures(1, textures, 0)
-            this.handle = GLES31.GL_NONE
-
-            // Free buffer object
-            val buffers = intArrayOf(this.bufferHandle)
-            GLES31.glDeleteBuffers(1, buffers, 0)
-            this.bufferHandle = GLES31.GL_NONE
-        }
+        this.destroy()
 
         // Create texture object
         GLES31.glActiveTexture(GLES31.GL_TEXTURE0)

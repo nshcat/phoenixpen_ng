@@ -1,10 +1,13 @@
 package com.phoenixpen.android.application
 
 import android.content.Context
+import com.phoenixpen.android.graphics.AndroidSurfaceManager
 import com.phoenixpen.game.ascii.MainScene
 import com.phoenixpen.game.ascii.Scene
 import com.phoenixpen.game.input.InputProvider
 import com.phoenixpen.android.rendering.*
+import com.phoenixpen.game.ascii.ScreenDimensions
+import com.phoenixpen.game.settings.AppSettings
 
 /**
  * A class implementing all the logic needed to execute a ASCII based application.
@@ -31,9 +34,9 @@ class AsciiApplication (context: Context, input: InputProvider): Application(con
     private lateinit var secondPass: ScreenTarget
 
     /**
-     * The glyph matrix used to render the game scene to
+     * The surface manager holding all registered surfaces
      */
-    private lateinit var screen: AndroidScreen
+    private lateinit var surfaceManager: AndroidSurfaceManager
 
     /**
      * A full screen quad we use to render the scene to screen in the second pass
@@ -62,7 +65,7 @@ class AsciiApplication (context: Context, input: InputProvider): Application(con
      */
     private val msPerTick: Int = 50
 
-    override fun onScreenChanged(screenDimensions: com.phoenixpen.game.ascii.ScreenDimensions)
+    override fun onScreenChanged(screenDimensions: ScreenDimensions)
     {
         // Update projection state to fit new screen size
         this.orthoProjection.refresh(screenDimensions)
@@ -72,10 +75,21 @@ class AsciiApplication (context: Context, input: InputProvider): Application(con
             // Force the screen to resize
             this.firstPass.updateDimensions(screenDimensions.scaleDown(1.0f))
             this.secondPass.updateDimensions(screenDimensions)
-            this.screen.resize(screenDimensions)
             this.orthoProjection.refresh(screenDimensions)
 
-            this.scene = MainScene(this.resources, this.input, this.logger, this.screen.size, screenDimensions)
+            // Reshape scene manager. This will drop all surfaces.
+            this.surfaceManager.reshape(screenDimensions)
+
+            // If the scene wasnt already created, do create it
+            if(!::scene.isInitialized)
+            {
+                this.scene = MainScene(this.resources, this.input, this.logger, this.surfaceManager, AppSettings())
+            }
+            else
+            {
+                // Make the scene rebuild its surfaces
+                this.scene.reshape()
+            }
         }
     }
 
@@ -86,7 +100,7 @@ class AsciiApplication (context: Context, input: InputProvider): Application(con
         this.secondPass = ScreenTarget()
 
         // Create an empty screen
-        this.screen = AndroidScreen(this.context, com.phoenixpen.game.ascii.ScreenDimensions.empty())
+        this.surfaceManager = AndroidSurfaceManager(this.context, this.resources, ScreenDimensions.empty())
 
         // Create the fullscreen quad
         this.fullscreenQuad = FullscreenQuad(this.context)
@@ -125,13 +139,13 @@ class AsciiApplication (context: Context, input: InputProvider): Application(con
         // Begin rendering to texture
         this.firstPass.beginRender()
 
-            this.screen.clear()
+            this.surfaceManager.clearAll()
 
-            // Draw current scene to screen
-            this.scene.render(this.screen)
+            // Render current scene
+            this.scene.render()
 
-            // Render the ASCII matrix to device screen
-            this.screen.render(this.orthoProjection.toRenderParams())
+            // Render all surfaces
+            this.surfaceManager.render(this.orthoProjection.toRenderParams())
 
         // We are done with the first pass
         this.firstPass.endRender()

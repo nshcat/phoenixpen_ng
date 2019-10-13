@@ -1,11 +1,10 @@
 package com.phoenixpen.game.math
 
-import com.phoenixpen.game.ascii.Color
 import com.phoenixpen.game.ascii.SceneComponent
-import com.phoenixpen.game.ascii.Screen
 import com.phoenixpen.game.ascii.ScreenDimensions
 import com.phoenixpen.game.core.TickCounter
-import com.phoenixpen.game.logging.GlobalLogger
+import com.phoenixpen.game.graphics.Color
+import com.phoenixpen.game.graphics.Surface
 
 class PoissonTest(screenDimensions: ScreenDimensions): SceneComponent
 {
@@ -37,8 +36,8 @@ class PoissonTest(screenDimensions: ScreenDimensions): SceneComponent
         }
     }
 
-    override fun render(screen: Screen) {
-        screen.clear()
+    override fun render(surface: Surface) {
+        surface.clear()
         /*for(point in this.badPoints)
         {
             screen.setBackColor(point, Color.red)
@@ -46,7 +45,7 @@ class PoissonTest(screenDimensions: ScreenDimensions): SceneComponent
 
         for(point in this.points)
         {
-            screen.setBackColor(point, Color.green)
+            surface.setBackColor(point, Color.green)
         }
     }
 }
