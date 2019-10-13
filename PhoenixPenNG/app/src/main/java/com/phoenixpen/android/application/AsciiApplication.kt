@@ -2,6 +2,7 @@ package com.phoenixpen.android.application
 
 import android.content.Context
 import com.phoenixpen.android.graphics.AndroidSurfaceManager
+import com.phoenixpen.android.livewallpaper.Configuration
 import com.phoenixpen.game.ascii.MainScene
 import com.phoenixpen.game.ascii.Scene
 import com.phoenixpen.game.input.InputProvider
@@ -83,7 +84,11 @@ class AsciiApplication (context: Context, input: InputProvider): Application(con
             // If the scene wasnt already created, do create it
             if(!::scene.isInitialized)
             {
-                this.scene = MainScene(this.resources, this.input, this.logger, this.surfaceManager, AppSettings())
+                // Make sure to retrieve current config settings
+                Configuration.instance.update(this.context)
+
+                this.scene = MainScene(this.resources, this.input, this.logger, this.surfaceManager,
+                        Configuration.instance.appSettings)
             }
             else
             {
