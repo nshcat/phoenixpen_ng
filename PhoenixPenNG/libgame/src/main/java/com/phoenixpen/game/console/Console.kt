@@ -130,7 +130,8 @@ class Console(val input: InputProvider): SceneComponent
     {
         GlobalLogger.instance().subscribe(object : Observer<LogMessage> {
             override fun notify(value: LogMessage) {
-                if(showLogMessages) {
+                if(showLogMessages)
+                {
                     addBufferEntry(BufferEntry.fromLogMessage(value))
                 }
             }
@@ -154,10 +155,21 @@ class Console(val input: InputProvider): SceneComponent
      */
     private fun addBufferEntry(entry: BufferEntry)
     {
-        this.buffer.addFirst(entry)
+        // Check if the message is similar to the last one
+        if(this.buffer.size > 0 && this.buffer.first.isSimilar(entry))
+        {
+            // Just increment the repeat counter and reset age
+            val entry = this.buffer.first
+            ++entry.repeat
+            entry.age = 0
+        }
+        else
+        {
+            this.buffer.addFirst(entry)
 
-        if(this.buffer.size > this.maxBufferSize)
-            this.buffer.removeLast()
+            if (this.buffer.size > this.maxBufferSize)
+                this.buffer.removeLast()
+        }
     }
 
     /**

@@ -44,6 +44,11 @@ class BufferEntry private constructor(val type: BufferEntryType)
     private val maxTagLength = 8
 
     /**
+     * How often the message was repeated
+     */
+    var repeat = 1
+
+    /**
      * How old this entry is, in ticks. This is used to determine whether the console should
      * be showing this in a dark font, or not.
      */
@@ -129,6 +134,16 @@ class BufferEntry private constructor(val type: BufferEntryType)
             BufferEntryType.LogMessage -> this.logMessage().message
         }
 
+        if(this.repeat > 1)
+        {
+            val repeatStr = "(x${this.repeat})"
+
+            if(repeatStr.length >= width)
+                return "<too long>"
+
+            return this.trim(contents, width - repeatStr.length).padEnd(width - repeatStr.length) + repeatStr
+        }
+
         return this.trim(contents, width).padEnd(width)
     }
 
@@ -146,6 +161,34 @@ class BufferEntry private constructor(val type: BufferEntryType)
      * Retrieve log message
      */
     private fun logMessage(): LogMessage = this.logMessage.get()
+
+    /**
+     * Check whether two buffer entries are similar. This is used to combine messages to save
+     * display space.
+     *
+     * Two entries are similar, if their category, type and message are the same.
+     */
+    fun isSimilar(other: BufferEntry): Boolean
+    {
+        if(other.type != this.type)
+            return false
+
+        when(this.type)
+        {
+            BufferEntryType.LogMessage ->
+            {
+                return this.logMessage().level == other.logMessage().level
+                        && this.logMessage().message == other.logMessage().message
+                        && this.logMessage().tag == other.logMessage().tag
+            }
+            BufferEntryType.Event ->
+            {
+                return this.eventMessage().color == other.eventMessage().color
+                        && this.eventMessage().message == other.eventMessage().message
+                        && this.eventMessage().source == other.eventMessage().source
+            }
+        }
+    }
 
     /**
      * Builder methods
