@@ -100,14 +100,12 @@ class MainScene(
     /**
      * The root drawing surface, used to render the map view.
      */
-    private val rootSurface = this.surfaceManager.createSurface(this.settings.mainTileSetId)
+    private lateinit var rootSurface: Surface
 
     /**
      * The surface used to draw the console
      */
-    private val consoleSurface = this.surfaceManager.createSurface(this.settings.consoleTileSetId).apply {
-        clearWithTransparency = true
-    }
+    private lateinit var consoleSurface: Surface
 
     /**
      * Initialize global logger
@@ -115,6 +113,9 @@ class MainScene(
     init
     {
         GlobalLogger.setLogger(logger)
+
+        // Init surfaces
+        this.reshape()
     }
 
     /**
@@ -136,6 +137,18 @@ class MainScene(
      * The user console
      */
     val console = Console(input)
+
+    /**
+     * Recreate all surfaces
+     */
+    override fun reshape()
+    {
+        this.rootSurface = this.surfaceManager.createSurface(this.settings.mainTileSetId)
+
+        this.consoleSurface = this.surfaceManager.createSurface(this.settings.consoleTileSetId).apply {
+            clearWithTransparency = true
+        }
+    }
 
     /**
      * Render main scene

@@ -34,4 +34,10 @@ abstract class Scene(
      * @param elapsedTicks Ticks elapsed since last update
      */
     abstract fun update(elapsedTicks: Int)
+
+    /**
+     * Called whenever the display dimensions or orientation change, i.e. when on android on screen
+     * tilt. The scene has to consider all registered surfaces to be dropped and recreate them.
+     */
+    abstract fun reshape()
 }

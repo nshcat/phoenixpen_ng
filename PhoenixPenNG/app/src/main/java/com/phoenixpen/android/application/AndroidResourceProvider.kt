@@ -6,7 +6,7 @@ import android.graphics.Color
 import com.phoenixpen.game.ascii.Position
 import com.phoenixpen.game.resources.Bitmap
 import com.phoenixpen.game.resources.ResourceProvider
-import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.FilenameUtils
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -53,7 +53,7 @@ class AndroidResourceProvider(val ctx: Context): ResourceProvider
                 val androidPixel = androidBitmap.getPixel(ix, iy)
 
                 // Convert to game color instance
-                val color = com.phoenixpen.game.ascii.Color(
+                val color = com.phoenixpen.game.graphics.Color(
                         Color.red(androidPixel),
                         Color.green(androidPixel),
                         Color.blue(androidPixel)
@@ -85,5 +85,13 @@ class AndroidResourceProvider(val ctx: Context): ResourceProvider
 
         // Retrieve android resource id
         return this.ctx.resources.getIdentifier(stripped, type, "com.nshcat.phoenixpen")
+    }
+
+    /**
+     * Retrieve android resource ID for glyph tile set texture with given file name
+     */
+    fun getTextureId(filename: String): Int
+    {
+        return this.findResourceId(filename, "drawable")
     }
 }

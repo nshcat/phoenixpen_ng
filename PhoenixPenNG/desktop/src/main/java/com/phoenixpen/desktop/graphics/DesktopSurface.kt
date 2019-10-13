@@ -44,6 +44,12 @@ class DesktopSurface(
     override val glyphDimensions = this.glyphTexture.glyphDimensions
 
     /**
+     * Whether this surface was dropped by the rendering implementation, which means it was invalidated
+     * for some reason, for example before a call to [Scene.reshape].
+     */
+    override val wasDropped: Boolean = false
+
+    /**
      * The size of this surface, in pixels
      */
     override val dimensionsInPixels: SurfacePixelDimensions

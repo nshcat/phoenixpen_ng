@@ -62,8 +62,8 @@ interface SurfaceManager
      * covers BOTH the TL and BR cells.
      *
      * @param parent Parent surface to use for relative position calculations
-     * @param position Relative position in parent surface, in glyphs
-     * @param dimensions Dimensions of the surface, in glyphs
+     * @param tl Top left point on the parent surface
+     * @param br Bottom right point on the parent surface
      * @param glyphSetId Resource ID of the glyph tile set to use
      *
      * @return New surface with requested parameters

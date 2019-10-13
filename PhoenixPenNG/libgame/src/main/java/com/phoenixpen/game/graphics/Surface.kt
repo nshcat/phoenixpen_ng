@@ -48,6 +48,12 @@ interface Surface
     var clearWithTransparency: Boolean
 
     /**
+     * Whether this surface was dropped by the rendering implementation, which means it was invalidated
+     * for some reason, for example before a call to [Scene.reshape].
+     */
+    val wasDropped: Boolean
+
+    /**
      * Whether this surface is enabled. This controls whether it will be drawn or not.
      */
     var enabled: Boolean
