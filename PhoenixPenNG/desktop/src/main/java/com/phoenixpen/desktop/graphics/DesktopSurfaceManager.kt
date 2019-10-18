@@ -17,14 +17,20 @@ import com.phoenixpen.game.graphics.SurfaceManager
  *
  * @property gl The OpenGL context
  * @property res The current resource provider
- * @property screenDimensions The device screen dimensions, in pixels
+ * @param dims The initial device screen dimensions, in pixels
  */
 class DesktopSurfaceManager(
-        val gl: GL4,
-        val res: DesktopResourceProvider,
-        override val screenDimensions: ScreenDimensions
+        private val gl: GL4,
+        private val res: DesktopResourceProvider,
+        dims: ScreenDimensions
 ): SurfaceManager, Renderable
 {
+    /**
+     * The current screen dimensions, in pixels
+     */
+    override var screenDimensions: ScreenDimensions = dims
+        private set
+
     /**
      * A collection of all registered surfaces
      */
@@ -64,6 +70,23 @@ class DesktopSurfaceManager(
         {
             surface.clear()
         }
+    }
+
+    /**
+     * React to screen size changes
+     *
+     * @param newDimensions The new screen dimensions, in pixels
+     */
+    fun reshape(newDimensions: ScreenDimensions)
+    {
+        // Drop all surfaces. They are invalidated
+        for(surface in this.surfaces)
+        {
+            surface.drop()
+        }
+
+        // Set new dimensions
+        this.screenDimensions = newDimensions
     }
 
     /**

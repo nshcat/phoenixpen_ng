@@ -22,7 +22,7 @@ import kotlin.math.max
  * @property topLeft Position in the game map that corresponds to the top left point of the view
  * @property height Current height that is displayed
  */
-class MapView(val simulation: Simulation, val dimensions: ScreenDimensions, var topLeft: Position, var height: Int)
+class MapView(val simulation: Simulation, var dimensions: ScreenDimensions, var topLeft: Position, var height: Int)
     : SceneComponent
 {
     /**

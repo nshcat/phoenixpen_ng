@@ -113,9 +113,6 @@ class MainScene(
     init
     {
         GlobalLogger.setLogger(logger)
-
-        // Init surfaces
-        this.reshape()
     }
 
     /**
@@ -131,7 +128,7 @@ class MainScene(
     /**
      * The map view, a scene component tasked with rendering the map to screen
      */
-    val mapView: MapView = MapView(this.simulationState, this.rootSurface.dimensionsInGlyphs, Position(0, 0), 2)
+    val mapView: MapView = MapView(this.simulationState, Dimensions(0, 0), Position(0, 0), 2)
 
     /**
      * The user console
@@ -139,15 +136,28 @@ class MainScene(
     val console = Console(input)
 
     /**
+     * Set up surfaces
+     */
+    init
+    {
+        // Init surfaces
+        this.reshape()
+    }
+
+    /**
      * Recreate all surfaces
      */
     override fun reshape()
     {
+        val dims = this.surfaceManager.screenDimensions
+
         this.rootSurface = this.surfaceManager.createSurface(this.settings.mainTileSetId)
 
         this.consoleSurface = this.surfaceManager.createSurface(this.settings.consoleTileSetId).apply {
             clearWithTransparency = true
         }
+
+        this.mapView.dimensions = this.rootSurface.dimensionsInGlyphs
     }
 
     /**

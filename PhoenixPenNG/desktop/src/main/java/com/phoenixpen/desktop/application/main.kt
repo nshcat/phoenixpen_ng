@@ -29,6 +29,11 @@ class DesktopApp: CliktCommand()
     val height: Int by option("--height", "-h", help = "Window height, in pixels").int().default(540)
 
     /**
+     * Whether the window is supposed to be resizable. This is incompatible with desktop mode.
+     */
+    val resizable: Boolean by option("--resizable", "-r", help = "Make window resizable. Incompatible with desktop mode").flag()
+
+    /**
      * Run application, after arguments were parsed
      */
     override fun run()

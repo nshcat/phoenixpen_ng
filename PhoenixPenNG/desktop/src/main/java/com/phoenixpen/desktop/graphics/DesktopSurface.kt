@@ -47,7 +47,8 @@ class DesktopSurface(
      * Whether this surface was dropped by the rendering implementation, which means it was invalidated
      * for some reason, for example before a call to [Scene.reshape].
      */
-    override val wasDropped: Boolean = false
+    override var wasDropped: Boolean = false
+        private set
 
     /**
      * The size of this surface, in pixels
@@ -107,6 +108,15 @@ class DesktopSurface(
 
         // A refresh is definitely needed
         this.dirty = true
+    }
+
+    /**
+     * Free all resources associated with this surface and invalidate it.
+     */
+    fun drop()
+    {
+        this.wasDropped = true
+        this.bufferTexture.destroy()
     }
 
     /**

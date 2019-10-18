@@ -1,5 +1,6 @@
 package com.phoenixpen.desktop.rendering
 
+import com.jogamp.opengl.GL
 import com.jogamp.opengl.GL4
 import java.nio.IntBuffer
 
@@ -22,6 +23,25 @@ class BufferTexture(val gl: GL4, var size: Int): Texture()
     init
     {
         this.recreate(size)
+    }
+
+    /**
+     * Destroy this buffer texture
+     */
+    fun destroy()
+    {
+        if(this.handle != GL4.GL_NONE)
+        {
+            // Free texture object
+            val textures = intArrayOf(this.handle)
+            this.gl.glDeleteTextures(1, textures, 0)
+            this.handle = GL4.GL_NONE
+
+            // Free buffer object
+            val buffers = intArrayOf(this.bufferHandle)
+            this.gl.glDeleteBuffers(1, buffers, 0)
+            this.bufferHandle = GL4.GL_NONE
+        }
     }
 
     /**

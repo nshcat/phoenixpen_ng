@@ -11,6 +11,7 @@ import com.phoenixpen.game.ascii.ScreenDimensions
 import com.phoenixpen.game.settings.AppSettings
 import java.awt.Dimension
 import java.nio.file.Paths
+import java.util.concurrent.locks.ReentrantLock
 import javax.swing.JFrame
 
 
@@ -18,8 +19,14 @@ import javax.swing.JFrame
  * The main desktop application class. Manages OpenGL rendering and rendering.
  *
  * @property dimensions The window dimensions
+ * @param desktopMode Whether to start the application in desktop mode, which causes it to function as a animated wallpaper
+ * @param resizable Whether the window is supposed to be resizable. Incompatible with desktop mode
  */
-class DesktopApplication(val dimensions: Dimension, desktopMode: Boolean = false): JFrame("phoenixpen_ng"), GLEventListener
+class DesktopApplication(
+        val dimensions: Dimension,
+        desktopMode: Boolean = false,
+        resizable: Boolean = false
+    ): JFrame("phoenixpen_ng"), GLEventListener
 {
     /**
      * The animator instance that renders our scene
@@ -100,6 +107,10 @@ class DesktopApplication(val dimensions: Dimension, desktopMode: Boolean = false
      */
     init
     {
+        // Check for incompatible options
+        if(desktopMode && resizable)
+            throw IllegalArgumentException("Can't request both desktop mode and resizable window")
+
         // Initialize OpenGL
         val profile = GLProfile.get(GLProfile.GL4)
         val capabilities = GLCapabilities(profile)
@@ -119,7 +130,7 @@ class DesktopApplication(val dimensions: Dimension, desktopMode: Boolean = false
         this.setLocationRelativeTo(null)
         this.defaultCloseOperation = EXIT_ON_CLOSE
         isVisible = true
-        isResizable = false
+        isResizable = true
 
         // If desktop mode was requested, use XLib to move window to the background
         if(desktopMode)
@@ -131,11 +142,7 @@ class DesktopApplication(val dimensions: Dimension, desktopMode: Boolean = false
         this.animator = Animator(canvas)
         this.animator.start()
 
-
-
         canvas.requestFocusInWindow()
-
-
     }
 
     /**
@@ -244,7 +251,7 @@ class DesktopApplication(val dimensions: Dimension, desktopMode: Boolean = false
         this.surfaceManager = DesktopSurfaceManager(gl, this.resourceProvider, ScreenDimensions(this.dimensions.width, this.dimensions.height))
         this.fullscreenQuad = FullscreenQuad(gl, this.resourceProvider)
 
-        this.firstPass.updateDimensions(dimensions)
+        //this.firstPass.updateDimensions(dimensions)
         this.secondPass.updateDimensions(dimensions)
 
         this.scene = MainScene(this.resourceProvider, this.inputProvider, this.logger, this.surfaceManager, AppSettings())
@@ -257,7 +264,21 @@ class DesktopApplication(val dimensions: Dimension, desktopMode: Boolean = false
 
     override fun reshape(drawable: GLAutoDrawable?, x: Int, y: Int, width: Int, height: Int)
     {
+        if(width == 0 || height == 0)
+            return
 
+        // Retrieve new dimensions
+        val newDimensions = ScreenDimensions(width, height)
+
+        // Update rendering stages
+        this.secondPass.updateDimensions(newDimensions)
+        this.orthoProjection.refresh(newDimensions)
+
+        // Inform surface manager of change
+        this.surfaceManager.reshape(newDimensions)
+
+        // Cause the main scene to reshape as well
+        this.scene.reshape()
     }
 
     override fun display(drawable: GLAutoDrawable?)

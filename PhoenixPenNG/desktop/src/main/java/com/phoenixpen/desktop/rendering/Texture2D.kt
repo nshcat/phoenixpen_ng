@@ -136,6 +136,7 @@ class Texture2D(val gl: GL4, parameters: Texture2DParameters): Texture()
 
         // Create buffer, filled with black pixels
         // TODO: This needs to be customizable, since not all texture formats use 3 bytes per pixel
+        println("W:${dims.width} H:${dims.height}")
         val texBuffer = ByteBuffer.allocate(dims.width * dims.height * 3)
 
         // Setup texture with empty data
