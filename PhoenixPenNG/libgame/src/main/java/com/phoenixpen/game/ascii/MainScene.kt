@@ -145,7 +145,7 @@ class MainScene(
     }
 
     /**
-     * Recreate all surfaces
+     * Recreate all surfacesV
      */
     override fun reshape()
     {
@@ -153,8 +153,12 @@ class MainScene(
 
         this.rootSurface = this.surfaceManager.createSurface(this.settings.mainTileSetId)
 
-        this.consoleSurface = this.surfaceManager.createSurface(this.settings.consoleTileSetId).apply {
-            clearWithTransparency = true
+        // We will never need to render the console in minimal mode.
+        if(!this.settings.isMinimalMode)
+        {
+            this.consoleSurface = this.surfaceManager.createSurface(this.settings.consoleTileSetId).apply {
+                clearWithTransparency = true
+            }
         }
 
         this.mapView.dimensions = this.rootSurface.dimensionsInGlyphs
@@ -168,7 +172,8 @@ class MainScene(
         // Render the map and all its structures, entities, etc..
         this.mapView.render(this.rootSurface)
 
-        this.console.render(this.consoleSurface)
+        if(!this.settings.isMinimalMode)
+            this.console.render(this.consoleSurface)
     }
 
     /**
@@ -176,14 +181,19 @@ class MainScene(
      */
     override fun update(elapsedTicks: Int)
     {
-        // Only do input if the console has not grabbed it
-        if(!this.console.grabsInput())
+        if(!this.settings.isMinimalMode)
         {
-            this.console.update(elapsedTicks)
-            this.doInput()
+            // Only do input if the console has not grabbed it
+            if (!this.console.grabsInput())
+            {
+                this.console.update(elapsedTicks)
+                this.doInput()
+            }
+            else
+            {
+                this.console.update(elapsedTicks)
+            }
         }
-        else
-            this.console.update(elapsedTicks)
 
         // Update simulation state
         this.simulationState.update(elapsedTicks)

@@ -12,11 +12,13 @@ import kotlinx.serialization.Serializable
  * It is important that all fields have sane defaults set, since there needs to be a way to create
  * fallback settings instance, for example when the user starts the application for the first time.
  *
+ * @property isMinimalMode Whether the device requests all unneeded featured to be turned off, used on resource constrained devices.
  * @property mainTileSetId The resource ID of the main glyph tile set, used for graphical parts of the application
  * @property consoleTileSetId The resource ID of the console tile set
  */
 @Serializable
 class AppSettings(
+    @SerialName("minimalistic_mode") var isMinimalMode: Boolean = false,
     @SerialName("main_tileset_id") var mainTileSetId: String = "text.png",
     @SerialName("console_tileset_id") var consoleTileSetId: String = "curses_640x300.png",
     @SerialName("enable_seasons") var enableSeasons: Boolean = true,
